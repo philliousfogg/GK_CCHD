@@ -1,0 +1,2349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workspace [
+
+<!-- Common Elements -->
+<!ELEMENT Identifier (#PCDATA)>
+<!ELEMENT Comments (#PCDATA)>
+<!ELEMENT CreationDate (#PCDATA)>
+
+<!-- Workspace Elements-->
+<!ELEMENT Workspace ( Identifier,
+               CreateVersion,
+               PJS_File?,
+               PJS_ConvertDate?,
+               PJS_CreateDate?,
+               Comments?,
+               Project*)>
+
+<!ATTLIST Workspace 
+      CurrentVersion CDATA   #REQUIRED> 
+
+<!ELEMENT CreateVersion     (#PCDATA)>
+
+
+<!-- Conversion data only: only included for files converted from the old .pjs database -->
+<!ELEMENT PJS_File (#PCDATA)>
+<!ELEMENT PJS_ConvertDate (#PCDATA)>
+<!ELEMENT PJS_CreateDate (#PCDATA)>
+
+<!ELEMENT Project ( Identifier,
+               Designer?,
+               DealerID?,
+               SalesOrder?,
+               PurchaseOrder?,
+               Comments?,
+               System*)>
+
+<!ELEMENT Designer (#PCDATA)>
+<!ELEMENT DealerID (#PCDATA)>
+<!ELEMENT SalesOrder (#PCDATA)>
+<!ELEMENT PurchaseOrder (#PCDATA)>
+
+
+<!ELEMENT System  (  Identifier,
+                 SysID,
+                 TransSerial?,
+                 TransModem?,
+                 TransTCPIP?,
+                 VirtualNetLinxMasterFlag?,
+                 VNMRestoreIPSettings?,
+                 VNMSystemID?,
+                 VNMIPAddress?,
+                 VNMMaskAddress?,
+                 IsAuthenticationEnabled?,
+                 UserName?,
+                 Password?,
+                 Comments?,
+                 File*)>
+
+<!ATTLIST System
+      IsActive   (true | false)   "false"
+      Platform   (Axcess | Netlinx)   "Axcess"
+      Transport   (Serial | Modem | TCPIP) "Serial">
+
+<!ELEMENT SysID (#PCDATA)>
+<!ELEMENT TransSerial (#PCDATA)>
+<!ELEMENT TransModem (#PCDATA)>
+<!ELEMENT TransTCPIP (#PCDATA)>
+<!ELEMENT VirtualNetLinxMasterFlag (#PCDATA)>
+<!ELEMENT VNMRestoreIPSettings (#PCDATA)>
+<!ELEMENT VNMSystemID (#PCDATA)>
+<!ELEMENT VNMIPAddress (#PCDATA)>
+<!ELEMENT VNMMaskAddress (#PCDATA)>
+<!ELEMENT IsAuthenticationEnabled (#PCDATA)>
+<!ELEMENT UserName (#PCDATA)>
+<!ELEMENT Password (#PCDATA)>
+
+
+<!ELEMENT File ( Identifier,
+               FilePathName,
+               Comments?,
+               DeviceMap*,
+               IRDB*)>
+
+<!ATTLIST File 
+       Type (Source | MasterSrc | Include | Module | AXB | IR | TPD | TP4 | KPD | TKO | AMX_IR_DB | IRN_DB | Other | DUET | TOK | TKN | KPB ) "Other"
+       CompileType (Axcess | Netlinx | None) "None"> 
+
+<!ELEMENT FilePathName	(#PCDATA)>
+                            
+<!ELEMENT DeviceMap (DevName)>
+       <!ATTLIST DeviceMap DevAddr CDATA #REQUIRED>
+
+       <!ELEMENT DevName (#PCDATA)>
+
+<!ELEMENT IRDB    (Property,
+                 DOSName,
+                 UserDBPathName,
+                 Notes)>
+       <!ATTLIST IRDB DBKey CDATA #REQUIRED>
+
+       <!ELEMENT Property (#PCDATA)>
+       <!ELEMENT DOSName (#PCDATA)>
+       <!ELEMENT UserDBPathName (#PCDATA)>
+       <!ELEMENT Notes (#PCDATA)>
+]>
+
+<Workspace CurrentVersion="3.3"><Identifier>Global Knowledge</Identifier>
+<CreateVersion>3.3</CreateVersion>
+<PJS_File></PJS_File>
+<PJS_ConvertDate></PJS_ConvertDate>
+<PJS_CreateDate></PJS_CreateDate>
+<Comments></Comments>
+<Project><Identifier>London - UK2 - 120 Old Broad Street</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Brunswick</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.44.84.15:1319:1: GK-LON-Brunswick::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Lon-Brunswick</Identifier>
+<FilePathName>Lon-Brunswick.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Kensington</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.44.83.143:1319:1:GK-Lon-Ken::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Lon-Kensington</Identifier>
+<FilePathName>Lon-Kensington.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Wokingham - UK1 -</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Monza</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.44.43.15:1319:1:GK-WOK-MONZA::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Wok-Monza</Identifier>
+<FilePathName>Wok-Monza.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Leeds - UK3</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Room 3 (Receive)</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.44.116.15:1319:1:GK-LEEDS-Room3::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Leeds-Room3</Identifier>
+<FilePathName>Leeds-Room3.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Room 4</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.44.115.143:1319:1:GK-Leeds-Room 4::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Module"><Identifier>EDinLights</Identifier>
+<FilePathName>EDinLights.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Leeds-Room4</Identifier>
+<FilePathName>Leeds-Room4.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Dublin - IE1</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Dublin - Receive</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.35.43.15:1319:1:IE1-Dublin::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Dublin-Receive</Identifier>
+<FilePathName>Dublin-Receive.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Copenhagen - DK1</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Stockholm</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.46.43.15:1319:1:GK Copenhagen::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Copenhagen - Stockholm</Identifier>
+<FilePathName>Copenhagen - Stockholm.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Stockholm - SW1</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>New York</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.45.43.15:1319:1:SW1-1::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>NewYork - Stockholm</Identifier>
+<FilePathName>NewYork - Stockholm.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Developer</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Developer</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.115.2.5:1319:1:Manchester NI3100::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Developer</Identifier>
+<FilePathName>Developer.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>DUMMY_DISPLAY_MODULE</Identifier>
+<FilePathName>DUMMY_DISPLAY_MODULE.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>DUMMY_DISPLAY_MODULE</Identifier>
+<FilePathName>DUMMY_DISPLAY_MODULE.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>Munich-DE1-1</Identifier>
+<FilePathName>Munich-DE1-1.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>PinChanger</Identifier>
+<FilePathName>PinChanger.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>TestAMp</Identifier>
+<FilePathName>TestAMp.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>CiscoTCThinClient</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CiscoTCThinClient.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>PinManager</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\PinManager.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Diagnostics</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.115.8.10:1319:1: ::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Diagnostic</Identifier>
+<FilePathName>Diagnostic.axs</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Developer2</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.115.2.6:1319:1: ::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Developer2</Identifier>
+<FilePathName>Developer2.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>Munich-DE1-1</Identifier>
+<FilePathName>Munich-DE1-1.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>TestAMp</Identifier>
+<FilePathName>TestAMp.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Oslo - NO1</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Room 2</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.47.43.15:1319:1:IE1-Dublin::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Oslo - Room 2</Identifier>
+<FilePathName>Oslo - Room 2.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Munich - DE1</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>A Room</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.49.43.15:1319:1:Munich DE1-1::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Munich-DE1-1</Identifier>
+<FilePathName>Munich-DE1-1.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Hamburg - DE2</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Paris</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.49.75.15:1319:1:GK DE2-1::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Hamburg-DE2-1</Identifier>
+<FilePathName>Hamburg-DE2-1.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Frankfurt - DE3</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Not Known</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.115.2.15:1319:1: ::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>136.170.152.101:1319:1:Pace Pres 2</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="DUET"><Identifier>CISCO_TC_COMM_dr1_0_0</Identifier>
+<FilePathName>..\..\CiscoTC\trunk\CISCO_TC_COMM_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Diagnostic</Identifier>
+<FilePathName>Diagnostic.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Frankfurt-DE3-1</Identifier>
+<FilePathName>Frankfurt-DE3-1.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Lights</Identifier>
+<FilePathName>Lights.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>..\..\Modules\CityIS Devices Modules\Trunk\APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>Hitachi_CPX417_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\Hitachi_CPX417_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_NPP420X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_NPP420X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="DUET"><Identifier>NEC_PA600X_Comm_dr1_0_0</Identifier>
+<FilePathName>..\..\Modules\Duet Modules\NEC_PA600X_Comm_dr1_0_0.jar</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSProjectorMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSProjectorMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSSrcUsageMod</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\RMSSrcUsageMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>TimeDateLib</Identifier>
+<FilePathName>..\..\Modules\RMS Library\Trunk\TimeDateLib.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Codec</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>XML</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\XML.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>..\..\NECProjector\trunk\NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\ProjectMoses\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>Central Processors</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Wokingham</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM1,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>10.115.2.31:1319:1: ::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>CentralProcessor</Identifier>
+<FilePathName>CentralProcessor.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>CodecSetupClass</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSScheduling</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSScheduling.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>..\..\MultiRoomCollaborator\trunk\Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>..\..\Utilities\trunk\EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+</Workspace>

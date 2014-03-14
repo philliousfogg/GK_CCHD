@@ -1,0 +1,5 @@
+# Compiled AMX files
+*.tko
+*.src
+*.tkn
+*.jar
