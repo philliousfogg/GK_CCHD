@@ -91,6 +91,9 @@ VOLATILE INTEGER CAM_POSITION_CHANGED[2]
 VOLATILE INTEGER SIP_CHANGED
 VOLATILE INTEGER H323_CHANGED
 
+VOLATILE CHAR pCallCommand[4][512]
+VOLATILE CHAR pStatus[4][24]
+
 //Returns next free Call Slote
 DEFINE_FUNCTION INTEGER CISCO_getCallIndex( INTEGER CallID )
 {
@@ -119,13 +122,11 @@ DEFINE_FUNCTION INTEGER CISCO_getCallIndex( INTEGER CallID )
 }
 
 //Sends current Call Status to main program
-DEFINE_FUNCTION  CISCO_setDiallerStatus( CHAR Status[], Integer CallIndex )
+DEFINE_FUNCTION  CISCO_setDiallerStatus( CHAR Status[], Integer CallIndex, integer request )
 {
     STACK_VAR CHAR rStatus[24]
     
-    LOCAL_VAR CHAR pStatus[4][24]
-    
-    SEND_STRING 0, "'Status-', Status, '|'"
+    SEND_STRING 0, "'Status-********* ', Status, ' ********'"
     
     if ( Status == 'Idle' )
     {
@@ -174,7 +175,7 @@ DEFINE_FUNCTION  CISCO_setDiallerStatus( CHAR Status[], Integer CallIndex )
     if ( LENGTH_STRING(rStatus) > 0 )
     {
 	// Has the status changed
-	if ( pStatus[CallIndex] != rStatus )
+	if ( pStatus[CallIndex] != rStatus OR request )
 	{
 	    //Send Dialer Status to Main Program
 	    SEND_COMMAND vdvDevices[CallIndex], "'DIALERSTATUS-',rStatus"
@@ -498,7 +499,7 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	    
 	    CALLS[CallIndex].Changed = 1
 	    
-	    CISCO_CallChanges()
+	    CISCO_CallChanges(0)
 	}
     }
     
@@ -524,7 +525,7 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	    CALLS[CallIndex].Status = CISCO_removeWrap( cData, ': ', "$0D" )
 	    
 	    //Send Status Main Program
-	    CISCO_setDiallerStatus(CALLS[CallIndex].Status, CallIndex)
+	    CISCO_setDiallerStatus(CALLS[CallIndex].Status, CallIndex, 0)
 	}
 	
 	else if ( FIND_STRING ( cData, 'Direction: ', 1 ) )
@@ -645,19 +646,18 @@ DEFINE_FUNCTION CISCO_sendCommand( Char Cmd[255] )
 }
 
 //See if there has been any changes to the call
-DEFINE_FUNCTION CISCO_CallChanges()
+DEFINE_FUNCTION CISCO_CallChanges(INTEGER request)
 {
     STACK_VAR INTEGER i
     STACK_VAR _CALL BlankCall
-    LOCAL_VAR CHAR CallCommand[512]
-    LOCAL_VAR CHAR pCallCommand[4][512]
+    STACK_VAR CHAR CallCommand[512]
     
     FOR ( i=1; i<=4; i++ )
     {
 	//If call data has changed then report to main program
-	if ( CALLS[i].Changed )
+	if ( CALLS[i].Changed OR request )
 	{
-	    CISCO_setDiallerStatus( CALLS[i].Status, i )
+	    CISCO_setDiallerStatus( CALLS[i].Status, i, request )
 	    
 	    if ( CALLS[i].Status == 'Idle' )
 	    {
@@ -681,7 +681,7 @@ DEFINE_FUNCTION CISCO_CallChanges()
 	    SEND_STRING 0, CallCommand
 	    
 	    // Has the call command changed
-	    if ( pCallCommand[i] != callCommand )
+	    if ( pCallCommand[i] != callCommand OR request )
 	    {
 		//Send Call Info to Main Program
 		SEND_COMMAND vdvDevices[i], callCommand
@@ -963,13 +963,13 @@ DATA_EVENT [vdvDevices]
 	
 	IF ( FIND_STRING ( DATA.TEXT, '?DIALERSTATUS', 1 ) )
 	{
-	    CISCO_setDiallerStatus( CALLS[DATA.DEVICE.PORT].Status, DATA.DEVICE.PORT )
+	    CISCO_setDiallerStatus( CALLS[DATA.DEVICE.PORT].Status, DATA.DEVICE.PORT, 1 )
 	}
 	
 	IF ( FIND_STRING ( DATA.TEXT, '?CALL', 1 ) )
 	{
 	    //Send Call data out to main Program
-	    CALLS[DATA.DEVICE.PORT].Changed = 1
+	    CISCO_CallChanges(1)
 	}
 	
 	//Dial Number
@@ -1198,7 +1198,7 @@ CHANNEL_EVENT [vdvDevices[1], 0]
     ON: 
     {
 	SWITCH ( CHANNEL.CHANNEL )
-	{
+	{	    
 	    CASE ACONF_PRIVACY:
 	    {
 		//Microphones Mute
@@ -1393,7 +1393,7 @@ WAIT 50
 	H323_CHANGED = 0
     }
     
-    CISCO_CallChanges()
+    CISCO_CallChanges(0)
 }
 
 
