@@ -80,7 +80,7 @@ STRUCTURE _Lesson
     CHAR Subject[64]
     CHAR Instructor[64]
     CHAR Message[100]
-    INTEGER Pin
+    LONG Pin
     INTEGER Type
     CHAR Code[16]
     CHAR StartTime[9]

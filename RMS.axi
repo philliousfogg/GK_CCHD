@@ -43,9 +43,9 @@ VOLATILE INTEGER RMS_REPORT_TYPE
 #INCLUDE 'TimeDateLib.axi'
 
 //Generates a random 5 digit pin
-DEFINE_FUNCTION integer RMS_generatePin()
+DEFINE_FUNCTION LONG RMS_generatePin()
 {
-    STACK_VAR INTEGER pin
+    STACK_VAR LONG pin
     
     pin = RANDOM_NUMBER(99999)
     
@@ -402,7 +402,7 @@ DEFINE_FUNCTION RMS_startSiteResponse(_Command parser)
 		//if there is no lesson in progress then start 60 minute AdHoc with room
 		else
 		{
-		    STACK_VAR INTEGER RandomCode
+		    STACK_VAR LONG RandomCode
 		    STACK_VAR INTEGER Duration
 		    
 		    //Generate Random Pin
