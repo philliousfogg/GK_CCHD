@@ -10,7 +10,9 @@ dvAmplifier 	= 5001:1:0
 dvRelay		= 5001:4:0 //5001:4:0
 
 //I/O Ports
-dvIO 		= 5001:9:0
+dvIO_700	= 5001:4:0
+dvIO_2100	= 5001:9:0
+dvIO_3100	= 5001:17:0
 
 //Ethernet Ports
 
@@ -25,6 +27,8 @@ dvProjector3	= 0:8:0
 dvLights 	= 0:9:0
 
 dvIP		= 0:10:0
+
+INTERNET	= 0:20:0
 
 
 vdvProjector1 	= 33011:1:0
@@ -267,6 +271,8 @@ vdvLights20	= 33015:1:20
 
 //Create Device Arrays to allow devices to referenced easily
 DEFINE_VARIABLE
+
+volatile dev dvIO = dvIO_700
 
 volatile dev vdvCodecP[] = {
 
