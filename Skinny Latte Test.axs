@@ -137,6 +137,21 @@ DATA_EVENT [vdvDevices]
 {
     ONLINE:
     {
+	//Set IP Address
+	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.8.5'"
+	
+	//Set Password
+	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,!V1ju13?'"
+	
+	//Reinitialise
+	SEND_COMMAND vdvDevice1, "'REINIT'"
+    }
+}
+
+DATA_EVENT [vdvDevices]
+{
+    ONLINE:
+    {
 	//Switch Auto Answer On
 	ON[vdvCodec, DIAL_AUTO_ANSWER_ON]
 	
@@ -251,7 +266,7 @@ BUTTON_EVENT [dvTP, 3]
     PUSH:
     {
 	//Set IP Address
-	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.8.3'"
+	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.8.5'"
 	
 	//Set Password
 	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,!V1ju13?'"

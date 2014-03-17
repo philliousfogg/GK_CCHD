@@ -123,6 +123,8 @@ DEFINE_FUNCTION  CISCO_setDiallerStatus( CHAR Status[], Integer CallIndex )
 {
     STACK_VAR CHAR rStatus[24]
     
+    LOCAL_VAR CHAR pStatus[4][24]
+    
     SEND_STRING 0, "'Status-', Status, '|'"
     
     if ( Status == 'Idle' )
@@ -171,8 +173,14 @@ DEFINE_FUNCTION  CISCO_setDiallerStatus( CHAR Status[], Integer CallIndex )
     //If has been updated
     if ( LENGTH_STRING(rStatus) > 0 )
     {
-	//Send Dialer Status to Main Program
-	SEND_COMMAND vdvDevices[CallIndex], "'DIALERSTATUS-',rStatus"
+	// Has the status changed
+	if ( pStatus[CallIndex] != rStatus )
+	{
+	    //Send Dialer Status to Main Program
+	    SEND_COMMAND vdvDevices[CallIndex], "'DIALERSTATUS-',rStatus"
+	    
+	    pStatus[CallIndex] = rStatus
+	}
     }
 }
 
@@ -472,6 +480,28 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	OFF[ vdvDevices[1], DIAL_AUTO_ANSWER_ON ]
     }
     
+    else if ( FIND_STRING ( cData, 'Status (status=Error):', 1 ) )
+    {
+	if ( FIND_STRING ( cData, 'XPath: Status/Call[', 1 ) )
+	{
+	    STACK_VAR INTEGER CallId 
+	    STACK_VAR INTEGER CallIndex 
+	    STACK_VAR CHAR svData[255]
+	    
+	    svData = cData
+	    
+	    CallId = ATOI ( CISCO_removeWrap ( svData, 'Call[', ']' ) )
+	    
+	    CallIndex = CISCO_getCallIndex( CallId )
+	    
+	    CALLS[CallIndex].Status = 'Idle'
+	    
+	    CALLS[CallIndex].Changed = 1
+	    
+	    CISCO_CallChanges()
+	}
+    }
+    
     ELSE IF ( FIND_STRING ( cData, 'Call', 1 ) )
     {
 	STACK_VAR INTEGER CallId 
@@ -619,39 +649,63 @@ DEFINE_FUNCTION CISCO_CallChanges()
 {
     STACK_VAR INTEGER i
     STACK_VAR _CALL BlankCall
+    LOCAL_VAR CHAR CallCommand[512]
+    LOCAL_VAR CHAR pCallCommand[4][512]
     
     FOR ( i=1; i<=4; i++ )
     {
 	//If call data has changed then report to main program
 	if ( CALLS[i].Changed )
 	{
+	    CISCO_setDiallerStatus( CALLS[i].Status, i )
+	    
 	    if ( CALLS[i].Status == 'Idle' )
 	    {
 		//Clear call slot as call has ended
 		CALLS[i] = BlankCall
 	    }
 	    
-	    //Send Call Info to Main Program
-	    SEND_COMMAND vdvDevices[i], "'CALL-',
-		ITOA ( CALLS[i].CallID ),',',
-		CALLS[i].Direction,',',
-		CALLS[i].Type,',',
-		CALLS[i].rate,',',
-		CALLS[i].encryption,',',
-		CALLS[i].presenting,',',
-		CALLS[i].remoteNumber,',',
-		CALLS[i].callBackNumber,',',
-		CALLS[i].DisplayName,',',
-		CALLS[i].protocol"
+	    callCommand = "'CALL-',
+		    ITOA ( CALLS[i].CallID ),',',
+		    CALLS[i].Direction,',',
+		    CALLS[i].Type,',',
+		    CALLS[i].rate,',',
+		    CALLS[i].encryption,',',
+		    CALLS[i].presenting,',',
+		    CALLS[i].remoteNumber,',',
+		    CALLS[i].callBackNumber,',',
+		    CALLS[i].DisplayName,',',
+		    CALLS[i].protocol"
 	    
+	    SEND_STRING 0, pCallCommand[i]
+	    SEND_STRING 0, CallCommand
 	    
-	    CISCO_setDiallerStatus( CALLS[i].Status, i )
-	    
+	    // Has the call command changed
+	    if ( pCallCommand[i] != callCommand )
+	    {
+		//Send Call Info to Main Program
+		SEND_COMMAND vdvDevices[i], callCommand
+		
+		pCallCommand[i] = CallCommand
+	    }    
 	    
 	    //Make changes have been read
 	    CALLS[i].Changed = 0
 	}
     }	
+}
+
+DEFINE_FUNCTION CISCO_checkCallStatus( )
+{
+    STACK_VAR INTEGER i
+    
+    FOR ( i=1; i<=4; i++ )
+    {
+	if ( CALLS[i].CallId )
+	{
+	    CISCO_sendCommand( "'xStatus Call ',  ITOA ( CALLS[i].CallId )"  )
+	}
+    }
 }
 
 DEFINE_START
@@ -1299,6 +1353,8 @@ WAIT 2
 
 WAIT 50
 {
+    CISCO_checkCallStatus()
+    
     //If Camera 1 Position has changed
     if ( CAM_POSITION_CHANGED[1] )
     {
