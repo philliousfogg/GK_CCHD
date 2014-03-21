@@ -764,7 +764,22 @@ DATA_EVENT [dvCodec]
     }
     ONERROR:
     {
+	STACK_VAR Char Error[64]
 	
+	SWITCH ( DATA.NUMBER )
+	{
+	    CASE 2: Error =  "'2: General failure (out of memory)'"
+	    CASE 4: Error =  "'4: Unknown host'"
+	    CASE 6: Error =  "'6: Connection refused'"
+	    CASE 7: Error =  "'7: Connection timed out'"
+	    CASE 8: Error =  "'8: Unknown connection error'"
+	    CASE 9: Error =  "'9: Already closed'"
+	    CASE 14: Error =  "'14: Local port already used'"
+	    CASE 16: Error =  "'16: Too many open sockets'"
+	    CASE 17: Error =  "'17: Local Port Not Open'"
+	}
+	
+	SEND_STRING 0, "'!******************* Connection Error: ',Error"
     }
     STRING:
     {

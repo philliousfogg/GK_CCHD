@@ -6,7 +6,9 @@ DEFINE_MODULE 'RMSVirtualRoom' vRMSRoom( dvVRMSSocket,
 					 vdvVRMSEngine,
 					 vdvVCLActions,
 					 vdvSystems,
-					 vdvVSystem)
+					 vdvVSystem,
+					 vdvVReceiver,
+					 vdvVLesson)
 
 //Define RMS Modules
 DEFINE_MODULE 'i!-ConnectLinxEngineMod' mdVlCL(vdvVCLActions)

@@ -182,14 +182,14 @@ DEFINE_FUNCTION RMS_RefreshLessonData()
     if ( RMS_LEVELS.Current )
     {
 	//Get Lesson information
-	SEND_COMMAND vdvSystem, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Current)"
+	SEND_COMMAND vdvLesson, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Current)"
     }
     
     //Only retrieve data if there is a lesson
     if ( RMS_LEVELS.Next )
     {
 	//Get Lesson information
-	SEND_COMMAND vdvSystem, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Next)"
+	SEND_COMMAND vdvLesson, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Next)"
     }
 }
 
@@ -207,7 +207,7 @@ DEFINE_FUNCTION RMS_extendLesson(integer minutes)
 	    if ( SYSTEMS[i].LiveLesson )
 	    {
 		//Send Lesson extension request to the system
-		SEND_COMMAND vdvSystem, "'LESSON_Extend-&sysnum=',ITOA( Systems[i].SystemNumber ),'&mins=',ITOA( minutes )" 
+		SYSTEM_sendCommand ( vdvSystem, "'LESSON_Extend-&sysnum=',ITOA( Systems[i].SystemNumber ),'&mins=',ITOA( minutes )" )
 	    }
 	}
 	else
@@ -231,7 +231,7 @@ DEFINE_FUNCTION RMS_endLesson()
 	    if ( SYSTEMS[i].LiveLesson )
 	    {
 		//Send Lesson extension request to the system
-		SEND_COMMAND vdvSystem, "'LESSON_End-&sysnum=',ITOA( Systems[i].SystemNumber )"	
+		SYSTEM_sendCommand ( vdvSystem, "'LESSON_End-&sysnum=',ITOA( Systems[i].SystemNumber )"	)
 	    }
 	}
 	else
@@ -265,7 +265,7 @@ DEFINE_FUNCTION RMS_restartRoomRespone( _Command parser )
 	    CASE 1: 
 	    {		
 		SEND_STRING 0, 'ok'
-		SEND_COMMAND vdvSystem, "'LESSON_forceShutdown-func=0&code=',LIVE_LESSON.Code"
+		SYSTEM_sendCommand ( vdvSystem, "'LESSON_forceShutdown-func=0&code=',LIVE_LESSON.Code")
 	    }
 	    CASE 2: 
 	    {		
@@ -371,14 +371,14 @@ DEFINE_FUNCTION RMS_startSiteResponse(_Command parser)
 		//if there is a lesson in progress then connect room to lesson
 		if ( Systems[SysIndex].LiveLesson )
 		{  
-		    SEND_COMMAND vdvSystem, "'LESSON_Start-type=2&pin=',ITOA(LIVE_LESSON.pin),
+		    SYSTEM_sendCommand ( vdvSystem, "'LESSON_Start-type=2&pin=',ITOA(LIVE_LESSON.pin),
 					      '&sysnum=',ITOA( Systems[index].SystemNumber ),
 					      '&code=',LIVE_LESSON.Code,
 					      '&start=',TIME,
 					      '&dur=',ITOA(RMS_LEVELS.MinutesRemaining),
 					      '&instr=',LIVE_LESSON.Instructor,
 					      '&subject=',LIVE_LESSON.Subject,
-					      '&message=Start from ',Systems[SysIndex].name"
+					      '&message=Start from ',Systems[SysIndex].name")
 		}
 		(*ELSE if ( Systems[SysIndex].NextLesson )
 		{
@@ -421,7 +421,7 @@ DEFINE_FUNCTION RMS_startSiteResponse(_Command parser)
 		    
 		    
 		    //Teacher room (this room)
-		    SEND_COMMAND vdvSystem, 
+		    SYSTEM_sendCommand ( vdvSystem, 
 					     "'LESSON_Start-type=1&pin=',ITOA( RandomCode ),
 					      '&sysnum=',ITOA( SYSTEM_NUMBER ),
 					      '&code=Adhoc',ITOA(SYSTEM_NUMBER),
@@ -429,12 +429,12 @@ DEFINE_FUNCTION RMS_startSiteResponse(_Command parser)
 					      '&dur=',ITOA ( Duration ),
 					      '&instr=Unknown',
 					      '&subject=Unknown',
-					      '&message=Start from ',Systems[SysIndex].name"
+					      '&message=Start from ',Systems[SysIndex].name" )
 		    
 		    if ( index )
 		    {
 			//Connecting room 
-			SEND_COMMAND vdvSystem, 
+			SYSTEM_sendCommand ( vdvSystem, 
 						"'LESSON_Start-type=2&pin=',ITOA( RandomCode ),
 						  '&sysnum=',ITOA( Systems[index].SystemNumber ),
 						  '&code=Adhoc',ITOA(SYSTEM_NUMBER),
@@ -442,7 +442,7 @@ DEFINE_FUNCTION RMS_startSiteResponse(_Command parser)
 						  '&dur=',ITOA ( Duration ),
 						  '&instr=Unknown',
 						  '&subject=Unknown',
-						  '&message=Start from ',Systems[SysIndex].name"
+						  '&message=Start from ',Systems[SysIndex].name" )
 						  
 		    }
 		    
@@ -493,7 +493,7 @@ DEFINE_FUNCTION RMS_removeSiteResponse( _Command parser )
 	    CASE 1: 
 	    {
 		//Send an end request to site
-		SEND_COMMAND vdvSystem, "'LESSON_End-sysnum=',ITOA(SYSTEMS[index].SystemNumber)" 
+		SYSTEM_sendCommand ( vdvSystem, "'LESSON_End-sysnum=',ITOA(SYSTEMS[index].SystemNumber)" )
 		
 		//Remove Site from current to prevent recall
 		Systems[index].liveLesson = 0	
@@ -597,7 +597,7 @@ DEFINE_FUNCTION RMS_evaluateLevels()
 	    send_command vdvCodecs_Cam2[SYSTEM_NUMBER],"'CAMERAPRESET-1'"
 	    
 	    //Inform all other Systems that the lesson has ended
-	    SEND_COMMAND vdvSystem, "'LESSON_siteEnd-lesson=',ITOA(cLive),'&sysnum=',ITOA(SYSTEM_NUMBER)"
+	    SYSTEM_sendCommand ( vdvSystem, "'LESSON_siteEnd-lesson=',ITOA(cLive),'&sysnum=',ITOA(SYSTEM_NUMBER)" )
 	    
 	    //Reset Lights
 	    LIGHTS_resetLights(vdvLight)
@@ -629,9 +629,9 @@ DEFINE_FUNCTION RMS_evaluateLevels()
 	    //30 minutes before the end of the lesson and at intervals of 5 minutes
 	    if ( RMS_LEVELS.MinutesRemaining <= 30 AND  !( RMS_LEVELS.MinutesRemaining % 5 ) )
 	    {
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=lessend&title=Lesson End Warning',
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=lessend&title=Lesson End Warning',
 					 '&message=This lesson is ending in ',ITOA( RMS_LEVELS.MinutesRemaining ),' Minutes',
-					 '&res1=End Now&res2=Extend&res3=Cancel&norepeat=1'"
+					 '&res1=End Now&res2=Extend&res3=Cancel&norepeat=1'" )
 	    }
 	}
 	
@@ -664,7 +664,7 @@ DEFINE_FUNCTION RMS_evaluateLevels()
 	    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[81] ),',0'"
 	    
 	    //Inform all other Systems that the lesson has ended
-	    SEND_COMMAND vdvSystem, "'LESSON_siteEnd-lesson=',ITOA(cNext),'&sysnum=',ITOA(SYSTEM_NUMBER)"
+	    SYSTEM_sendCommand ( vdvSystem, "'LESSON_siteEnd-lesson=',ITOA(cNext),'&sysnum=',ITOA(SYSTEM_NUMBER)" )
 	}
 	
 	//Refresh the RMS data across all systems
@@ -696,14 +696,10 @@ DEFINE_FUNCTION char[255] RMS_removeLineFeed( char text[255] )
 
 DEFINE_START
 
-//Define RMS Modules
-DEFINE_MODULE 'i!-ConnectLinxEngineMod' mdlCL(vdvCLActions)
-DEFINE_MODULE 'RMSEngineMod' mdlRMSEng(vdvRMSEngine, dvRMSSocket, vdvCLActions)
-
 // RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
 // Channel And Variable Text Code Defined Inside The Module
 DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine,
-				  vdvSystem,
+				  vdvLesson,
                                   dvRMSTP,dvRMSTP_Base,
 				  dvRMSTPWelcome,
 				  dvRMSTPWelcome_Base,
@@ -734,15 +730,15 @@ DATA_EVENT[vdvRMSEngine]
 	    
 	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
 	    {
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=EndLessonError',
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=EndLessonError',
 						    '&title=End Current Lesson',
 						    '&message=You cannot remove a recurring lesson from the calendar.  The lesson will be suspended.',$0A,$0D,$0A,$0D,
 						    'Press ok to continue',
-						    '&res1=Ok&norepeat=1'"
+						    '&res1=Ok&norepeat=1'" )
 	    }
 	    
 	    //Set the reoccurring shutdown flag on all systems in lesson.
-	    SEND_COMMAND vdvSystem, "'LESSON_forceShutdown-func=1&code=',LIVE_LESSON.Code"
+	    SYSTEM_sendCommand ( vdvSystem, "'LESSON_forceShutdown-func=1&code=',LIVE_LESSON.Code" )
 	}
 	
 	//End Lesson Sucess
@@ -753,11 +749,11 @@ DATA_EVENT[vdvRMSEngine]
 	    
 	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
 	    {
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=EndLessonSuccess',
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=EndLessonSuccess',
 						    '&title=End Current Lesson',
 						    '&message=Lesson has been ended',$0A,$0D,$0A,$0D,
 						    'Press ok to continue',
-						    '&res1=Ok&norepeat=1'"
+						    '&res1=Ok&norepeat=1'" )
 	    }
 	}
 	
@@ -772,15 +768,15 @@ DATA_EVENT[vdvRMSEngine]
 	    
 	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
 	    {
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=ExLessonError',
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=ExLessonError',
 						    '&title=Extend Current Lesson',
 						    '&message=At ',LIVE_LESSON.EndTime,' the room will shut for 2 minute. Please be patient.',$0A,$0D,$0A,$0D,
 						    'Press ok to continue',
-						    '&res1=Ok&norepeat=1'"
+						    '&res1=Ok&norepeat=1'" )
 	    }
 	    
 	    //Extend by setting up a new meeting
-	    SEND_COMMAND vdvSystem, "'LESSON_ExtendRecurring-&code=',LIVE_LESSON.Code"
+	    SYSTEM_sendCommand ( vdvSystem, "'LESSON_ExtendRecurring-&code=',LIVE_LESSON.Code" )
 	}
 	
 	//Reserve Failure
@@ -806,7 +802,7 @@ DATA_EVENT[vdvRMSEngine]
 		SEND_COMMAND dvTP, "'@PPK-_Waiting'"
 		
 		//Extend by setting up a new meeting
-		SEND_COMMAND vdvSystem, "'LESSON_reserveFailure-&sysnum=',ITOA(SYSTEM_NUMBER),'&time=',svTime"
+		SYSTEM_sendCommand ( vdvSystem, "'LESSON_reserveFailure-&sysnum=',ITOA(SYSTEM_NUMBER),'&time=',svTime")
 	    }
 	}
 	
@@ -819,11 +815,11 @@ DATA_EVENT[vdvRMSEngine]
 	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
 	    {
 	    
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=ExLessonSuccess',
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=ExLessonSuccess',
 						    '&title=Extend Current Lesson',
 						    '&message=Lesson has been Extended',$0A,$0D,$0A,$0D,
 						    'Press ok to continue',
-						    '&res1=Ok&norepeat=1'"
+						    '&res1=Ok&norepeat=1'" )
 						
 	    }
 	}
@@ -839,9 +835,9 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    REMOVE_STRING ( DATA.TEXT,"'ROOM NAME-'",1 )
 	    
-	    SEND_cOMMAND vdvSystem,"'SetSystemData-',
+	    SYSTEM_sendCommand ( vdvSystem,"'SetSystemData-',
 				'sysnum=',ITOA(SYSTEM_NUMBER),
-				'&name=',DATA.TEXT"
+				'&name=',DATA.TEXT" )
 	}
 	
 	//Location
@@ -849,9 +845,9 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    REMOVE_STRING ( DATA.TEXT,"'ROOM LOCATION-'",1 )
 	    
-	    SEND_cOMMAND vdvSystem,"'SetSystemData-',
+	    SYSTEM_sendCommand ( vdvSystem,"'SetSystemData-',
 				'sysnum=',ITOA(SYSTEM_NUMBER),
-				'&loc=',DATA.TEXT"
+				'&loc=',DATA.TEXT" )
 	}
 	
 	//Company
@@ -859,19 +855,19 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    REMOVE_STRING ( DATA.TEXT,"'ROOM OWNER-'",1 )
 	    
-	    SEND_cOMMAND vdvSystem,"'SetSystemData-',
+	    SYSTEM_sendCommand ( vdvSystem,"'SetSystemData-',
 				    'sysnum=',ITOA(SYSTEM_NUMBER),
-				    '&comp=',DATA.TEXT"
+				    '&comp=',DATA.TEXT" )
 	}
 	
 	//A response to the help request
 	IF (FIND_STRING(DATA.TEXT, 'MESG-',1))
 	{
 	    REMOVE_STRING(DATA.TEXT,',',1)
-	    SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=RMSMesg',
+	    SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=RMSMesg',
 					    '&title=Response the Support Desk',
 					    '&message=',DATA.TEXT,
-					    '&res1=Ok&res2=Reply&norepeat=1'"
+					    '&res1=Ok&res2=Reply&norepeat=1'" )
 	}
     }
 }
@@ -920,19 +916,19 @@ DATA_EVENT [dvTP]
 		IF ( pin > 9999 OR !pin )
 		{
 		    //Confirm System Pin Change
-		    SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=PinNot4-',DATA.TEXT,
+		    SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=PinNot4-',DATA.TEXT,
 							'&title=Change Admin Pin',
 							'&message=The PIN number must be 4 digits.',
-							'&res1=Ok&norepeat=1'" 
+							'&res1=Ok&norepeat=1'" )
 		}
 		ELSE
 		{
 		    //Confirm System Pin Change
-		    SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=chgpin-',DATA.TEXT,
+		    SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=chgpin-',DATA.TEXT,
 							'&title=Change Admin Pin',
 							'&message=You are about to change the PIN this will affect all systems.',$0A,$0D,$0A,$0D,
 							'Would you like to change it to ',DATA.TEXT,'?',
-							'&res1=Yes&res2=No&norepeat=1'"   
+							'&res1=Yes&res2=No&norepeat=1'" )   
 		}
 	    }
 	}
@@ -1005,11 +1001,11 @@ DATA_EVENT [dvTP]
 		    if ( RMS_LEVELS.Current AND RECURRING_SHUTDOWN )
 		    {
 			//Ask user if they want to restart meeting
-			SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=RestartLesson',
+			SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=RestartLesson',
 						    '&title=Restart Lesson',
 						    '&message=There is a currently suspended meeting',$0A,$0D,$0A,$0D,
 						    'Would you like to restart it?',
-						    '&res1=Ok&res2=Cancel&norepeat=1'"
+						    '&res1=Ok&res2=Cancel&norepeat=1'" )
 		    }
 		}
 	    }
@@ -1085,10 +1081,10 @@ BUTTON_EVENT [dvTP, RMSBtns]
 	{
 	    CASE 30:
 	    {
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=lessend&title=End Lesson',
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=lessend&title=End Lesson',
 					 '&message=This will end the lesson and disconnect all sites',$0A,$0D,$0A,$0D,
 					 'Do you wish to continue?',
-					 '&res1=Ok&res3=Cancel&norepeat=1'"
+					 '&res1=Ok&res3=Cancel&norepeat=1'" )
 	    }
 	    
 	    CASE 31:

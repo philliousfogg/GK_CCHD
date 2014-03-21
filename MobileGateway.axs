@@ -39,14 +39,4 @@ DEFINE_MODULE 'RMSEngineMod' mdlRMSEng3(vdvRMSEngine3, dvRMSSocket3, vdvCLAction
 
 
 
-DEFINE_EVENT
 
-DATA_EVENT[vdvRMSEngine1]
-DATA_EVENT[vdvRMSEngine2]
-DATA_EVENT[vdvRMSEngine3]
-{
-    ONLINE:
-    {
-	SEND_COMMAND DATA.DEVICE, "'SERVER-classroommanager.amx.com'"
-    }
-}

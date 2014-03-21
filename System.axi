@@ -2,7 +2,7 @@ PROGRAM_NAME='SystemClass'
 
 DEFINE_CONSTANT 
 
-volatile integer LENGTH_SYSTEMS = 20
+volatile integer LENGTH_SYSTEMS = 40
 volatile integer LISTS_LENGTH = 1
 
 VOLATILE INTEGER TEACHER = 1
@@ -131,6 +131,9 @@ VOLATILE INTEGER CAM_LESSON_SWITCHED
 //Switch all projectors on at start of lesson 
 VOLATILE INTEGER PROJECTOR_INIT_START[LENGTH_DEVICES]
 
+//Packet identifier for clipped packets
+VOLATILE INTEGER PACKET_ID
+
 //Control Menu
 VOLATILE INTEGER SELECTED_MENU
 VOLATILE CHAR uiMenu[8][64] = 	{
@@ -167,6 +170,12 @@ VOLATILE INTEGER CAM_CONTROL_TIMEOUT
 DEFINE_MUTUALLY_EXCLUSIVE
 
 ( [dvRelay, 1], [dvRelay, 2] )
+
+//Send Command with delimiter added
+DEFINE_FUNCTION SYSTEM_sendCommand ( DEV device, CHAR tCommand[512] )
+{
+    SEND_COMMAND device, "'1x1',tCommand,'0x0'"
+}
 
 //Debugs System
 DEFINE_FUNCTION DEBUG ( char text[255] )
@@ -806,7 +815,7 @@ DEFINE_FUNCTION SYSTEM_addSplashScreenText(CHAR text[255])
 //Show the UI Page
 DEFINE_FUNCTION SYSTEM_ShowUIStart()
 {    
-    SEND_COMMAND vdvSystem, "'RefreshUI-'"
+    SYSTEM_sendCommand ( vdvSystem, "'RefreshUI-'" )
     SEND_COMMAND dvTP, "'PAGE-Login'"
 } 
 
@@ -961,7 +970,7 @@ DEFINE_FUNCTION SYSTEM_logout()
     ACTIVE_SYSTEM = SYSTEM_NUMBER
     
     //Refresh UI to bring up the Login page
-    SEND_COMMAND vdvSystem, "'RefreshUI-'"
+    SYSTEM_sendCommand ( vdvSystem, "'RefreshUI-'" )
     
     //Show Current Dialogs
     Dialog_ShowCurrentDialog()
@@ -1130,9 +1139,9 @@ DEFINE_FUNCTION System_changePinResponse( _Command parser )
 	{ 
 	    CASE 1: 
 	    {
-		SEND_COMMAND vdvSystem, "'CHANGE_PIN-pin=',ref"
+		SYSTEM_sendCommand ( vdvSystem, "'CHANGE_PIN-pin=',ref" )
 		
-		SEND_COMMAND vdvSystem, "'SET_PIN-pin=',ref"
+		SYSTEM_sendCommand ( vdvSystem, "'SET_PIN-pin=',ref" )
 		
 		SEND_STRING 0, 'ok'
 	    }
@@ -1336,11 +1345,11 @@ BUTTON_EVENT [dvTP, UIBtns]
 		    {
 			if ( Systems[Index].liveLesson )
 			{
-			    SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=siteend',ITOA ( index ),
+			    SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=siteend',ITOA ( index ),
 						    '&title=Remove Site From Lesson ',
 						    '&message=This will remove ',Systems[index].name,' from the lesson',$0A,$0D,$0A,$0D,
 						    'Do you wish to continue?',
-						    '&res1=Ok&res2=Cancel&norepeat=1'"
+						    '&res1=Ok&res2=Cancel&norepeat=1'" )
 			}
 			else
 			{
@@ -1349,11 +1358,11 @@ BUTTON_EVENT [dvTP, UIBtns]
 		    }
 		    ELSE
 		    {
-			SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=sitestart',ITOA ( index ),
+			SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=sitestart',ITOA ( index ),
 						'&title=Add Site',
 						'&message=You are about to add ',Systems[index].name,' to the Lesson',$0A,$0D,$0A,$0D,
 						'Do you wish to continue?',
-						'&res1=Ok&res2=Cancel&norepeat=1'"
+						'&res1=Ok&res2=Cancel&norepeat=1'" )
 		    }
 		}
 		ELSE
@@ -1382,7 +1391,7 @@ BUTTON_EVENT [dvTP, UIBtns]
 		if ( SELECTED_MENU == 55 )
 		{
 		    //Get all data from systems
-		    SEND_COMMAND vdvSystem, "'3GetSystemData-'"
+		    SYSTEM_sendCommand ( vdvSystem, "'3GetSystemData-'" )
 		    
 		    //Show only the rooms in the lesson
 		    Systems_UpdateUIList(0)
@@ -1441,11 +1450,11 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    //Start Offline Meeting
 	    CASE 86:
 	    {
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=sitestart0',
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=sitestart0',
 					    '&title=Start Lesson',
 					    '&message=You are about to start a new lesson.',$0A,$0D,$0A,$0D,
 					    'Do you wish to continue?',
-					    '&res1=Ok&res2=Cancel&norepeat=1'"
+					    '&res1=Ok&res2=Cancel&norepeat=1'" )
 	    }
 	    
 	    //Filter Sites to Sites
@@ -1468,7 +1477,7 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    CASE 90:
 	    {
 		//Refresh Data Across systems
-		SEND_COMMAND vdvSystem, "'4GetSystemData-'"
+		SYSTEM_sendCommand ( vdvSystem, "'4GetSystemData-'" )
 	    }
 	    
 	    //Set Presentation Tranmission type
@@ -1519,29 +1528,7 @@ DATA_EVENT [dvTP]
 	    
 	    SYSTEM_addSplashScreenText('Starting System...')
 	    
-	    SEND_COMMAND dvTP, "'PAGE-splashScreen'"
-	    
-	    wait 900 'ConnectionTimout'
-	    {
-		SYSTEM_addSplashScreenText('Devices Timeout...')
-		
-		//Refresh Data Across systems
-		SEND_COMMAND vdvSystem, "'1GetSystemData-'"
-		
-		SYSTEM_ShowUIStart()
-		//ON[vdvSystem, DATA_INITIALIZED]
-	    }
-	    
-	    if ( DEVICES_isAllConnected() )
-	    {
-		CANCEL_WAIT 'ConnectionTimout'
-		
-		//Refresh Data Across systems
-		SEND_COMMAND vdvSystem, "'2GetSystemData-'"
-		
-		SYSTEM_ShowUIStart()
-		//ON[vdvSystem, DATA_INITIALIZED]
-	    }
+	    SYSTEM_ShowUIStart()
 	}
     }
 } 

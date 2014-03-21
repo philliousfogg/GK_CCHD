@@ -2,7 +2,9 @@ MODULE_NAME='RMSVirtualRoom' (DEV dvRMSSocket,
 			      DEV vdvRMSEngine,
 			      DEV vdvCLActions,
 			      DEV vdvSystems[],
-			      DEV vdvSystem)
+			      DEV vdvSystem,
+			      DEV vdvReceiver,
+			      DEV vdvLesson)
 
 DEFINE_DEVICE 
 
@@ -83,7 +85,22 @@ VOLATILE INTEGER RMS_REFRESH_DATA
 VOLATILE CHAR RMS_MEETING_DEFAULT_SUBJECT[] = ''
 VOLATILE CHAR RMS_MEETING_DEFAULT_MESSAGE[] = ''
 
+VOLATILE CHAR SYSTEMS_COMMAND_BUFFER[5120]
+
 #INCLUDE 'RMSCommon.axi'
+
+DEFINE_FUNCTION EVENTS_parseCommandBuffer( CHAR theCommand[512] )
+{
+    SET_LENGTH_STRING ( theCommand, ( LENGTH_STRING ( theCommand ) - 3 ) )
+    
+    SEND_COMMAND vdvReceiver, "theCommand"
+}
+
+//Send Command with delimiter added
+DEFINE_FUNCTION SYSTEM_sendCommand ( DEV device, CHAR tCommand[512] )
+{
+    SEND_COMMAND device, "'1x1',tCommand,'0x0'"
+}
 
 
 (***************************************)
@@ -127,10 +144,10 @@ DEFINE_FUNCTION RMS_evaluateLevels()
 	    STACK_VAR _Lesson Blank
 	    
 	    //Send end call 
-	    SEND_COMMAND vdvSystems[SYSTEM_NUMBER], "'EndMCUCall-code=',LIVE_LESSON.Code"
+	    SYSTEM_sendCommand ( vdvSystems[SYSTEM_NUMBER], "'EndMCUCall-code=',LIVE_LESSON.Code" )
 	    
 	    //Inform all other Systems that the lesson has ended
-	    SEND_COMMAND vdvSystems[SYSTEM_NUMBER], "'LESSON_siteEnd-lesson=',ITOA(cLive),'&sysnum=',ITOA(SYSTEM_NUMBER+500)"
+	    SYSTEM_sendCommand ( vdvSystems[SYSTEM_NUMBER], "'LESSON_siteEnd-lesson=',ITOA(cLive),'&sysnum=',ITOA(SYSTEM_NUMBER+500)" )
 	    
 	    LIVE_LESSON = Blank
 	}
@@ -156,10 +173,10 @@ DEFINE_FUNCTION RMS_evaluateLevels()
 	    STACK_VAR _Lesson Blank
 	    
 	    //Send end Call
-	    SEND_COMMAND vdvSystems[SYSTEM_NUMBER], "'EndMCUCall-code=',NEXT_LESSON.Code"
+	    SYSTEM_sendCommand ( vdvSystems[SYSTEM_NUMBER], "'EndMCUCall-code=',NEXT_LESSON.Code" )
 	    
 	    //Inform all other Systems that the lesson has ended
-	    SEND_COMMAND vdvSystems[SYSTEM_NUMBER], "'LESSON_siteEnd-lesson=',ITOA(cNext),'&sysnum=',ITOA(SYSTEM_NUMBER+500)"
+	    SYSTEM_sendCommand ( vdvSystems[SYSTEM_NUMBER], "'LESSON_siteEnd-lesson=',ITOA(cNext),'&sysnum=',ITOA(SYSTEM_NUMBER+500)" )
 	    
 	    NEXT_LESSON = Blank
 	}
@@ -186,7 +203,7 @@ DEFINE_FUNCTION RMS_RefreshLesson(integer lesson)
 	if ( RMS_LEVELS.Next )
 	{
 	    //Get Lesson information
-	    SEND_COMMAND vdvSystem, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Next)"
+	    SYSTEM_sendCommand ( vdvSystem, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Next)" )
 	}
     }
     
@@ -196,14 +213,14 @@ DEFINE_FUNCTION RMS_RefreshLesson(integer lesson)
 	if ( RMS_LEVELS.Current )
 	{
 	    //Get Lesson information
-	    SEND_COMMAND vdvSystem, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Current)"
+	    SYSTEM_sendCommand ( vdvSystem, "'GET_LESSON_DATA-index=',ITOA(RMS_LEVELS.Current)" )
 	}
     }
 }
 
 DEFINE_EVENT
 
-DATA_EVENT [vdvSystem]
+DATA_EVENT [vdvLesson]
 {
     STRING:
     {
@@ -230,10 +247,10 @@ DATA_EVENT [vdvSystem]
 		LIVE_LESSON.EndTime 	= getAttrValue( 'end', aCommand )
 		
 		//Get other sites in the lesson
-		 SEND_COMMAND vdvSystems[SYSTEM_NUMBER], "'LESSON_SystemNumber-lesson=',ITOA ( cLIVE ),
+		SYSTEM_sendCommand ( vdvSystems[SYSTEM_NUMBER], "'LESSON_SystemNumber-lesson=',ITOA ( cLIVE ),
 					'&sysnum=',ITOA(SYSTEM_NUMBER+500),
 					'&code=',LIVE_LESSON.Code,
-					'&type=',ITOA ( LIVE_LESSON.Type )"
+					'&type=',ITOA ( LIVE_LESSON.Type )" )
 	    }
 	    ELSE if ( index == RMS_LEVELS.Next )
 	    {
@@ -248,149 +265,142 @@ DATA_EVENT [vdvSystem]
 		NEXT_LESSON.EndTime 	= getAttrValue( 'end', aCommand )
 		
 		//Get other sites in the lesson
-		 SEND_COMMAND vdvSystems[SYSTEM_NUMBER], "'LESSON_SystemNumber-lesson=',ITOA ( cNEXT ),
+		SYSTEM_sendCommand ( vdvSystems[SYSTEM_NUMBER], "'LESSON_SystemNumber-lesson=',ITOA ( cNEXT ),
 					'&sysnum=',ITOA(SYSTEM_NUMBER+500),
 					'&code=',NEXT_LESSON.Code,
-					'&type=',ITOA ( NEXT_LESSON.Type )"
+					'&type=',ITOA ( NEXT_LESSON.Type )" )
 	    }
-	}
-    }
-    
-    COMMAND:
-    {
-	#INCLUDE 'EventCommandParser.axi'
-	
-	//Get RMS Server details
-	if ( FIND_STRING ( DATA.TEXT, 'SetRMSServer-', 1 ) )
-	{
-	    STACK_VAR CHAR Url[768]
-	    
-	    //Get URL Attribute
-	    Url = GetAttrValue('url',aCommand)
-	    
-	    // Configure RMS Server Address
-	    RMSSetServer(url)
 	}
     }
 }
 
 
+// Buffer hack to work around command clipping that can occur with certain network configurations
 DATA_EVENT [vdvSystems]
+{    
+    COMMAND:
+    {
+	// Is it the start of the command then add which device it has come from
+	if ( FIND_STRING ( DATA.TEXT, '1x1',1 ) )
+	{
+	    REMOVE_STRING ( DATA.TEXT, '1x1', 1 )
+	    
+	    // Listen to all commands coming from systems on vdvSystems and add to buffer
+	    SYSTEMS_COMMAND_BUFFER = "SYSTEMS_COMMAND_BUFFER,ITOA ( DATA.DEVICE.SYSTEM ),':',DATA.TEXT"
+	}
+	
+	// Middle or end of the command
+	ELSE
+	{
+	    // Listen to all commands coming from systems on vdvSystems and add to buffer
+	    SYSTEMS_COMMAND_BUFFER = "SYSTEMS_COMMAND_BUFFER,DATA.TEXT"
+	}
+    }
+}
+
+DATA_EVENT [vdvReceiver]
 {
     COMMAND:
     {
-	STACK_VAR INTEGER reqSys
-	#INCLUDE 'EventCommandParser.axi'
+	STACK_VAR INTEGER senderSysNum
 	
-	//Return System Data to sender
-	if ( FIND_STRING ( DATA.TEXT, 'GetSystemData-', 1 ))
-	{
-	    STACK_VAR INTEGER index
-	    
-	    reqSys = DATA.DEVICE.SYSTEM
-	    
-	    SEND_COMMAND vdvSystems[reqSys],"'SetSystemData-',
-						'sysnum=',ITOA(SYSTEM_NUMBER+500),
-						'&name=',System.name,
-						'&comp=',System.company,
-						'&contact=',System.contact"
-	}
+	senderSysNum = ATOI ( REMOVE_STRING ( DATA.TEXT, ':', 1 ) )
 	
-	//Return System number to sender
-	/*if ( FIND_STRING ( DATA.TEXT, 'LESSON_GetSystemNumber' , 1 ) )
+	if ( 1 )
 	{
-	    STACK_VAR CHAR Code[16]
-	    STACK_VAR INTEGER sysnum
-	    STACK_VAR INTEGER lesson
+	    STACK_VAR INTEGER reqSys
+	    #INCLUDE 'EventCommandParser.axi'
 	    
-	    //Get Code from sent attribute
-	    code 	= getAttrValue ( 'code', aCommand )
-	    sysnum 	= ATOI ( getAttrValue ( 'sysnum', aCommand ) )
-	    lesson 	= ATOI ( getAttrValue ( 'lesson', aCommand ) )
-	    
-	    if ( lesson = cNext )
+	    //Get RMS Server details
+	    if ( FIND_STRING ( DATA.TEXT, 'SetRMSServer-', 1 ) )
 	    {
-		//if the lesson code matches the code from the sender then return
-		//system number to sender
-		if ( FIND_STRING( NEXT_LESSON.code, code, 1 ) )
+		STACK_VAR CHAR Url[768]
+		
+		//Get URL Attribute
+		Url = GetAttrValue('url',aCommand)
+		
+		// Configure RMS Server Address
+		RMSSetServer(url)
+	    }
+	    
+	    //Return System Data to sender
+	    if ( FIND_STRING ( DATA.TEXT, 'GetSystemData-', 1 ))
+	    {
+		STACK_VAR INTEGER index
+		
+		reqSys = senderSysNum
+		
+		SYSTEM_sendCommand ( vdvSystems[reqSys],"'SetSystemData-',
+						    'sysnum=',ITOA(SYSTEM_NUMBER+500),
+						    '&name=',System.name,
+						    '&comp=',System.company,
+						    '&contact=',System.contact" )
+	    }
+	    
+	    //Extends Recurring Meeting by adding a new meeting
+	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_ExtendRecurring-', 1 ) )
+	    {
+		STACK_VAR CHAR code[16]
+		
+		code = getAttrValue('code', aCommand ) 
+		
+		//Is this system in this lesson
+		if ( FIND_STRING( code, LIVE_LESSON.Code, 1 ) )
 		{
-		    SEND_COMMAND vdvSystems[sysnum], "'LESSON_SystemNumber-sysnum=',ITOA(SYSTEM_NUMBER+500),'&lesson=',ITOA(cNEXT)"
+		    //Starts a new lesson from the end time of the existing lesson
+		    SYSTEM_sendCommand ( vdvSystems[ SYSTEM_NUMBER ], "'LESSON_Start-type=',ITOA(LIVE_LESSON.type),'&pin=',ITOA(LIVE_LESSON.pin),
+						  '&sysnum=',ITOA( SYSTEM_NUMBER+500 ),
+						  '&code=',LIVE_LESSON.Code,
+						  '&start=',LEFT_STRING ( LIVE_LESSON.EndTime, 2 ),':02:00',
+						  '&dur=60',
+						  '&instr=',LIVE_LESSON.Instructor,
+						  '&subject=',LIVE_LESSON.Subject,' [Extended]',
+						  '&message=',LIVE_LESSON.message" )
 		}
 	    }
-	    else if ( lesson = cLIVE )
+	    
+	    //Receive extension request
+	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_Extend', 1 ) )
 	    {
-		//if the lesson code matches the code from the sender then return
-		//system number to sender
-		if ( FIND_STRING( LIVE_LESSON.code, code, 1 ) )
+		//if the command is for this system
+		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number+500 )
 		{
-		    SEND_COMMAND vdvSystems[sysnum], "'LESSON_SystemNumber-sysnum=',ITOA(SYSTEM_NUMBER+500),'&lesson=',ITOA(cLIVE)"
+		    //Send Extension request to RMS Server
+		    SEND_COMMAND vdvRMSEngine, "'EXTEND-',getAttrValue( 'mins', aCommand )"
 		}
 	    }
-	}*/
-	
-	//Extends Recurring Meeting by adding a new meeting
-	if ( FIND_STRING ( DATA.TEXT, 'LESSON_ExtendRecurring-', 1 ) )
-	{
-	    STACK_VAR CHAR code[16]
 	    
-	    code = getAttrValue('code', aCommand ) 
-	    
-	    //Is this system in this lesson
-	    if ( FIND_STRING( code, LIVE_LESSON.Code, 1 ) )
+	    //Receive end request
+	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_End', 1 ) )
 	    {
-		//Starts a new lesson from the end time of the existing lesson
-		SEND_COMMAND vdvSystems[ SYSTEM_NUMBER ], "'LESSON_Start-type=',ITOA(LIVE_LESSON.type),'&pin=',ITOA(LIVE_LESSON.pin),
-					      '&sysnum=',ITOA( SYSTEM_NUMBER+500 ),
-					      '&code=',LIVE_LESSON.Code,
-					      '&start=',LEFT_STRING ( LIVE_LESSON.EndTime, 2 ),':02:00',
-					      '&dur=60',
-					      '&instr=',LIVE_LESSON.Instructor,
-					      '&subject=',LIVE_LESSON.Subject,' [Extended]',
-					      '&message=',LIVE_LESSON.message"
+		//if the command is for this system
+		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number+500 )
+		{
+		    //Send Extension request to RMS Server
+		    SEND_COMMAND vdvRMSEngine, "'ENDNOW'"
+		}
 	    }
-	}
-	
-	//Receive extension request
-	if ( FIND_STRING ( DATA.TEXT, 'LESSON_Extend', 1 ) )
-	{
-	    //if the command is for this system
-	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number+500 )
-	    {
-		//Send Extension request to RMS Server
-		SEND_COMMAND vdvRMSEngine, "'EXTEND-',getAttrValue( 'mins', aCommand )"
-	    }
-	}
-	
-	//Receive end request
-	if ( FIND_STRING ( DATA.TEXT, 'LESSON_End', 1 ) )
-	{
-	    //if the command is for this system
-	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number+500 )
-	    {
-		//Send Extension request to RMS Server
-		SEND_COMMAND vdvRMSEngine, "'ENDNOW'"
-	    }
-	}
-	
-	//Receive end request
-	if ( FIND_STRING ( DATA.TEXT, 'LESSON_Start', 1 ) )
-	{
-	    STACK_VAR INTEGER SysNum
 	    
-	    SysNum = ATOI ( GetAttrValue('sysnum',aCommand) ) 
-	    
-	    //if the command is for this system
-	    if ( SysNum == system_number+500 )
+	    //Receive end request
+	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_Start', 1 ) )
 	    {
-		//Send lesson start request to RMS Server
-		SEND_COMMAND vdvRMSEngine, "'RESERVE-',LDATE,',',
-						    GetAttrValue('start',aCommand),',',
-						    GetAttrValue('dur',aCommand),',',
-						    GetAttrValue('subject',aCommand),
-						    '&pin=',GetAttrValue('pin',aCommand),
-						    '&code=',GetAttrValue('code',aCommand),
-						    '&type=',GetAttrValue('type',aCommand),',',
-						    GetAttrValue('message',aCommand)"
+		STACK_VAR INTEGER SysNum
+		
+		SysNum = ATOI ( GetAttrValue('sysnum',aCommand) ) 
+		
+		//if the command is for this system
+		if ( SysNum == system_number+500 )
+		{
+		    //Send lesson start request to RMS Server
+		    SEND_COMMAND vdvRMSEngine, "'RESERVE-',LDATE,',',
+							GetAttrValue('start',aCommand),',',
+							GetAttrValue('dur',aCommand),',',
+							GetAttrValue('subject',aCommand),
+							'&pin=',GetAttrValue('pin',aCommand),
+							'&code=',GetAttrValue('code',aCommand),
+							'&type=',GetAttrValue('type',aCommand),',',
+							GetAttrValue('message',aCommand)"
+		}
 	    }
 	}
     }
@@ -422,9 +432,9 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    REMOVE_STRING ( DATA.TEXT,"'ROOM NAME-'",1 )
 	    
-	    SEND_cOMMAND vdvSystem,"'SetSystemData-',
+	    SYSTEM_sendCommand ( vdvSystem,"'SetSystemData-',
 				'sysnum=',ITOA(SYSTEM_NUMBER+500),
-				'&name=',DATA.TEXT"
+				'&name=',DATA.TEXT" )
 				
 	    SEND_COMMAND vdvCLActions, "'ROOM NAME-',DATA.TEXT"
 	    
@@ -437,9 +447,9 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    REMOVE_STRING ( DATA.TEXT,"'ROOM LOCATION-'",1 )
 	    
-	    SEND_cOMMAND vdvSystem,"'SetSystemData-',
+	    SYSTEM_sendCommand ( vdvSystem,"'SetSystemData-',
 				'sysnum=',ITOA(SYSTEM_NUMBER+500),
-				'&contact=',DATA.TEXT,'@interoute.vc'"
+				'&contact=',DATA.TEXT,'@interoute.vc'" )
 	    
 	    System.contact = "DATA.TEXT,'@interoute.vc'"
 	    
@@ -453,7 +463,7 @@ DATA_EVENT[vdvRMSEngine]
 	    REMOVE_STRING ( DATA.TEXT, ',', 1 )
 	    
 	    //Extend by setting up a new meeting
-	    SEND_COMMAND vdvSystem, "'LESSON_ExtendRecurring-&code=',LIVE_LESSON.Code"
+	    SYSTEM_sendCommand ( vdvSystem, "'LESSON_ExtendRecurring-&code=',LIVE_LESSON.Code" )
 	}
 	
 	//Company
@@ -461,9 +471,9 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    REMOVE_STRING ( DATA.TEXT,"'ROOM OWNER-'",1 )
 	    
-	    SEND_cOMMAND vdvSystem,"'SetSystemData-',
+	    SYSTEM_sendCommand ( vdvSystem,"'SetSystemData-',
 				    'sysnum=',ITOA(SYSTEM_NUMBER+500),
-				    '&comp=',DATA.TEXT"
+				    '&comp=',DATA.TEXT" )
 				    
 	    System.company = DATA.TEXT
 				    
@@ -511,5 +521,17 @@ WAIT 100
 	//Revaluate Levels
 	RMS_evaluateLevels()
     }
+}
+
+
+
+// System Command Buffer Parser
+if ( FIND_STRING ( SYSTEMS_COMMAND_BUFFER, '0x0', 1 ) )
+{
+    EVENTS_parseCommandBuffer ( REMOVE_STRING ( SYSTEMS_COMMAND_BUFFER, '0x0', 1 ) )
+}
+else
+{
+    SET_LENGTH_STRING ( SYSTEMS_COMMAND_BUFFER, 0 )
 }
 

@@ -264,10 +264,10 @@ DEFINE_FUNCTION CODEC_connectToSite( dev codec, integer CodecIndex, CHAR name[25
 	if ( CALL_ATTEMPT[CodecIndex] != 5 )
 	{
 	    //If the user and ask if the user wants to try again.
-	    SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=callfail',ITOA ( CodecIndex ),'&title=Call Failed',
+	    SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=callfail',ITOA ( CodecIndex ),'&title=Call Failed',
 					     '&message=',Systems[CodecIndex].name,' cannot connect call to ',name,$0A,$0D,$0A,$0D,
 					     'What do you want to do?',
-					     '&res1=Try Again&res2=Cancel&norepeat=1'"
+					     '&res1=Try Again&res2=Cancel&norepeat=1'")
 					     
 	    
 	    //Send Error to RMS
@@ -476,7 +476,7 @@ DEFINE_FUNCTION CODEC_setCameraPreset(INTEGER camera, INTEGER presetID, INTEGER 
 	CAMERA_PRESETS[presetID].PTZF = CURRENT_CAMERA_POSTION[camera]
 	
 	//Alert Sender system that preset has been saved 
-	SEND_COMMAND vdvSystem, "'CAMERA_PRESET_SAVED-sysnum=',ITOA(sysNum),'&preset=',ITOA( presetID )"
+	SYSTEM_sendCommand ( vdvSystem, "'CAMERA_PRESET_SAVED-sysnum=',ITOA(sysNum),'&preset=',ITOA( presetID )")
 	
 	//Convert Data Structure to string
 	VARIABLE_TO_STRING (CAMERA_PRESETS, CAM_PRESET_BUFFER, 1 )
@@ -510,10 +510,10 @@ DEFINE_FUNCTION CODEC_getCameraPreset(INTEGER presetID)
 //Mover Camera 
 DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 {
-    SET_PULSE_TIME(2)
+    //SET_PULSE_TIME(2)
     
-    if ( ACTIVE_SYSTEM == SYSTEM_NUMBER )
-    {
+    //if ( ACTIVE_SYSTEM == SYSTEM_NUMBER )
+    //{
 	if ( Direction )
 	{
 	    if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] == 1 )
@@ -541,8 +541,8 @@ DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], TILT_DN ]
 	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], TILT_UP ]   
 	}
-    }
-    ELSE
+    //}
+    /*ELSE
     {
 	if ( Direction )
 	{
@@ -555,9 +555,9 @@ DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 		PULSE[vdvCodecs_Cam2[ACTIVE_SYSTEM], Direction]
 	    }
 	}
-    }
+    }*/
     
-    SET_PULSE_TIME(5)
+    //SET_PULSE_TIME(5)
 }
 
 DEFINE_START 
@@ -628,11 +628,11 @@ DATA_EVENT [vdvCodec]
 	    
 	    if ( LENGTH_STRING ( Codec.SIPURL ) )
 	    {
-		SEND_COMMAND vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.SIPURL"
+		SYSTEM_sendCommand ( vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.SIPURL")
 	    }
 	    else if ( LENGTH_STRING ( Codec.H323ID ) )
 	    {
-		SEND_COMMAND vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.H323ID"
+		SYSTEM_sendCommand ( vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.H323ID")
 	    }
 	}
 	if ( FIND_STRING ( data.text, 'SIP-', 1) )
@@ -645,11 +645,11 @@ DATA_EVENT [vdvCodec]
 	    
 	    if ( LENGTH_STRING ( Codec.SIPURL ) )
 	    {
-		SEND_COMMAND vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.SIPURL"
+		SYSTEM_sendCommand ( vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.SIPURL" )
 	    }
 	    else if ( LENGTH_STRING ( Codec.H323ID ) )
 	    {
-		SEND_COMMAND vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.H323ID"
+		SYSTEM_sendCommand ( vdvSystem, "'SetSystemData-sysnum=',ITOA( SYSTEM_NUMBER ),'&contact=',Codec.H323ID" )
 	    }
 	}
 	
@@ -685,21 +685,21 @@ DATA_EVENT [vdvCodec]
 		    case 'NEGOTIATING':
 		    {
 			//Send call status to System List
-			SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=Inviting'"
+			SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=Inviting'" )
 			
 			Calls[DATA.DEVICE.PORT].State = CONF_STATE_NEG
 		    }
 		    case 'RINGING':
 		    {
 			//Send call status to System List
-			SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=Ringing'"
+			SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=Ringing'" )
 			
 			Calls[DATA.DEVICE.PORT].State = CONF_STATE_RING
 		    }
 		    case 'DIALING':
 		    {
 			//Send call status to System List
-			SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=Dialing'"
+			SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=Dialing'" )
 			
 			Calls[DATA.DEVICE.PORT].State = CONF_STATE_DIAL
 		    }
@@ -713,21 +713,21 @@ DATA_EVENT [vdvCodec]
 			}
 			
 			//Send call status to System List
-			SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=idle'"
+			SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=idle'" )
 			
 			Calls[DATA.DEVICE.PORT].State = CONF_STATE_IDLE
 		    }
 		    case 'CONNECTED':
 		    {
 			//Send call status to System List
-			SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=Connected&site=',Calls[DATA.DEVICE.PORT].remoteNumber"
+			SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=Connected&site=',Calls[DATA.DEVICE.PORT].remoteNumber" )
 			
 			Calls[DATA.DEVICE.PORT].State = CONF_STATE_CONN
 		    }
 		    case 'ON_HOLD':
 		    {
 			//Send call status to System List
-			SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=OnHold&site=',Calls[DATA.DEVICE.PORT].remoteNumber,' - On Hold'"
+			SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=OnHold&site=',Calls[DATA.DEVICE.PORT].remoteNumber,' - On Hold'" )
 			
 			Calls[DATA.DEVICE.PORT].State = CONF_STATE_ONHOLD
 		    }
@@ -736,7 +736,7 @@ DATA_EVENT [vdvCodec]
 	    case 'INCOMINGCALL-':
 	    {
 		//Send call status to System List
-		SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=Incoming Call'"
+		SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=Incoming Call'" )
 	    }
 	}
     }
@@ -769,7 +769,7 @@ CHANNEL_EVENT [vdvCodec, 0]
 	    CASE DATA_INITIALIZED:
 	    {
 		//Send call status to System List
-		SEND_COMMAND vdvSystem, "'SYSTEM_CallStatus-status=NO NETWORK'"
+		SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=NO NETWORK'" )
 	    }
 	}
     }
@@ -1036,7 +1036,7 @@ BUTTON_EVENT [ dvTPCodec, VCCameraBtns ]
 	    case 14:
 	    {
 		//Recall Camera Preset
-		SEND_COMMAND vdvSystem, "'RECALL_CAMERA_PRESET-preset=',ITOA ( svButton-9 ),'&sysnum=',ITOA(ACTIVE_SYSTEM)"
+		SYSTEM_sendCommand ( vdvSystem, "'RECALL_CAMERA_PRESET-preset=',ITOA ( svButton-9 ),'&sysnum=',ITOA(ACTIVE_SYSTEM)" )
 		
 		CAMERA_PRESET_ACTIVE[ACTIVE_SYSTEM] = svButton - 9
 	    }
@@ -1049,7 +1049,7 @@ BUTTON_EVENT [ dvTPCodec, VCCameraBtns ]
 	    case 24:
 	    {
 		//Send Camera Preset
-		SEND_COMMAND vdvSystem, "'SET_CAMERA_PRESET-camera=',ITOA ( ACTIVE_CAMERA[ACTIVE_SYSTEM] ),'&preset=',ITOA ( svButton-19 ),'&sysnum=',ITOA(ACTIVE_SYSTEM)"
+		SYSTEM_sendCommand ( vdvSystem, "'SET_CAMERA_PRESET-camera=',ITOA ( ACTIVE_CAMERA[ACTIVE_SYSTEM] ),'&preset=',ITOA ( svButton-19 ),'&sysnum=',ITOA(ACTIVE_SYSTEM)" )
 	    }
 	    
 	    //OSD Display

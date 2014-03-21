@@ -40,7 +40,7 @@
 */
 
 MODULE_NAME='RMSUIMod' (DEV     vdvRMSEngine,
-			DEV	vdvSystem,
+			DEV	vdvLesson,
                         DEV     dvTP[],
 			DEV     dvTP_Base[],
                         DEV     dvTPWelcome[],
@@ -920,7 +920,7 @@ VOLATILE INTEGER nvtMessageBox[] =
 
 DEFINE_EVENT
 
-DATA_EVENT [vdvSystem]
+DATA_EVENT [vdvLesson]
 {
     COMMAND:
     {
@@ -937,7 +937,7 @@ DATA_EVENT [vdvSystem]
 	    if ( index > 0 )
 	    {
 		//Send Lesson Data
-		SEND_STRING vdvSystem, "'LESSON_DATA-',
+		SEND_STRING vdvLesson, "'LESSON_DATA-',
 		'index=',ITOA(index),
 		sTodaysAppts.sAppts[index].cWelcomeMessage,
 		'&subjt=',sTodaysAppts.sAppts[index].cSubject,

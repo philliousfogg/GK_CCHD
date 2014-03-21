@@ -205,11 +205,11 @@ DEFINE_FUNCTION DEVICES_evaluateChannels()
 	    //Show Warning After an hour of picture mute
 	    else if ( ct[i] > PIC_MUTE_TIMEOUT AND !user[i] )
 	    {
-		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=PicMute-',ITOA( i ),
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=PicMute-',ITOA( i ),
 				    '&title=Picture Mute Timout',
 				    '&message=Picture mute has been on for too long. ',$0A,$0D,$0A,$0D,
 				    DEVICES[i].Name,' will power off automatically.',
-				    '&res1=Keep On&res2=Power Off&norepeat=1'"
+				    '&res1=Keep On&res2=Power Off&norepeat=1'")
 		//User Warned Flag
 		ON[user[i]]
 	    }
@@ -251,35 +251,6 @@ DATA_EVENT [vdvDevices]
 	    
 	    //Set Input field on Devices Structure
 	    DEVICES[ index ].input = DATA.TEXT
-	}
-    }
-}
-
-//Monitors all channel events on all the devices
-CHANNEL_EVENT [vdvDevices, 0]
-{
-    ON:
-    {
-	STACK_VAR integer deviceIndex
-	
-	//Find the stored device index
-	deviceIndex = DEVICES_getDeviceIDFromDev( CHANNEL.DEVICE )
-	
-	SWITCH ( CHANNEL.CHANNEL )
-	{
-	    CASE DATA_INITIALIZED:
-	    {
-		SYSTEM_addSplashScreenText("DEVICES[deviceIndex].Name,' Connected...'")
-		
-		if ( DEVICES_isAllConnected() )
-		{
-		    CANCEL_WAIT 'ConnectionTimout'
-		    
-		    SEND_COMMAND vdvSystem, "'5GetSystemData-'"
-		    
-		    SYSTEM_ShowUIStart()
-		}
-	    }
 	}
     }
 }
@@ -331,4 +302,5 @@ DEFINE_PROGRAM
 WAIT 10
 {
     DEVICES_evaluateChannels()
+    DEVICES_MaintainConnection()
 }

@@ -1,4 +1,4 @@
-	
+    
 	STACK_VAR INTEGER ct
 	STACK_VAR INTEGER dataType //0 is expecting Attr name 1 is expecting Attr Value
 	STACK_VAR _COMMAND aCommand

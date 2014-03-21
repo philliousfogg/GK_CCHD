@@ -351,7 +351,7 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    cTemp = DATA.Text
 	    cTrash = REMOVE_STRING(cTemp,',',1)
-	    SEND_COMMAND vdvSystem, "'RMSReply-',cTemp"
+	    SYSTEM_sendCommand ( vdvSystem, "'RMSReply-',cTemp" )
 	}
     }
 }

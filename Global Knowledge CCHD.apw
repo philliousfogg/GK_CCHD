@@ -1325,15 +1325,15 @@
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>
-<TransTCPIP>10.115.2.21:1319:1: ::</TransTCPIP>
+<TransTCPIP>10.115.2.14:1319:1: Dev 2:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
 <VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
 <VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
 <IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName></UserName>
-<Password></Password>
+<UserName>YWRtaW4</UserName>
+<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1355,6 +1355,10 @@
 <FilePathName>CodecSetupClass.axi</FilePathName>
 <Comments></Comments>
 </File>
+<File CompileType="Netlinx" Type="Source"><Identifier>DataTextBufferReceiver</Identifier>
+<FilePathName>DataTextBufferReceiver.axs</FilePathName>
+<Comments></Comments>
+</File>
 <File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
 <FilePathName>DeviceDefinitions.axi</FilePathName>
 <Comments></Comments>
@@ -1371,6 +1375,10 @@
 <FilePathName>EventCommandParser.axi</FilePathName>
 <Comments></Comments>
 </File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParserWithBuffer</Identifier>
+<FilePathName>EventCommandParserWithBuffer.axi</FilePathName>
+<Comments></Comments>
+</File>
 <File CompileType="None" Type="Include"><Identifier>Events</Identifier>
 <FilePathName>Events.axi</FilePathName>
 <Comments></Comments>
@@ -1383,8 +1391,16 @@
 <FilePathName>MainLine.axi</FilePathName>
 <Comments></Comments>
 </File>
+<File CompileType="None" Type="Include"><Identifier>MobileConnectionManager</Identifier>
+<FilePathName>MobileConnectionManager.axi</FilePathName>
+<Comments></Comments>
+</File>
 <File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
 <FilePathName>NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>packet</Identifier>
+<FilePathName>packet.axi</FilePathName>
 <Comments></Comments>
 </File>
 <File CompileType="None" Type="Include"><Identifier>PinManager</Identifier>
@@ -1431,11 +1447,11 @@
 <FilePathName>RMSVirtualRoom.tko</FilePathName>
 <Comments></Comments>
 </File>
-<File CompileType="Netlinx" Type="Source"><Identifier>Developer</Identifier>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Developer</Identifier>
 <FilePathName>Sites\Developer.axs</FilePathName>
 <Comments></Comments>
 </File>
-<File CompileType="Netlinx" Type="MasterSrc"><Identifier>Skinny Latte Test</Identifier>
+<File CompileType="Netlinx" Type="Source"><Identifier>Skinny Latte Test</Identifier>
 <FilePathName>Skinny Latte Test.axs</FilePathName>
 <Comments></Comments>
 </File>
@@ -1460,15 +1476,15 @@
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>
-<TransTCPIP>10.115.2.14:1319:1: ::</TransTCPIP>
+<TransTCPIP>10.115.2.13:1319:1: Dev 1:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
 <VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
 <VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
 <IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName></UserName>
-<Password></Password>
+<UserName>YWRtaW4</UserName>
+<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1484,6 +1500,10 @@
 </File>
 <File CompileType="None" Type="Include"><Identifier>CodecSetupClass</Identifier>
 <FilePathName>CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="Source"><Identifier>DataTextBufferSender</Identifier>
+<FilePathName>DataTextBufferSender.axs</FilePathName>
 <Comments></Comments>
 </File>
 <File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
@@ -1587,15 +1607,15 @@
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>
-<TransTCPIP>10.115.2.15:1319:1: ::</TransTCPIP>
+<TransTCPIP>84.233.190.145:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
 <VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
 <VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
 <IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName></UserName>
-<Password></Password>
+<UserName>YWRtaW4</UserName>
+<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1639,6 +1659,10 @@
 </File>
 <File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
 <FilePathName>MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>MobileGateway</Identifier>
+<FilePathName>MobileGateway.axs</FilePathName>
 <Comments></Comments>
 </File>
 <File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
@@ -1689,7 +1713,7 @@
 <FilePathName>RMSVirtualRoom.tko</FilePathName>
 <Comments></Comments>
 </File>
-<File CompileType="Netlinx" Type="MasterSrc"><Identifier>CentralProcessor</Identifier>
+<File CompileType="Netlinx" Type="Source"><Identifier>CentralProcessor</Identifier>
 <FilePathName>Sites\CentralProcessor.axs</FilePathName>
 <Comments></Comments>
 </File>
