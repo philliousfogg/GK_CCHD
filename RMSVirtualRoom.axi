@@ -7,7 +7,6 @@ DEFINE_MODULE 'RMSVirtualRoom' vRMSRoom( dvVRMSSocket,
 					 vdvVCLActions,
 					 vdvSystems,
 					 vdvVSystem,
-					 vdvVReceiver,
 					 vdvVLesson)
 
 //Define RMS Modules
@@ -17,6 +16,6 @@ DEFINE_MODULE 'RMSEngineMod' mdVlRMSEng(vdvVRMSEngine, dvVRMSSocket, vdvVCLActio
 // RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
 // Channel And Variable Text Code Defined Inside The Module
 DEFINE_MODULE 'RMSUIMod' mdVlRMSUI(vdvVRMSEngine,
-				  vdvVSystem,
+				  vdvVLesson,
                                   dvRMSTP,dvRMSTP_Base,dvRMSTPWelcome,dvRMSTPWelcome_Base,RMS_MEETING_DEFAULT_SUBJECT,RMS_MEETING_DEFAULT_MESSAGE)
 

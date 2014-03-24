@@ -102,6 +102,33 @@ DEFINE_FUNCTION INTEGER DEVICES_isAllConnected()
     return result
 }
 
+DEFINE_FUNCTION DEVICES_register( CHAR name[64],
+				    CHAR manufacturer[64],
+				    CHAR model[64],
+				    CHAR serialNumber[64],
+				    CHAR IPAddress[64],
+				    CHAR BaudRate[64],
+				    CHAR Password[64],
+				    DEV vDevice,
+				    DEV pDevice
+				    )
+{
+    STACK_VAR _devices device
+    
+    device.Name			= name
+    device.Manufacturer		= manufacturer
+    device.Model		= model
+    device.SerialNumber		= serialNumber
+    device.IPAddress		= IPAddress
+    device.BaudRate		= BaudRate
+    device.Password		= Password
+    device.vDevice		= vDevice
+    device.pDevice		= pDevice
+    
+    //Add device to device list
+    DEVICES_Add( device )
+}
+
 //Adds device to Device List
 DEFINE_FUNCTION INTEGER DEVICES_Add(_DEVICES device )
 {
@@ -124,7 +151,6 @@ DEFINE_FUNCTION INTEGER DEVICES_Add(_DEVICES device )
     //Return 0 if there is no space left
     return 0
 }
-
 
 DEFINE_FUNCTION DEVICES_pictureMuteTimeOut( _Command parser )
 {

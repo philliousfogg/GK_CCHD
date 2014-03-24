@@ -174,7 +174,7 @@ DEFINE_MUTUALLY_EXCLUSIVE
 //Send Command with delimiter added
 DEFINE_FUNCTION SYSTEM_sendCommand ( DEV device, CHAR tCommand[512] )
 {
-    SEND_COMMAND device, "'1x1',tCommand,'0x0'"
+    SEND_COMMAND device, "tCommand"
 }
 
 //Debugs System
@@ -550,6 +550,27 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 	}
     }
 }
+
+//Add System to structure
+DEFINE_FUNCTION SYSTEMS_thisSystem (  
+				     CHAR name[64], 
+				     CHAR location[64], 
+				     CHAR company[64], 
+				     INTEGER camInverse,
+				     INTEGER receiveOnly
+				    )
+{
+    // Register Room
+    SYSTEMS[1].SysDev 		= vdvSystem
+    SYSTEMS[1].systemNumber 	= SYSTEM_NUMBER
+    SYSTEMS[1].NAME 		= name
+    SYSTEMS[1].LOCATION 	= location
+    SYSTEMS[1].COMPANY 		= company
+    SYSTEMS[1].thisSystem	= true
+    SYSTEMS[1].receiveOnly	= receiveOnly
+    SYSTEMS[1].cameraInverse	= camInverse
+}
+
 
 //Adds System to the systems structure
 DEFINE_FUNCTION Systems_AddSystem( _Command aCommand  )

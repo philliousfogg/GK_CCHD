@@ -696,15 +696,6 @@ DEFINE_FUNCTION char[255] RMS_removeLineFeed( char text[255] )
 
 DEFINE_START
 
-// RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
-// Channel And Variable Text Code Defined Inside The Module
-DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine,
-				  vdvLesson,
-                                  dvRMSTP,dvRMSTP_Base,
-				  dvRMSTPWelcome,
-				  dvRMSTPWelcome_Base,
-				  RMS_MEETING_DEFAULT_SUBJECT,
-				  RMS_MEETING_DEFAULT_MESSAGE)
 
 DEFINE_EVENT
 
@@ -749,11 +740,7 @@ DATA_EVENT[vdvRMSEngine]
 	    
 	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
 	    {
-		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=EndLessonSuccess',
-						    '&title=End Current Lesson',
-						    '&message=Lesson has been ended',$0A,$0D,$0A,$0D,
-						    'Press ok to continue',
-						    '&res1=Ok&norepeat=1'" )
+		
 	    }
 	}
 	
@@ -817,7 +804,7 @@ DATA_EVENT[vdvRMSEngine]
 	    
 		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=ExLessonSuccess',
 						    '&title=Extend Current Lesson',
-						    '&message=Lesson has been Extended',$0A,$0D,$0A,$0D,
+						    '&message=Lesson has been Extended until - ',LIVE_LESSON.endTime,$0A,$0D,$0A,$0D,
 						    'Press ok to continue',
 						    '&res1=Ok&norepeat=1'" )
 						

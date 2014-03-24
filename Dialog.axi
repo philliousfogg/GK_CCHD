@@ -3,8 +3,9 @@ PROGRAM_NAME='Dialog'
 
 DEFINE_CONSTANT
 
-integer LENGTH_DIALOGS = 20
-integer LENGTH_KEY_FIELDS = 40
+VOLATILE INTEGER LENGTH_DIALOGS = 20
+VOLATILE INTEGER LENGTH_KEY_FIELDS = 40
+
 
 DEFINE_TYPE 
 
@@ -20,8 +21,9 @@ STRUCTURE _OPTION_DIALOG
 
 DEFINE_VARIABLE 
 
-_OPTION_DIALOG dialogs[LENGTH_DIALOGS]
+VOLATILE _OPTION_DIALOG dialogs[LENGTH_DIALOGS]
 VOLATILE INTEGER CURRENT_DIALOG
+VOLATILE INTEGER PANEL_ONLINE
 
 //Hides a range of buttons 
 DEFINE_FUNCTION UI_HideShowButtons(Integer btns[], Integer Start, Integer Finish, integer func) {
@@ -209,7 +211,7 @@ DEFINE_FUNCTION integer Dialog_setNextDialog() {
     
     if ( !dialog_getShowing() )
     {
-	if ( dialogs[CURRENT_DIALOG].id )
+	if ( dialogs[CURRENT_DIALOG].id AND PANEL_ONLINE )
 	{
 	    STACK_VAR integer i
 	    
@@ -260,6 +262,19 @@ DEFINE_FUNCTION integer dialogs_length() {
 
 DEFINE_EVENT
 
+//Touch Panel
+DATA_EVENT [dvTP]
+{
+    ONLINE:
+    {
+	ON[PANEL_ONLINE]
+    }
+    OFFLINE:
+    {
+	OFF[PANEL_ONLINE]
+    }
+}
+
 //User Interface Shell
 BUTTON_EVENT [dvTP, DialogsBtns]
 {
@@ -303,6 +318,7 @@ BUTTON_EVENT [dvTP, DialogsBtns]
 
 DEFINE_PROGRAM
 
-wait 10 {
+if ( PANEL_ONLINE )
+{
     Dialog_setNextDialog()
 }

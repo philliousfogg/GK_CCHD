@@ -36,6 +36,16 @@ DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvLight, dvLights, vdvRMSEngine)
 DEFINE_MODULE 'i!-ConnectLinxEngineMod' mdlCL(vdvCLActions)
 DEFINE_MODULE 'RMSEngineMod' mdlRMSEng(vdvRMSEngine, dvRMSSocket, vdvCLActions)
 
+// RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
+// Channel And Variable Text Code Defined Inside The Module
+DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine,
+				  vdvLesson,
+                                  dvRMSTP,dvRMSTP_Base,
+				  dvRMSTPWelcome,
+				  dvRMSTPWelcome_Base,
+				  RMS_MEETING_DEFAULT_SUBJECT,
+				  RMS_MEETING_DEFAULT_MESSAGE)
+
 DEFINE_EVENT
 
 DATA_EVENT[vdvRMSEngine]

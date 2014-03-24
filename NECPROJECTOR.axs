@@ -124,7 +124,7 @@ DEFINE_FUNCTION SEND_A_STRING()
 	SET_LENGTH_STRING(TEMP_STRING,LENGTH_STRING(TEMP_STRING)-3)
 	SEND_STRING dvDevice,"TEMP_STRING"
 	
-	SEND_STRING 0,"'Out: ',TEMP_STRING"
+	//SEND_STRING 0,"'Out: ',TEMP_STRING"
     }
     ELSE IF(LENGTH_STRING(RS232_QUEUE) = 0)
     {
@@ -251,7 +251,7 @@ DATA_EVENT[dvDevice]
 	    Wait 10 SEND_COMMAND dvDevice, "'SET BAUD 38400,N,8,1 485 DISABLE'"
 	}
 	
-	send_string 0:0:0, "'fnTCP_ClientConnect(): NOW CONNECTED TO DEVICE...' ";
+	//send_string 0:0:0, "'fnTCP_ClientConnect(): NOW CONNECTED TO DEVICE...' ";
 	ON[vdvModule,DEVICE_COMMUNICATING]
 	ON[vdvModule,DATA_INITIALIZED]
 	
@@ -280,7 +280,7 @@ DATA_EVENT[dvDevice]
     offline:
     {
 	ip_client_close(dvDevice.port)
-	send_string 0:0:0, "'fnTCP_ClientConnect(): NOW DISCONNECTED FROM DEVICE...'"
+	//send_string 0:0:0, "'fnTCP_ClientConnect(): NOW DISCONNECTED FROM DEVICE...'"
 	
 	//Reset Flags
 	OFF[vdvModule,DEVICE_COMMUNICATING]
@@ -296,7 +296,7 @@ DATA_EVENT[dvDevice]
     
     STRING:
     {
-	SEND_STRING 0,"'IN: ',DATA.TEXT"
+	//SEND_STRING 0,"'IN: ',DATA.TEXT"
 	
 	SELECT
 	{
@@ -552,13 +552,11 @@ CHANNEL_EVENT [vdvModule, 0]
 		if ( ![ vdvModule, PIC_MUTE_FB ] )
 		{
 		    ADD_TO_QUEUE ("$02,$10,$00,$00,$00,$12")
-		    SEND_STRING 0, "'PIC_MUTE_ON'"
 		    ON[ vdvModule, PIC_MUTE_FB]
 		}
 		ELSE
 		{
 		    ADD_TO_QUEUE ("$02,$11,$00,$00,$00,$13")
-		    SEND_STRING 0, "'PIC_MUTE_OFF'"
 		    OFF[ vdvModule, PIC_MUTE_ON]
 		}
 	    }

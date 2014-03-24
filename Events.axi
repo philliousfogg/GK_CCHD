@@ -2,15 +2,6 @@ PROGRAM_NAME='Events'
 
 DEFINE_VARIABLE
 
-VOLATILE CHAR SYSTEMS_COMMAND_BUFFER[5120]
-
-DEFINE_FUNCTION EVENTS_parseCommandBuffer( CHAR theCommand[512] )
-{
-    SET_LENGTH_STRING ( theCommand, ( LENGTH_STRING ( theCommand ) - 3 ) )
-    
-    SEND_COMMAND vdvReceiver, "theCommand"
-}
-
 
 DEFINE_EVENT
 
@@ -94,76 +85,37 @@ DATA_EVENT [vdvSystem]
     }
 }
 
-// Buffer hack to work around command clipping that can occur with certain network configurations
+
+
 DATA_EVENT [vdvSystems]
 {
-    ONLINE:
-    {
-	SEND_COMMAND vdvLog, "'System: Online ',ITOA ( data.device.system ) "
-	
-	System_Status( data.device.system, 1 )
-	
-	SYSTEM_sendCommand ( vdvSystem, "'8GetSystemData-'" )
-    }
-    
-    OFFLINE:
-    {
-	//Remove System from structure
-	System_Status( data.device.system, 0 )
-    }
-    
     COMMAND:
     {
-	// Is it the start of the command then add which device it has come from
-	if ( FIND_STRING ( DATA.TEXT, '1x1',1 ) )
-	{
-	    REMOVE_STRING ( DATA.TEXT, '1x1', 1 )
-	    
-	    // Listen to all commands coming from systems on vdvSystems and add to buffer
-	    SYSTEMS_COMMAND_BUFFER = "SYSTEMS_COMMAND_BUFFER,ITOA ( DATA.DEVICE.SYSTEM ),':',DATA.TEXT"
+	STACK_VAR _Systems system
+	STACK_VAR INTEGER reqSys
+	_DEVICES device
+	
+	#INCLUDE 'EventCommandParser.axi'
+	
+	//Set the data for the responding system
+	if ( FIND_STRING ( DATA.TEXT, 'SetSystemData-', 1 ))
+	{	    	    
+	    //Add to structure
+	    Systems_AddSystem( aCommand )
 	}
 	
-	// Middle or end of the command
-	ELSE
+	//Return System Data to sender
+	if ( FIND_STRING ( DATA.TEXT, 'GetSystemData-', 1 ))
 	{
-	    // Listen to all commands coming from systems on vdvSystems and add to buffer
-	    SYSTEMS_COMMAND_BUFFER = "SYSTEMS_COMMAND_BUFFER,DATA.TEXT"
-	}
-    }
-}
-
-
-DATA_EVENT [vdvReceiver]
-{
-    COMMAND:
-    {
-	STACK_VAR INTEGER senderSysNum
-	
-	senderSysNum = ATOI ( REMOVE_STRING ( DATA.TEXT, ':', 1 ) )
-	
-	if ( 1 )
-	{
-	    STACK_VAR _Systems system
-	    STACK_VAR INTEGER reqSys
-	    _DEVICES device
+	    STACK_VAR INTEGER index
 	    
-	    #INCLUDE 'EventCommandParser.axi'
+	    index = SYSTEM_getIndexFromSysNum( SYSTEM_NUMBER )
 	    
-	    //Set the data for the responding system
-	    if ( FIND_STRING ( DATA.TEXT, 'SetSystemData-', 1 ))
-	    {	    	    
-		//Add to structure
-		Systems_AddSystem( aCommand )
-	    }
+	    reqSys = DATA.DEVICE.SYSTEM
 	    
-	    //Return System Data to sender
-	    if ( FIND_STRING ( DATA.TEXT, 'GetSystemData-', 1 ))
+	    //If End Points
+	    if ( reqSys < LENGTH_SYSTEMS )
 	    {
-		STACK_VAR INTEGER index
-		
-		index = SYSTEM_getIndexFromSysNum( SYSTEM_NUMBER )
-		
-		reqSys = senderSysNum
 		SYSTEM_sendCommand ( vdvSystems[reqSys],"'SetSystemData-',
 						    'sysnum=',ITOA(SYSTEM_NUMBER),
 						    '&name=',Systems[index].name,
@@ -172,403 +124,417 @@ DATA_EVENT [vdvReceiver]
 						    '&receive=',ITOA ( Systems[index].receiveOnly ),
 						    '&contact=',Systems[index].contact,
 						    '&invcam=',ITOA ( Systems[index].cameraInverse )" )
-		
-		//Get Current Dialer Status
-		SEND_COMMAND vdvCodec, "'?DIALERSTATUS'"
 	    }
-	    
-	    //Get RMS Server details
-	    if ( FIND_STRING ( DATA.TEXT, 'SetRMSServer-', 1 ) )
+	    //Return to Gateway and all systems
+	    else
 	    {
-		if ( senderSysNum == SYSTEM_NUMBER )
-		{
-		    STACK_VAR CHAR Url[768]
-		    
-		    //Get URL Attribute
-		    RMS_SERVER_URL = GetAttrValue('url',aCommand)
-		    
-		    //Set RMS Server Address
-		    RMSSetServer(RMS_SERVER_URL)
-		}
-	    }
+		SYSTEM_sendCommand ( vdvSystems[LENGTH_SYSTEMS + 1],"'SetSystemData-',
+								    'sysnum=',ITOA(SYSTEM_NUMBER),
+								    '&name=',Systems[index].name,
+								    '&loc=',Systems[index].location,
+								    '&comp=',Systems[index].company,
+								    '&receive=',ITOA ( Systems[index].receiveOnly ),
+								    '&contact=',Systems[index].contact,
+								    '&invcam=',ITOA ( Systems[index].cameraInverse )" )
+	    }	
 	    
-	    //Refreshes the User Interface
-	    If ( FIND_STRING ( DATA.TEXT, 'DialogOkCancel', 1 ) )
+	    
+	    
+	    //Get Current Dialer Status
+	    SEND_COMMAND vdvCodec, "'?DIALERSTATUS'"
+	}
+	
+	//Get RMS Server details
+	if ( FIND_STRING ( DATA.TEXT, 'SetRMSServer-', 1 ) )
+	{
+	    if ( DATA.DEVICE.SYSTEM == SYSTEM_NUMBER )
 	    {
-		if ( senderSysNum == SYSTEM_NUMBER )
-		{
-		    Dialog_Add( aCommand )
-		}
+		STACK_VAR CHAR Url[768]
+		
+		//Get URL Attribute
+		RMS_SERVER_URL = GetAttrValue('url',aCommand)
+		
+		//Set RMS Server Address
+		RMSSetServer(RMS_SERVER_URL)
 	    }
-	    
-	    //Set the data for the responding system
-	    if ( FIND_STRING ( DATA.TEXT, 'DEVICES_Add-', 1 ))
+	}
+	
+	//Refreshes the User Interface
+	If ( FIND_STRING ( DATA.TEXT, 'DialogOkCancel', 1 ) )
+	{
+	    if ( DATA.DEVICE.SYSTEM == SYSTEM_NUMBER )
 	    {
-		if ( senderSysNum == SYSTEM_NUMBER )
-		{
-		    device.Name			= getAttrValue('name',aCommand)
-		    device.Manufacturer		= getAttrValue('man',aCommand)
-		    device.Model		= getAttrValue('model',aCommand)
-		    device.SerialNumber		= getAttrValue('sn',aCommand)
-		    device.IPAddress		= getAttrValue('ip',aCommand)
-		    device.BaudRate		= getAttrValue('baud',aCommand )
-		    device.Password		= getAttrValue('password',aCommand )
-		    device.vDevice.NUMBER	= ATOI ( getAttrValue('devd',aCommand) )
-		    device.vDevice.PORT		= ATOI ( getAttrValue('devp',aCommand) )
-		    device.vDevice.SYSTEM	= ATOI ( getAttrValue('devs',aCommand) )
-		    device.pDevice.NUMBER	= ATOI ( getAttrValue('pdd',aCommand) )
-		    device.pDevice.PORT		= ATOI ( getAttrValue('pdp',aCommand) )
-		    device.pDevice.SYSTEM	= ATOI ( getAttrValue('pds',aCommand) )
-		    
-		    //Add device to device list
-		    DEVICES_Add( device )
-		}
+		Dialog_Add( aCommand )
 	    }
-	    
-	    //Refresh UI
-	    if ( FIND_STRING ( DATA.TEXT, 'RefreshUI-', 1 ) )
-	    {  
-		if ( senderSysNum == SYSTEM_NUMBER )
-		{
-		    STACK_VAR CHAR blankArray[10][255]
-		    
-		    //Reset Previous call state to refresh the call control
-		    PREVIOUS_CALL_STATE = blankArray
-		    
-		    //Send Splash Screen Text
-		    SEND_COMMAND dvTP, "'TEXT', ITOA( UIBtns[ 3 ] ),'-', SPLASH_SCREEN_TEXT"
-		    
-		    if ( PERMISSION_LEVEL )
-		    {
-			SYSTEM_showMain()
-		    }
-		    else
-		    {
-			//if this room is the teacher room then gather together all other 
-			//rooms in the lesson.
-			
-			SEND_COMMAND dvTP, "'PAGE-Login'"
-		    }
-		    
-		    //Refresh RMS text
-		    RMS_refreshLessonText()
-		    
-		    if ( !RMS_LEVELS.Current )
-		    {
-			//Hide Extend and End meeting Buttons
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[30] ),',0'" //End Meeting
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[31] ),',0'" //Extend Meeting 
-		    }
-		    ELSE
-		    {
-			//Show Extend and End meeting Buttons
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[30] ),',1'" //End Meeting
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[31] ),',1'" //Extend Meeting 
-		    }
-		    
-		    //Refresh Dial Status on all codecs
-		    SEND_COMMAND vdvCodecs, "'?DIALERSTATUS'"
-		    
-		    //Send Lighting timeout to touch panel
-		    SEND_COMMAND dvTPLights, "'TEXT',ITOA ( UILightsBtns[27] ),'-',LIGHTS_TIMEOUT_CHAR[LIGHTS_TIMEOUT]"
-		    
-		    //Show Projector Buttons
-		    System_setProjectorButtons()
-		}
-	    }
-	    
-	    //Receives new system pin
-	    if ( FIND_STRING ( DATA.TEXT, 'SYSTEM_PIN-', 1 ) )
+	}
+	
+	//Set the data for the responding system
+	if ( FIND_STRING ( DATA.TEXT, 'DEVICES_Add-', 1 ))
+	{
+	    if ( DATA.DEVICE.SYSTEM == SYSTEM_NUMBER )
 	    {
-		MASTER_PIN = ATOI ( getAttrValue( 'pin', aCommand ) )
+		device.Name			= getAttrValue('name',aCommand)
+		device.Manufacturer		= getAttrValue('man',aCommand)
+		device.Model		= getAttrValue('model',aCommand)
+		device.SerialNumber		= getAttrValue('sn',aCommand)
+		device.IPAddress		= getAttrValue('ip',aCommand)
+		device.BaudRate		= getAttrValue('baud',aCommand )
+		device.Password		= getAttrValue('password',aCommand )
+		device.vDevice.NUMBER	= ATOI ( getAttrValue('devd',aCommand) )
+		device.vDevice.PORT		= ATOI ( getAttrValue('devp',aCommand) )
+		device.vDevice.SYSTEM	= ATOI ( getAttrValue('devs',aCommand) )
+		device.pDevice.NUMBER	= ATOI ( getAttrValue('pdd',aCommand) )
+		device.pDevice.PORT		= ATOI ( getAttrValue('pdp',aCommand) )
+		device.pDevice.SYSTEM	= ATOI ( getAttrValue('pds',aCommand) )
+		
+		//Add device to device list
+		DEVICES_Add( device )
 	    }
-	    
-	    
-	    //Extends Recurring Meeting by adding a new meeting
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_ExtendRecurring-', 1 ) )
+	}
+	
+	//Refresh UI
+	if ( FIND_STRING ( DATA.TEXT, 'RefreshUI-', 1 ) )
+	{  
+	    if ( DATA.DEVICE.SYSTEM == SYSTEM_NUMBER )
 	    {
-		STACK_VAR CHAR code[16]
+		STACK_VAR CHAR blankArray[10][255]
 		
-		code = getAttrValue('code', aCommand ) 
+		//Reset Previous call state to refresh the call control
+		PREVIOUS_CALL_STATE = blankArray
 		
-		//Is this system in this lesson
-		if ( FIND_STRING( LIVE_LESSON.Code, code, 1 ) )
+		//Send Splash Screen Text
+		SEND_COMMAND dvTP, "'TEXT', ITOA( UIBtns[ 3 ] ),'-', SPLASH_SCREEN_TEXT"
+		
+		if ( PERMISSION_LEVEL )
 		{
-		    //Starts a new lesson from the end time of the existing lesson
-		    SEND_COMMAND vdvSystem, "'LESSON_Start-type=',ITOA(LIVE_LESSON.type),'&pin=',ITOA(LIVE_LESSON.pin),
-						  '&sysnum=',ITOA( SYSTEM_NUMBER ),
-						  '&code=',LIVE_LESSON.Code,
-						  '&start=',LEFT_STRING ( LIVE_LESSON.EndTime, 2 ),':02:00',
-						  '&dur=60',
-						  '&instr=',LIVE_LESSON.Instructor,
-						  '&subject=',LIVE_LESSON.Subject,' [Extended]',
-						  '&message=',LIVE_LESSON.message"
-		}
-	    }
-	    
-	    //Force Shutdown on reoccurring Meetings
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_forceShutdown-', 1 ) )
-	    {
-		STACK_VAR CHAR code[16]
-		
-		code = getAttrValue('code', aCommand ) 
-		
-		//Is this system in this lesson
-		if ( FIND_STRING( LIVE_LESSON.Code, code, 1 ) )
-		{
-		    if ( ATOI( getAttrValue('func', aCommand )  ) )
-		    {
-			ON[RECURRING_SHUTDOWN]
-			
-			//Disconnect call in the lesson
-			PULSE[vdvCodec, DIAL_FLASH_HOOK]
-		    }
-		    else
-		    {
-			OFF[RECURRING_SHUTDOWN]
-		    }
-		}
-		
-		//Refresh Lesson Text on Screen
-		RMS_refreshLessonText()
-	    }
-	    
-	    //Lesson Reserve Failure
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_reserveFailure-', 1 ) )
-	    {
-		STACK_VAR INTEGER sysnum
-		STACK_VAR INTEGER index
-		
-		sysnum = ATOI ( getAttrValue('sysnum', aCommand ) )
-		
-		index = SYSTEM_getIndexFromSysNum(SysNum)
-		
-		//Is it this system
-		if ( SYSTEMS[index].thisSystem )
-		{
-		    SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=LessonFailure',
-						    '&title=Appointment Reservation Failed',
-						    '&message=This room is in use at ',getAttrValue( 'time', aCommand ),$0A,$0D,$0A,$0D,
-						    'Press ok to continue',
-						    '&res1=Ok&norepeat=1'"
+		    SYSTEM_showMain()
 		}
 		else
 		{
-		    SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=LessonFailure',
-						    '&title=Appointment Reservation Failed',
-						    '&message=',SYSTEMS[index].name,' is in use at ',getAttrValue( 'time', aCommand ),'. It will not be added to the lesson.',$0A,$0D,$0A,$0D,
-						    'Press ok to continue',
-						    '&res1=Ok&norepeat=1'"
-		}
-	    }
-	    
-	    //Clears lesson from the system
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_siteEnd', 1) )
-	    {
-		STACK_VAR INTEGER sysnum
-		STACK_VAR INTEGER lesson
-		STACK_VAR INTEGER index
-		
-		SEND_STRING 0, "'End Sys# ', ITOA ( sysnum ), ' Lesson ', ITOA ( lesson )"
-		
-		sysnum = ATOI ( getAttrValue('sysnum', aCommand ) )
-		lesson = ATOI ( getAttrValue('lesson', aCommand ) )
-		
-		//Get the Index from the system number
-		index = SYSTEM_getIndexFromSysNum( sysnum )
-		
-		if ( lesson == cNEXT )
-		{
-		    //Clear Site from Lesson
-		    SYSTEMS[index].nextLesson = 0
-		    Systems[index].RoomType = 0
-		}
-		else if ( lesson == cLIVE)
-		{
-		    //Clear Site from Lesson
-		    SYSTEMS[index].liveLesson = 0
-		    Systems[index].RoomType = 0
-		}
-		
-		//Update Text on user interface
-		RMS_refreshLessonText()
-		
-		//Show only the rooms in the lesson
-		Systems_UpdateUIList(0)
-	    }
-	    
-	    
-	    //Receives a system number from system
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_SystemNumber', 1 ) )
-	    {
-		STACK_VAR INTEGER sysnum
-		STACK_VAR INTEGER index
-		STACK_VAR INTEGER lesson
-		STACK_VAR CHAR code[64]
-		
-		sysnum = ATOI ( getAttrValue('sysnum', aCommand ) )
-		lesson = ATOI ( getAttrValue('lesson', aCommand ) )
-		code = getAttrValue('code', aCommand )
-		
-		SEND_STRING 0, "'Sys# ', ITOA ( sysnum ), ' Lesson ', ITOA ( lesson ), ' Code ', Code"
-		
-		//Get the Index from the system number
-		index = SYSTEM_getIndexFromSysNum( sysnum )
-		
-		if ( lesson == cNEXT )
-		{
-		    //
-		    if ( FIND_STRING(NEXT_LESSON.code, code, 1 ) )
-		    {
-			SEND_STRING 0, "'Next'"
-			
-			//Set the system to the same lesson as this system lesson
-			ON[SYSTEMS[index].nextLesson]
-			
-			Systems[index].RoomType = ATOI ( getAttrValue('type', aCommand) )
-		    }
-		}
-		else if ( lesson == cLIVE)
-		{
-		    //
-		    if ( FIND_STRING( LIVE_LESSON.code, code, 1 ) )
-		    {
-			SEND_STRING 0, "'Live'"
-			
-			ON[SYSTEMS[index].liveLesson]
-			
-			Systems[index].RoomType = ATOI ( getAttrValue('type', aCommand) )
-		    }
-		}
-		
-		//Update Text on user interface
-		RMS_refreshLessonText()
-		
-		//Show only the rooms in the lesson
-		Systems_UpdateUIList(0)
-	    }
-	    
-	    
-	    //End Call from MCU 
-	    if ( FIND_STRING ( DATA.TEXT, 'EndMCUCall-', 1 ) )
-	    {
-		//if 'this' system is in the same lesson as the MCUCall then end call
-		if ( FIND_STRING ( LIVE_LESSON.code, GetAttrValue('code',aCommand), 1 ) OR FIND_STRING ( NEXT_LESSON.code, GetAttrValue('code',aCommand), 1 ) )
-		{
-		    //Disconnect call in the lesson
-		    PULSE[vdvCodec, DIAL_FLASH_HOOK]
-		}
-	    }
-	    
-	    //Set the Call Status Field 
-	    if ( FIND_STRING ( DATA.TEXT, 'SYSTEM_CallStatus-', 1 ))
-	    {
-		STACK_VAR CHAR Status[16]
-		
-		Status = GetAttrValue('status',aCommand)
-		
-		//if connected or on hold so site
-		if ( FIND_STRING ( Status, 'Connected', 1 ) OR FIND_STRING ( Status, 'OnHold', 1 ) )
-		{
-		    //Updates the Call status field in the System List
-		    Systems_CallStatus( senderSysNum, GetAttrValue('site',aCommand) )
+		    //if this room is the teacher room then gather together all other 
+		    //rooms in the lesson.
 		    
-		    //Set Boolean status
-		    ON[Systems[senderSysNum].inCall]
+		    SEND_COMMAND dvTP, "'PAGE-Login'"
+		}
+		
+		//Refresh RMS text
+		RMS_refreshLessonText()
+		
+		if ( !RMS_LEVELS.Current )
+		{
+		    //Hide Extend and End meeting Buttons
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[30] ),',0'" //End Meeting
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[31] ),',0'" //Extend Meeting 
 		}
 		ELSE
 		{
-		    //Updates the Call status field in the System List
-		    Systems_CallStatus( senderSysNum, GetAttrValue('status',aCommand) )
+		    //Show Extend and End meeting Buttons
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[30] ),',1'" //End Meeting
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( RMSBtns[31] ),',1'" //Extend Meeting 
+		}
+		
+		//Refresh Dial Status on all codecs
+		SEND_COMMAND vdvCodecs, "'?DIALERSTATUS'"
+		
+		//Send Lighting timeout to touch panel
+		SEND_COMMAND dvTPLights, "'TEXT',ITOA ( UILightsBtns[27] ),'-',LIGHTS_TIMEOUT_CHAR[LIGHTS_TIMEOUT]"
+		
+		//Show Projector Buttons
+		System_setProjectorButtons()
+	    }
+	}
+	
+	//Receives new system pin
+	if ( FIND_STRING ( DATA.TEXT, 'SYSTEM_PIN-', 1 ) )
+	{
+	    MASTER_PIN = ATOI ( getAttrValue( 'pin', aCommand ) )
+	}
+	
+	
+	//Extends Recurring Meeting by adding a new meeting
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_ExtendRecurring-', 1 ) )
+	{
+	    STACK_VAR CHAR code[16]
+	    
+	    code = getAttrValue('code', aCommand ) 
+	    
+	    //Is this system in this lesson
+	    if ( FIND_STRING( LIVE_LESSON.Code, code, 1 ) )
+	    {
+		//Starts a new lesson from the end time of the existing lesson
+		SEND_COMMAND vdvSystem, "'LESSON_Start-type=',ITOA(LIVE_LESSON.type),'&pin=',ITOA(LIVE_LESSON.pin),
+					      '&sysnum=',ITOA( SYSTEM_NUMBER ),
+					      '&code=',LIVE_LESSON.Code,
+					      '&start=',LEFT_STRING ( LIVE_LESSON.EndTime, 2 ),':02:00',
+					      '&dur=60',
+					      '&instr=',LIVE_LESSON.Instructor,
+					      '&subject=',LIVE_LESSON.Subject,' [Extended]',
+					      '&message=',LIVE_LESSON.message"
+	    }
+	}
+	
+	//Force Shutdown on reoccurring Meetings
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_forceShutdown-', 1 ) )
+	{
+	    STACK_VAR CHAR code[16]
+	    
+	    code = getAttrValue('code', aCommand ) 
+	    
+	    //Is this system in this lesson
+	    if ( FIND_STRING( LIVE_LESSON.Code, code, 1 ) )
+	    {
+		if ( ATOI( getAttrValue('func', aCommand )  ) )
+		{
+		    ON[RECURRING_SHUTDOWN]
 		    
-		    //Set Boolean status
-		    OFF[Systems[senderSysNum].inCall]
+		    //Disconnect call in the lesson
+		    PULSE[vdvCodec, DIAL_FLASH_HOOK]
+		}
+		else
+		{
+		    OFF[RECURRING_SHUTDOWN]
 		}
 	    }
 	    
-	    //Receive extension request
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_Extend', 1 ) )
+	    //Refresh Lesson Text on Screen
+	    RMS_refreshLessonText()
+	}
+	
+	//Lesson Reserve Failure
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_reserveFailure-', 1 ) )
+	{
+	    STACK_VAR INTEGER sysnum
+	    STACK_VAR INTEGER index
+	    
+	    sysnum = ATOI ( getAttrValue('sysnum', aCommand ) )
+	    
+	    index = SYSTEM_getIndexFromSysNum(SysNum)
+	    
+	    //Is it this system
+	    if ( SYSTEMS[index].thisSystem )
 	    {
-		//if the command is for this system
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number )
+		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=LessonFailure',
+						'&title=Appointment Reservation Failed',
+						'&message=This room is in use at ',getAttrValue( 'time', aCommand ),$0A,$0D,$0A,$0D,
+						'Press ok to continue',
+						'&res1=Ok&norepeat=1'"
+	    }
+	    else
+	    {
+		SEND_COMMAND vdvSystem, "'DialogOkCancel-ref=LessonFailure',
+						'&title=Appointment Reservation Failed',
+						'&message=',SYSTEMS[index].name,' is in use at ',getAttrValue( 'time', aCommand ),'. It will not be added to the lesson.',$0A,$0D,$0A,$0D,
+						'Press ok to continue',
+						'&res1=Ok&norepeat=1'"
+	    }
+	}
+	
+	//Clears lesson from the system
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_siteEnd', 1) )
+	{
+	    STACK_VAR INTEGER sysnum
+	    STACK_VAR INTEGER lesson
+	    STACK_VAR INTEGER index
+	    
+	    SEND_STRING 0, "'End Sys# ', ITOA ( sysnum ), ' Lesson ', ITOA ( lesson )"
+	    
+	    sysnum = ATOI ( getAttrValue('sysnum', aCommand ) )
+	    lesson = ATOI ( getAttrValue('lesson', aCommand ) )
+	    
+	    //Get the Index from the system number
+	    index = SYSTEM_getIndexFromSysNum( sysnum )
+	    
+	    if ( lesson == cNEXT )
+	    {
+		//Clear Site from Lesson
+		SYSTEMS[index].nextLesson = 0
+		Systems[index].RoomType = 0
+	    }
+	    else if ( lesson == cLIVE)
+	    {
+		//Clear Site from Lesson
+		SYSTEMS[index].liveLesson = 0
+		Systems[index].RoomType = 0
+	    }
+	    
+	    //Update Text on user interface
+	    RMS_refreshLessonText()
+	    
+	    //Show only the rooms in the lesson
+	    Systems_UpdateUIList(0)
+	}
+	
+	
+	//Receives a system number from system
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_SystemNumber', 1 ) )
+	{
+	    STACK_VAR INTEGER sysnum
+	    STACK_VAR INTEGER index
+	    STACK_VAR INTEGER lesson
+	    STACK_VAR CHAR code[64]
+	    
+	    sysnum = ATOI ( getAttrValue('sysnum', aCommand ) )
+	    lesson = ATOI ( getAttrValue('lesson', aCommand ) )
+	    code = getAttrValue('code', aCommand )
+	    
+	    SEND_STRING 0, "'Sys# ', ITOA ( sysnum ), ' Lesson ', ITOA ( lesson ), ' Code ', Code"
+	    
+	    //Get the Index from the system number
+	    index = SYSTEM_getIndexFromSysNum( sysnum )
+	    
+	    if ( lesson == cNEXT )
+	    {
+		//
+		if ( FIND_STRING(NEXT_LESSON.code, code, 1 ) )
 		{
-		    //Send Extension request to RMS Server
-		    SEND_COMMAND vdvRMSEngine, "'EXTEND-',getAttrValue( 'mins', aCommand )"
+		    SEND_STRING 0, "'Next'"
+		    
+		    //Set the system to the same lesson as this system lesson
+		    ON[SYSTEMS[index].nextLesson]
+		    
+		    Systems[index].RoomType = ATOI ( getAttrValue('type', aCommand) )
+		}
+	    }
+	    else if ( lesson == cLIVE)
+	    {
+		//
+		if ( FIND_STRING( LIVE_LESSON.code, code, 1 ) )
+		{
+		    SEND_STRING 0, "'Live'"
+		    
+		    ON[SYSTEMS[index].liveLesson]
+		    
+		    Systems[index].RoomType = ATOI ( getAttrValue('type', aCommand) )
 		}
 	    }
 	    
-	    //Receive end request
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_End', 1 ) )
-	    {
-		//if the command is for this system
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number )
-		{
-		    //Send Extension request to RMS Server
-		    SEND_COMMAND vdvRMSEngine, "'ENDNOW'"
-		}
-	    }
+	    //Update Text on user interface
+	    RMS_refreshLessonText()
 	    
-	    //Receive end request
-	    if ( FIND_STRING ( DATA.TEXT, 'LESSON_Start', 1 ) )
+	    //Show only the rooms in the lesson
+	    Systems_UpdateUIList(0)
+	}
+	
+	
+	//End Call from MCU 
+	if ( FIND_STRING ( DATA.TEXT, 'EndMCUCall-', 1 ) )
+	{
+	    //if 'this' system is in the same lesson as the MCUCall then end call
+	    if ( FIND_STRING ( LIVE_LESSON.code, GetAttrValue('code',aCommand), 1 ) OR FIND_STRING ( NEXT_LESSON.code, GetAttrValue('code',aCommand), 1 ) )
 	    {
-		//if the command is for this system
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number )
-		{
-		    //Send lesson start request to RMS Server
-		    SEND_COMMAND vdvRMSEngine, "'RESERVE-',LDATE,',',
-							GetAttrValue('start',aCommand),',',
-							GetAttrValue('dur',aCommand),',',
-							GetAttrValue('subject',aCommand),
-							'&pin=',GetAttrValue('pin',aCommand),
-							'&code=',GetAttrValue('code',aCommand),
-							'&type=',GetAttrValue('type',aCommand),',',
-							GetAttrValue('message',aCommand)"
-		}
+		//Disconnect call in the lesson
+		PULSE[vdvCodec, DIAL_FLASH_HOOK]
 	    }
+	}
+	
+	//Set the Call Status Field 
+	if ( FIND_STRING ( DATA.TEXT, 'SYSTEM_CallStatus-', 1 ))
+	{
+	    STACK_VAR CHAR Status[16]
 	    
-	    //Set Camera Preset
-	    if ( FIND_STRING ( DATA.TEXT, 'SET_CAMERA_PRESET-', 1 ) )
+	    Status = GetAttrValue('status',aCommand)
+	    
+	    //if connected or on hold so site
+	    if ( FIND_STRING ( Status, 'Connected', 1 ) OR FIND_STRING ( Status, 'OnHold', 1 ) )
 	    {
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
-		{
-		    CODEC_setCameraPreset( ATOI ( GetAttrValue('camera',aCommand) ),  ATOI ( GetAttrValue('preset',aCommand) ), senderSysNum )
-		}
+		//Updates the Call status field in the System List
+		Systems_CallStatus( DATA.DEVICE.SYSTEM, GetAttrValue('site',aCommand) )
+		
+		//Set Boolean status
+		ON[Systems[DATA.DEVICE.SYSTEM].inCall]
 	    }
-	    
-	    //Preset Saved Alert User
-	    if ( FIND_STRING ( DATA.TEXT, 'CAMERA_PRESET_SAVED', 1 ) )
+	    ELSE
 	    {
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
-		{
-		    SYSTEM_Alert( 'Camera Preset',  "'Camera Preset ',GetAttrValue('preset',aCommand),' saved.',$0D,$0A,$0D,$0A,'Press ok to continue.'")
-		}
+		//Updates the Call status field in the System List
+		Systems_CallStatus( DATA.DEVICE.SYSTEM, GetAttrValue('status',aCommand) )
+		
+		//Set Boolean status
+		OFF[Systems[DATA.DEVICE.SYSTEM].inCall]
 	    }
-	    
-	    //Recall Camera Preset
-	    if ( FIND_STRING ( DATA.TEXT, 'RECALL_CAMERA_PRESET-', 1 ) )
+	}
+	
+	//Receive extension request
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_Extend', 1 ) )
+	{
+	    //if the command is for this system
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number )
 	    {
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
-		{
-		    CODEC_getCameraPreset( ATOI ( GetAttrValue('preset',aCommand) ) )
-		}
+		//Send Extension request to RMS Server
+		SEND_COMMAND vdvRMSEngine, "'EXTEND-',getAttrValue( 'mins', aCommand )"
 	    }
-	    
-	    //Set Lighting Preset
-	    if ( FIND_STRING ( DATA.TEXT, 'SET_LIGHTING_PRESET-', 1 ) )
+	}
+	
+	//Receive end request
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_End', 1 ) )
+	{
+	    //if the command is for this system
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number )
 	    {
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
-		{
-		    LIGHTS_setPreset( ATOI ( GetAttrValue('preset',aCommand) ), senderSysNum )
-		}
+		//Send Extension request to RMS Server
+		SEND_COMMAND vdvRMSEngine, "'ENDNOW'"
 	    }
-	    
-	    //Preset Saved Alert User
-	    if ( FIND_STRING ( DATA.TEXT, 'LIGHTING_PRESET_SAVED', 1 ) )
+	}
+	
+	//Receive end request
+	if ( FIND_STRING ( DATA.TEXT, 'LESSON_Start', 1 ) )
+	{
+	    //if the command is for this system
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == system_number )
 	    {
-		if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
-		{
-		    SYSTEM_Alert( 'Lighting Preset',  "'Lighting Preset ',GetAttrValue('preset',aCommand),' saved.',$0D,$0A,$0D,$0A,'Press ok to continue.'")
-		}
+		//Send lesson start request to RMS Server
+		SEND_COMMAND vdvRMSEngine, "'RESERVE-',LDATE,',',
+						    GetAttrValue('start',aCommand),',',
+						    GetAttrValue('dur',aCommand),',',
+						    GetAttrValue('subject',aCommand),
+						    '&pin=',GetAttrValue('pin',aCommand),
+						    '&code=',GetAttrValue('code',aCommand),
+						    '&type=',GetAttrValue('type',aCommand),',',
+						    GetAttrValue('message',aCommand)"
+	    }
+	}
+	
+	//Set Camera Preset
+	if ( FIND_STRING ( DATA.TEXT, 'SET_CAMERA_PRESET-', 1 ) )
+	{
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
+	    {
+		CODEC_setCameraPreset( ATOI ( GetAttrValue('camera',aCommand) ),  ATOI ( GetAttrValue('preset',aCommand) ), DATA.DEVICE.SYSTEM )
+	    }
+	}
+	
+	//Preset Saved Alert User
+	if ( FIND_STRING ( DATA.TEXT, 'CAMERA_PRESET_SAVED', 1 ) )
+	{
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
+	    {
+		SYSTEM_Alert( 'Camera Preset',  "'Camera Preset ',GetAttrValue('preset',aCommand),' saved.',$0D,$0A,$0D,$0A,'Press ok to continue.'")
+	    }
+	}
+	
+	//Recall Camera Preset
+	if ( FIND_STRING ( DATA.TEXT, 'RECALL_CAMERA_PRESET-', 1 ) )
+	{
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
+	    {
+		CODEC_getCameraPreset( ATOI ( GetAttrValue('preset',aCommand) ) )
+	    }
+	}
+	
+	//Set Lighting Preset
+	if ( FIND_STRING ( DATA.TEXT, 'SET_LIGHTING_PRESET-', 1 ) )
+	{
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
+	    {
+		LIGHTS_setPreset( ATOI ( GetAttrValue('preset',aCommand) ), DATA.DEVICE.SYSTEM )
+	    }
+	}
+	
+	//Preset Saved Alert User
+	if ( FIND_STRING ( DATA.TEXT, 'LIGHTING_PRESET_SAVED', 1 ) )
+	{
+	    if ( ATOI ( GetAttrValue('sysnum',aCommand) ) == SYSTEM_NUMBER )
+	    {
+		SYSTEM_Alert( 'Lighting Preset',  "'Lighting Preset ',GetAttrValue('preset',aCommand),' saved.',$0D,$0A,$0D,$0A,'Press ok to continue.'")
 	    }
 	}
     }
@@ -576,13 +542,4 @@ DATA_EVENT [vdvReceiver]
 
 DEFINE_PROGRAM
 
-// System Command Buffer Parser
-if ( FIND_STRING ( SYSTEMS_COMMAND_BUFFER, '0x0', 1 ) )
-{
-    EVENTS_parseCommandBuffer ( REMOVE_STRING ( SYSTEMS_COMMAND_BUFFER, '0x0', 1 ) )
-}
-else
-{
-    SET_LENGTH_STRING ( SYSTEMS_COMMAND_BUFFER, 0 )
-}
 

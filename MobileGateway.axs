@@ -17,10 +17,46 @@ vdvCLActions1 	= 33201:1:0
 vdvCLActions2 	= 33202:1:0
 vdvCLActions3 	= 33203:1:0
 
+vdvLesson1 	= 33301:1:0
+vdvLesson2 	= 33302:1:0
+vdvLesson3 	= 33303:1:0
 
-// System Virtual Device_______________________________________________________
-vdvSystem	= 33050:1:0
+#INCLUDE 'DeviceDefinitions.axi'
 
+DEFINE_VARIABLE
+
+// this array includes the main touch panel devices that contain the RMS pages and buttons
+VOLATILE DEV dvRMSTP[] =
+{
+  dvTPRMS
+}
+
+// this array includes the main touch panel devices BASE ADDRESSES for handling user keyboard input
+// (each device in this array must define the DEVICE PORT = 1)
+VOLATILE DEV dvRMSTP_Base[] =
+{
+  dvTP
+}
+
+VOLATILE DEV dvRMSTPWelcome[] =
+{
+  dvTPRMS_Welcome
+}
+
+// this array includes the welcome touch panel devices BASE ADDRESSES for handling user keyboard input
+// (each device in this array must define the DEVICE PORT = 1)
+VOLATILE DEV dvRMSTPWelcome_Base[] =
+{
+  dvTP
+}
+
+//
+// The following constant strings provide
+// a default subject and messages text for
+// meeting scheduled via the touch panels
+//
+VOLATILE CHAR RMS_MEETING_DEFAULT_SUBJECT[] = ''
+VOLATILE CHAR RMS_MEETING_DEFAULT_MESSAGE[] = ''
 
 
 DEFINE_START
@@ -29,14 +65,50 @@ DEFINE_START
 DEFINE_MODULE 'i!-ConnectLinxEngineMod' mdlCL1(vdvCLActions1)
 DEFINE_MODULE 'RMSEngineMod' mdlRMSEng1(vdvRMSEngine1, dvRMSSocket1, vdvCLActions1)
 
+// RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
+// Channel And Variable Text Code Defined Inside The Module
+DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine1,
+				  vdvLesson1,
+                                  dvRMSTP,dvRMSTP_Base,
+				  dvRMSTPWelcome,
+				  dvRMSTPWelcome_Base,
+				  RMS_MEETING_DEFAULT_SUBJECT,
+				  RMS_MEETING_DEFAULT_MESSAGE)
+
 //Define RMS Modules
 DEFINE_MODULE 'i!-ConnectLinxEngineMod' mdlCL2(vdvCLActions2)
 DEFINE_MODULE 'RMSEngineMod' mdlRMSEng2(vdvRMSEngine2, dvRMSSocket2, vdvCLActions2)
+
+// RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
+// Channel And Variable Text Code Defined Inside The Module
+DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine2,
+				  vdvLesson2,
+                                  dvRMSTP,dvRMSTP_Base,
+				  dvRMSTPWelcome,
+				  dvRMSTPWelcome_Base,
+				  RMS_MEETING_DEFAULT_SUBJECT,
+				  RMS_MEETING_DEFAULT_MESSAGE)
 
 //Define RMS Modules
 DEFINE_MODULE 'i!-ConnectLinxEngineMod' mdlCL3(vdvCLActions3)
 DEFINE_MODULE 'RMSEngineMod' mdlRMSEng3(vdvRMSEngine3, dvRMSSocket3, vdvCLActions3)
 
+// RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
+// Channel And Variable Text Code Defined Inside The Module
+DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine3,
+				  vdvLesson3,
+                                  dvRMSTP,dvRMSTP_Base,
+				  dvRMSTPWelcome,
+				  dvRMSTPWelcome_Base,
+				  RMS_MEETING_DEFAULT_SUBJECT,
+				  RMS_MEETING_DEFAULT_MESSAGE)
 
+DEFINE_PROGRAM
+
+WAIT 300
+{
+    //Request System Data every 30 secs
+    SEND_COMMAND vdvSystem, "'MGGetSystemData-'"
+}
 
 

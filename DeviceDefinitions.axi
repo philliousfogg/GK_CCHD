@@ -18,7 +18,12 @@ dvIO_3100	= 5001:17:0
 dvVRMSSocket 	= 0:4:0
 dvRMSSocket 	= 0:13:0
 
+#IF_NOT_DEFINED dvCodec
+
 dvCodec 	= 0:5:0
+
+#END_IF
+
 dvProjector1 	= 0:6:0
 dvProjector2	= 0:7:0
 dvProjector3	= 0:8:0
@@ -42,14 +47,6 @@ vdvLog 		= 33051:1:0
 vdvSystem       = 33050:1:0
 vdvVSystem	= 33055:1:0
 
-// Buffer Receiver
-vdvReceiver 	= 33052:1:0
-vdvVReceiver	= 33057:1:0
-
-// Lesson Virtual Device
-vdvLesson	= 33053:1:0
-vdvVLesson	= 33058:1:0
-
 #IF_NOT_DEFINED vdvRMSEngine 
 
 vdvRMSEngine	= 33003:1:0
@@ -57,6 +54,10 @@ vdvCLActions	= 33004:1:0
 
 vdvVRMSEngine	= 33005:1:0
 vdvVCLActions	= 33006:1:0
+
+// Lesson Virtual Device
+vdvLesson	= 33006:1:0
+vdvVLesson	= 33007:1:0
 
 #END_IF
 
@@ -336,6 +337,8 @@ vdvSystem38 	= 33050:1:38
 vdvSystem39 	= 33050:1:39
 vdvSystem40	= 33050:1:40
 
+vdvSystem101	= 33050:1:101
+
 //Virtual Rooms
 vdvVSystem1	= 33055:1:1
 vdvVSystem2	= 33055:1:2
@@ -602,7 +605,9 @@ volatile dev vdvSystems[] = {
     vdvSystem37,	
     vdvSystem38, 	
     vdvSystem39, 	
-    vdvSystem40
+    vdvSystem40,
+    
+    vdvSystem101
 } 
 
 VOLATILE dev vdvLights[] = {

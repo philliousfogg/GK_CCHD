@@ -1,43 +1,20 @@
 PROGRAM_NAME='dotone'
 
-#WARN 'This System Requires Multroom Collaborator Dependances'
-
-#INCLUDE 'DeviceDefinitions.axi'
-#INCLUDE 'ButtonsChannels.axi'
-#INCLUDE 'SNAPI.axi'
-#INCLUDE 'Utilities.axi'
-#INCLUDE 'UI_Tools.axi'
-#INCLUDE 'Dialog.axi'
-#INCLUDE 'System.axi'
-#INCLUDE 'CodecSetupClass.axi'
-#INCLUDE 'Devices.axi'
-#INCLUDE 'RMS.axi'
-#INCLUDE 'RMSAsset.axi'
-#INCLUDE 'Lights.axi'
-#INCLUDE 'Events.axi'
-#INCLUDE 'MainLine.axi'
+#INCLUDE 'CCHD.axi'
 
 //RMS Virtual Room Comment out if not required
 #INCLUDE 'RMSVirtualRoom.axi'
 
 DEFINE_START
 
-//Define Device Modules
-DEFINE_MODULE 'NECPROJECTOR' proj1(vdvProjector1, dvProjector1)
-DEFINE_MODULE 'NECPROJECTOR' proj2(vdvProjector2, dvProjector2)
-DEFINE_MODULE 'NECPROJECTOR' proj3(vdvProjector3, dvProjector3)
-
-DEFINE_MODULE 'EDinLights' lights(vdvLight, dvLights)
-DEFINE_MODULE 'APART_CONCEPT1' amp( vdvAmplifier, dvAmplifier )
-
-//Define RMS Modules
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvProjector1, dvProjector1, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvProjector2, dvProjector2, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvProjector3, dvProjector3, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvAmplifier, dvAmplifier, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvLight, dvLights, vdvRMSEngine)
-
-DEFINE_START
+// Register Room
+SYSTEMS[1].SysDev 		= vdvSystem
+SYSTEMS[1].systemNumber 	= SYSTEM_NUMBER
+SYSTEMS[1].NAME 		= 'Oslo - Room 2'
+SYSTEMS[1].LOCATION 		= 'Oslo'
+SYSTEMS[1].COMPANY 		= 'Global Knowledge'
+SYSTEMS[1].thisSystem		= 1
+SYSTEMS[1].cameraInverse	= 1
 
 
 DEFINE_EVENT
@@ -56,18 +33,8 @@ DATA_EVENT [ vdvSystem ]
 {
     ONLINE:
     {	 
-	SEND_COMMAND vdvSystem,"'SetRMSServer-url=10.255.33.21'" //Set RMS Server
-	SEND_COMMAND vdvVSystem,"'SetRMSServer-url=10.255.33.21'" //Set RMS Server
-	
-	SEND_COMMAND vdvSystem,"'SetSystemData-',
-				'sysnum=',ITOA(SYSTEM_NUMBER),
-				'&name=Oslo - Room 2',
-				'&loc=Oslo',
-				'&comp=Global Knowledge',
-				'&invcam=1'"
-	
 	//Front Smart Board
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
+	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
 				'name=SmartBoard Projector',
 				'&man=NEC',
 				'&model=NP-U310WG',
@@ -75,14 +42,14 @@ DATA_EVENT [ vdvSystem ]
 				'&ip=10.47.43.12', //Change IP
 				'&devd=33011',
 				'&devp=1',
-				'&devs=0',
+				'&devs=0', 
 				
 				'&pdd=0',
 				'&pdp=6',
-				'&pds=0'"
+				'&pds=0'" )
 	
 	//Front Far End
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
+	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
 				'name=Front Far End Projector',
 				'&man=NEC',
 				'&model=NP-U310WG',
@@ -94,10 +61,10 @@ DATA_EVENT [ vdvSystem ]
 				
 				'&pdd=0',
 				'&pdp=7',
-				'&pds=0'"
+				'&pds=0'" )
 				
 	//Back Far End
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
+	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
 				'name=Rear Far End Projector',
 				'&man=NEC',
 				'&model=NP-U310WG',
@@ -109,25 +76,25 @@ DATA_EVENT [ vdvSystem ]
 				
 				'&pdd=0',
 				'&pdp=8',
-				'&pds=0'"
+				'&pds=0'" )
 	
 	//Codec
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
+	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
 				'name=Video Conference',
 				'&man=Cisco',
 				'&model=C40',
 				'&sn=',
 				'&ip=10.47.43.11', //Change IP
-				'&devd=41001',
+				'&devd=33001',
 				'&devp=1',
 				'&devs=0',
 				
 				'&pdd=0',
 				'&pdp=5',
-				'&pds=0'"
+				'&pds=0'" )
 	
 	//Amplifier
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
+	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
 				'name=Amplifier',
 				'&man=Apart',
 				'&model=Concept 1',
@@ -138,10 +105,10 @@ DATA_EVENT [ vdvSystem ]
 				
 				'&pdd=5001',
 				'&pdp=1',
-				'&pds=0'"
+				'&pds=0'" )
 				
 	//Lights
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
+	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
 				'name=Lighting Dimmer',
 				'&man=eDIN',
 				'&model=NPU/4x3A LE',
@@ -153,9 +120,18 @@ DATA_EVENT [ vdvSystem ]
 				
 				'&pdd=0',
 				'&pdp=9',
-				'&pds=0'"
+				'&pds=0'" )
     }
 }
 
-
+DATA_EVENT [vdvCodec]
+{
+    ONLINE:
+    {
+	//Set IP Address
+	SEND_COMMAND vdvCodec, "'PROPERTY-IP_Address,10.47.43.11'"
+	SEND_COMMAND vdvCodec, "'PROPERTY-Password,TANDBERG'"
+	SEND_COMMAND vdvCodec, "'REINIT'"
+    }
+}
 

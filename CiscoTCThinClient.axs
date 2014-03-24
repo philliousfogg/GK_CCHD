@@ -70,6 +70,7 @@ VOLATILE _Codec Codec
 VOLATILE CHAR IP_ADDRESS[16]
 VOLATILE CHAR USERNAME[64]
 VOLATILE CHAR PA55W0RD[64]
+VOLATILE CHAR BAUD_RATE[16] = '38400'
 
 VOLATILE INTEGER RECEIVING_DATA
 VOLATILE CHAR BUFFER[7680]
@@ -126,7 +127,7 @@ DEFINE_FUNCTION  CISCO_setDiallerStatus( CHAR Status[], Integer CallIndex, integ
 {
     STACK_VAR CHAR rStatus[24]
     
-    SEND_STRING 0, "'Status-********* ', Status, ' ********'"
+    //SEND_STRING 0, "'Status-********* ', Status, ' ********'"
     
     if ( Status == 'Idle' )
     {
@@ -397,8 +398,6 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	//Only look at 2 cameras
 	IF ( CameraIndex <= 2 )
 	{    
-	    SEND_STRING 0, cData
-	    
 	    //Does Camera Exist and is Connected?
 	    IF ( FIND_STRING ( cData, 'Connected: False', 1 ) )
 	    {
@@ -595,8 +594,34 @@ DEFINE_FUNCTION CHAR[255] CISCO_removeWrap( CHAR cData[255], CHAR Begin[8], CHAR
 //Establishes comms with Cisco Codec
 DEFINE_FUNCTION CISCO_Connect( CHAR ipAddress[16] )
 {
-   //Open Telnet Client with Cisco TC Codec 
-   IP_CLIENT_OPEN ( dvCodec.PORT, ipAddress, 23, IP_TCP)
+    //If RS-232
+    if ( dvCodec.Number > 0 )
+    {
+	SEND_COMMAND dvCodec, "'SET BAUD ',BAUD_RATE,',N,8,1 485 DISABLE'"
+	
+	//Syncronised Data
+	CISCO_sendCommand ('xStatus Standby Active')
+	CISCO_sendCommand ('xStatus Audio Microphones Mute')
+	CISCO_sendCommand ('xStatus Audio Volume')
+	CISCO_sendCommand ('xStatus Video Selfview')
+	CISCO_sendCommand ('xStatus Camera')
+	CISCO_sendCommand ('xStatus H323')
+	CISCO_sendCommand ('xStatus SIP')
+	CISCO_sendCommand ('xStatus Call')
+	CISCO_sendCommand ('xStatus Conference Presentation')
+	
+	CISCO_sendCommand ('xConfiguration H323')
+	CISCO_sendCommand ('xConfiguration Video OSD Mode')
+	CISCO_sendCommand ('xConfiguration Conference 1 AutoAnswer Mode')
+	
+	//Set Feedback 
+	CISCO_registerFeedback()
+    }
+    ELSE
+    {
+	//Open Telnet Client with Cisco TC Codec 
+	IP_CLIENT_OPEN ( dvCodec.PORT, ipAddress, 23, IP_TCP)
+    }
 }
 
 DEFINE_FUNCTION CISCO_negotiateConnection( integer key )
@@ -613,7 +638,6 @@ DEFINE_FUNCTION CISCO_negotiateConnection( integer key )
     }
     
     SEND_STRING dvCodec, "keyCmd"
-    SEND_STRING 0, "keyCmd"
 }
 
 //Register xPaths that the AMX will be listening for
@@ -642,7 +666,7 @@ DEFINE_FUNCTION CISCO_sendCommand( Char Cmd[255] )
     SEND_STRING dvCodec, "Cmd,$0D,$0A"
     
     //To Debug
-    SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
+    //SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
 }
 
 //See if there has been any changes to the call
@@ -677,8 +701,6 @@ DEFINE_FUNCTION CISCO_CallChanges(INTEGER request)
 		    CALLS[i].DisplayName,',',
 		    CALLS[i].protocol"
 	    
-	    SEND_STRING 0, pCallCommand[i]
-	    SEND_STRING 0, CallCommand
 	    
 	    // Has the call command changed
 	    if ( pCallCommand[i] != callCommand OR request )
@@ -783,7 +805,7 @@ DATA_EVENT [dvCodec]
     }
     STRING:
     {
-	SEND_STRING 0, "'Rx: ', DATA.TEXT"
+	//SEND_STRING 0, "'Rx: ', DATA.TEXT"
 	
 	//if not logged in 
 	if ( ![ vdvDevices[1], DATA_INITIALIZED ] )
@@ -897,6 +919,14 @@ DATA_EVENT [vdvDevices]
 		REMOVE_STRING ( DATA.TEXT, ',', 1 )
 		
 		USERNAME = DATA.TEXT
+	    }
+	    
+	    IF ( FIND_STRING ( DATA.TEXT, 'Baud_Rate', 1 ) )
+	    {
+		//Remove PROPERTY-Baud_Rate,
+		REMOVE_STRING ( DATA.TEXT, ',', 1 )
+		
+		BAUD_RATE = DATA.TEXT
 	    }
 	}
 	
