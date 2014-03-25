@@ -19,3 +19,12 @@ DEFINE_MODULE 'RMSUIMod' mdVlRMSUI(vdvVRMSEngine,
 				  vdvVLesson,
                                   dvRMSTP,dvRMSTP_Base,dvRMSTPWelcome,dvRMSTPWelcome_Base,RMS_MEETING_DEFAULT_SUBJECT,RMS_MEETING_DEFAULT_MESSAGE)
 
+DEFINE_EVENT
+
+DATA_EVENT[vdvVRMSEngine]
+{
+    ONLINE:
+    {
+	SEND_COMMAND DATA.DEVICE, "'SERVER-10.255.33.21'"
+    }
+}

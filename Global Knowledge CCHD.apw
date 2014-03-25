@@ -281,7 +281,7 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Oslo - NO1-1</Identifier>
+<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Oslo - NO1-1</Identifier>
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>
@@ -432,6 +432,10 @@
 </File>
 <File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
 <FilePathName>ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>CCHD</Identifier>
+<FilePathName>CCHD.axi</FilePathName>
 <Comments></Comments>
 </File>
 <File CompileType="None" Type="TKO"><Identifier>CiscoTCThinClient</Identifier>
@@ -1329,7 +1333,7 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Developer 1</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Developer 1</Identifier>
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>

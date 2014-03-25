@@ -19,6 +19,7 @@ DEFINE_FUNCTION DEVICES_MaintainConnection()
 	{
 	    if ( ![DEVICES[i].vDevice, DATA_INITIALIZED] ) 
 	    { 
+		SEND_COMMAND 0, "DEVICES[i].name,' OFFLINE'"
 		DEVICES_Connect(i)
 	    }
 	}
@@ -54,6 +55,8 @@ DEFINE_FUNCTION DEVICES_Connect(integer deviceIndex)
     //If Device is registered in the system
     if ( deviceIndex > 0 )
     {
+	SEND_STRING 0, "'Connecting ',DEVICES[deviceIndex].name"
+	
 	if ( !FIND_STRING( DEVICES[deviceIndex].IPAddress, 'null', 1 ) )
 	{			    
 	    //Set IP Address of the device within the Duet/NetLinx Module

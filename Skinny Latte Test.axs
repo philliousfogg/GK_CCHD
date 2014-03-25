@@ -2,7 +2,7 @@ PROGRAM_NAME='Skinny Latte Test'
 
 DEFINE_DEVICE
 
-dvCodec		= 0:3:0
+dvCodec		= 0:5:0
 
 vdvCodec	= 33001:1:0
 
@@ -138,10 +138,10 @@ DATA_EVENT [vdvDevices]
     ONLINE:
     {
 	//Set IP Address
-	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.8.5'"
+	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.8.3'"
 	
 	//Set Password
-	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,!V1ju13?'"
+	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,TANDBERG'"
 	
 	//Reinitialise
 	SEND_COMMAND vdvDevice1, "'REINIT'"

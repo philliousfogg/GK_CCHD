@@ -95,6 +95,31 @@ VOLATILE INTEGER H323_CHANGED
 VOLATILE CHAR pCallCommand[4][512]
 VOLATILE CHAR pStatus[4][24]
 
+//Pushes all the calls to up to the top
+DEFINE_FUNCTION CISCO_reorderCalls()
+{
+    STACK_VAR INTEGER i
+    
+    STACK_VAR _CALL blankCall
+    
+    blankCall.Status = 'Idle'
+    
+    FOR ( i=1; i<=4; i++ )
+    {
+	//if Call slot is blank then pull call below up
+	if ( !CALLS[i].CallId )
+	{
+	    if ( i + 1 <= 4 )
+	    {
+		CALLS[i] = CALLS[i+1]
+		CALLS[i+1] = blankCall
+		CALLS[i].Changed = 1
+	    }
+	}
+    }
+
+}
+
 //Returns next free Call Slote
 DEFINE_FUNCTION INTEGER CISCO_getCallIndex( INTEGER CallID )
 {
@@ -127,61 +152,62 @@ DEFINE_FUNCTION  CISCO_setDiallerStatus( CHAR Status[], Integer CallIndex, integ
 {
     STACK_VAR CHAR rStatus[24]
     
-    //SEND_STRING 0, "'Status-********* ', Status, ' ********'"
-    
-    if ( Status == 'Idle' )
+    if ( [vdvDevices[1], DATA_INITIALIZED] )
     {
-	rStatus = CONF_STATE_IDLE
-	
-	OFF[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
-    }
-    else if ( Status == 'Dialling' )
-    {
-	rStatus = CONF_STATE_DIAL
-	
-	ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
-    }
-    else if ( Status == 'Connecting' )
-    {
-	rStatus = CONF_STATE_NEG
-	
-	ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
-    }
-    else if ( Status == 'Connected' )
-    {
-	rStatus = CONF_STATE_CONN
-	
-	ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
-    }
-    else if ( Status == 'Ringing' )
-    {
-	rStatus = CONF_STATE_RING
-	
-	ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
-    }
-    else if ( Status == 'OnHold' )
-    {
-	rStatus = CONF_STATE_ONHOLD
-	
-	ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
-    }
-    else if ( !LENGTH_STRING ( status ) )
-    {
-	rStatus = CONF_STATE_IDLE
-	
-	OFF[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
-    }
-    
-    //If has been updated
-    if ( LENGTH_STRING(rStatus) > 0 )
-    {
-	// Has the status changed
-	if ( pStatus[CallIndex] != rStatus OR request )
+	if ( Status == 'Idle' )
 	{
-	    //Send Dialer Status to Main Program
-	    SEND_COMMAND vdvDevices[CallIndex], "'DIALERSTATUS-',rStatus"
+	    rStatus = CONF_STATE_IDLE
 	    
-	    pStatus[CallIndex] = rStatus
+	    OFF[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
+	}
+	else if ( Status == 'Dialling' )
+	{
+	    rStatus = CONF_STATE_DIAL
+	    
+	    ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
+	}
+	else if ( Status == 'Connecting' )
+	{
+	    rStatus = CONF_STATE_NEG
+	    
+	    ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
+	}
+	else if ( Status == 'Connected' )
+	{
+	    rStatus = CONF_STATE_CONN
+	    
+	    ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
+	}
+	else if ( Status == 'Ringing' )
+	{
+	    rStatus = CONF_STATE_RING
+	    
+	    ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
+	}
+	else if ( Status == 'OnHold' )
+	{
+	    rStatus = CONF_STATE_ONHOLD
+	    
+	    ON[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
+	}
+	else if ( !LENGTH_STRING ( status ) )
+	{
+	    rStatus = CONF_STATE_IDLE
+	    
+	    OFF[vdvDevices[CallIndex], DIAL_OFF_HOOK_ON]
+	}
+	
+	//If has been updated
+	if ( LENGTH_STRING(rStatus) > 0 )
+	{
+	    // Has the status changed
+	    if ( pStatus[CallIndex] != rStatus OR request )
+	    {
+		//Send Dialer Status to Main Program
+		SEND_COMMAND vdvDevices[CallIndex], "'DIALERSTATUS-',rStatus"
+		
+		pStatus[CallIndex] = rStatus
+	    }
 	}
     }
 }
@@ -681,12 +707,12 @@ DEFINE_FUNCTION CISCO_CallChanges(INTEGER request)
 	//If call data has changed then report to main program
 	if ( CALLS[i].Changed OR request )
 	{
-	    CISCO_setDiallerStatus( CALLS[i].Status, i, request )
-	    
 	    if ( CALLS[i].Status == 'Idle' )
 	    {
 		//Clear call slot as call has ended
 		CALLS[i] = BlankCall
+		
+		CALLS[i].Status = 'Idle'
 	    }
 	    
 	    callCommand = "'CALL-',
@@ -710,6 +736,8 @@ DEFINE_FUNCTION CISCO_CallChanges(INTEGER request)
 		
 		pCallCommand[i] = CallCommand
 	    }    
+	    
+	    CISCO_setDiallerStatus( CALLS[i].Status, i, request )
 	    
 	    //Make changes have been read
 	    CALLS[i].Changed = 0
@@ -805,7 +833,7 @@ DATA_EVENT [dvCodec]
     }
     STRING:
     {
-	//SEND_STRING 0, "'Rx: ', DATA.TEXT"
+	SEND_STRING 0, "'Rx: ', DATA.TEXT"
 	
 	//if not logged in 
 	if ( ![ vdvDevices[1], DATA_INITIALIZED ] )
@@ -1437,9 +1465,10 @@ WAIT 50
 	
 	H323_CHANGED = 0
     }
-    
-    CISCO_CallChanges(0)
 }
 
 
-
+WAIT 5 {
+    CISCO_reorderCalls()
+    CISCO_CallChanges(0)
+}

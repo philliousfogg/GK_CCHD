@@ -5,12 +5,85 @@ PROGRAM_NAME='dotone'
 DEFINE_START
 
 // Register Room
-SYSTEMS[1].SysDev 		= vdvSystem
-SYSTEMS[1].systemNumber 	= SYSTEM_NUMBER
-SYSTEMS[1].NAME 		= 'Copenhagen - (Rm: Stockholm)'
-SYSTEMS[1].LOCATION 		= 'Copenhagen'
-SYSTEMS[1].COMPANY 		= 'Global Knowledge'
-SYSTEMS[1].thisSystem		= 1
+SYSTEMS_thisSystem ( 	'Copenhagen - (Rm: Stockholm)', //Room Name
+			'Copenhagen', 		//Location
+			'Global Knowledge', 	//Company
+			false,			//Camera Inverse
+			false			//Receive Only Room
+)
+
+//Front Smart Board
+DEVICES_register( 	'SmartBoard Projector',	//Device Name
+			'NEC',			//Manufacturer
+			'NP-U310WG',		//Model
+			'',			//Serial Number
+			'10.46.43.12',		//IP Address
+			'',			//Baud Rate
+			'',			//Password
+			vdvProjector1,		//Virtual Port
+			dvProjector1		//Physical Port
+)
+
+//Front Smart Board
+DEVICES_register( 	'Front Far End Projector',//Device Name
+			'NEC',			//Manufacturer
+			'NP-U310WG',		//Model
+			'',			//Serial Number
+			'10.46.43.13',		//IP Address
+			'',			//Baud Rate
+			'',			//Password
+			vdvProjector2,		//Virtual Port
+			dvProjector2		//Physical Port
+)
+
+//Front Smart Board
+DEVICES_register( 	'Rear Far End Projector',//Device Name
+			'NEC',			//Manufacturer
+			'NP-U310WG',		//Model
+			'',			//Serial Number
+			'10.46.43.14',		//IP Address
+			'',			//Baud Rate
+			'',			//Password
+			vdvProjector3,		//Virtual Port
+			dvProjector3		//Physical Port
+)
+
+//Codec
+DEVICES_register( 	'Codec',	//Device Name
+			'Cisco',	//Manufacturer
+			'C40',		//Model
+			'',		//Serial Number
+			'10.46.43.11',	//IP Address
+			'',		//Baud Rate
+			'TANDBERG',	//Password
+			vdvCodec,	//Virtual Port
+			dvCodec		//Physical Port
+)
+
+//Amplifier
+DEVICES_register( 	'Amplifier',	//Device Name
+			'Apart',	//Manufacturer
+			'Concept 1',	//Model
+			'',		//Serial Number
+			'',		//IP Address
+			'',		//Baud Rate
+			'',		//Password
+			vdvAmplifier,	//Virtual Port
+			dvAmplifier	//Physical Port
+)
+
+
+//Lights
+DEVICES_register( 	'Lighting Dimmer',//Device Name
+			'eDIN',		//Manufacturer
+			'NPU/4x3A LE',	//Model
+			'',		//Serial Number
+			'10.46.43.17',	//IP Address
+			'',		//Baud Rate
+			'',		//Password
+			vdvLight,	//Virtual Port
+			dvLights	//Physical Port
+)
 
 DEFINE_EVENT
 
@@ -23,111 +96,3 @@ DATA_EVENT [ vdvLight ]
 	SEND_COMMAND vdvLight, "'REGISTER_CHANNEL-channel=3&label=Students'"
     }
 }
-
-DATA_EVENT [ vdvSystem ]
-{
-    ONLINE:
-    {	
-	//Front Smart Board
-	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
-				'name=SmartBoard Projector',
-				'&man=NEC',
-				'&model=NP-U310WG',
-				'&sn=',
-				'&ip=10.46.43.12', //Change IP
-				'&devd=33011',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=6',
-				'&pds=0'")
-	
-	//Front Far End
-	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
-				'name=Front Far End Projector',
-				'&man=NEC',
-				'&model=NP-U310WG',
-				'&sn=',
-				'&ip=10.46.43.13', //Change IP
-				'&devd=33012',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=7',
-				'&pds=0'")
-	
-	//Back Far End
-	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
-				'name=Rear Far End Projector',
-				'&man=NEC',
-				'&model=NP-U310WG',
-				'&sn=',
-				'&ip=10.46.43.14', //Change IP
-				'&devd=33013',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=8',
-				'&pds=0'")
-	
-	//Codec
-	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
-				'name=Video Conference',
-				'&man=Cisco',
-				'&model=C40',
-				'&sn=',
-				'&ip=10.46.43.11', //Change IP
-				'&password=TANDBERG',
-				'&devd=31001',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=5',
-				'&pds=0'")
-	
-	//Amplifier
-	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
-				'name=Amplifier',
-				'&man=Apart',
-				'&model=Concept 1',
-				'&sn=',
-				'&devd=33014',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=5001',
-				'&pdp=1',
-				'&pds=0'")
-	
-	//Lights
-	SYSTEM_sendCommand ( vdvSystem,"'DEVICES_Add-',
-				'name=Lighting Dimmer',
-				'&man=eDIN',
-				'&model=NPU/4x3A LE',
-				'&sn=',
-				'&ip=10.46.43.17', //Change IP
-				'&devd=33015',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=9',
-				'&pds=0'")
-    }
-}
-
-DATA_EVENT [vdvCodec]
-{
-    ONLINE:
-    {
-	//Set IP Address
-	SEND_COMMAND vdvCodec, "'PROPERTY-IP_Address,10.46.43.11'"
-	SEND_COMMAND vdvCodec, "'PROPERTY-Password,TANDBERG'"
-	SEND_COMMAND vdvCodec, "'REINIT'"
-    }
-}
-

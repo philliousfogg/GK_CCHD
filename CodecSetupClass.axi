@@ -510,10 +510,10 @@ DEFINE_FUNCTION CODEC_getCameraPreset(INTEGER presetID)
 //Mover Camera 
 DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 {
-    //SET_PULSE_TIME(2)
+    SET_PULSE_TIME(2)
     
-    //if ( ACTIVE_SYSTEM == SYSTEM_NUMBER )
-    //{
+    if ( ACTIVE_SYSTEM == SYSTEM_NUMBER )
+    {
 	if ( Direction )
 	{
 	    if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] == 1 )
@@ -541,8 +541,8 @@ DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], TILT_DN ]
 	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], TILT_UP ]   
 	}
-    //}
-    /*ELSE
+    }
+    ELSE
     {
 	if ( Direction )
 	{
@@ -555,9 +555,9 @@ DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 		PULSE[vdvCodecs_Cam2[ACTIVE_SYSTEM], Direction]
 	    }
 	}
-    }*/
+    }
     
-    //SET_PULSE_TIME(5)
+    SET_PULSE_TIME(5)
 }
 
 DEFINE_START 
@@ -599,6 +599,9 @@ DATA_EVENT [vdvCodec]
 	
 	//Switch On Camera Scaling
 	ON[vdvCodec, 312]
+	
+	//Send call status to System List
+	SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=NO NETWORK'" )
     }
     
     COMMAND:
@@ -677,6 +680,9 @@ DATA_EVENT [vdvCodec]
 		CALLS[DATA.DEVICE.PORT].callBackNumber = remove_string(calls[data.device.port].remoteNumber, ':',1) //Remove h323: text
 		CALLS[DATA.DEVICE.PORT].DisplayName = removeLastbyte( remove_string(data.text, ',', 1) )// Display Name
 		CALLS[DATA.DEVICE.PORT].protocol = data.text //Protocol 
+		
+		//Send call status to System List
+		SYSTEM_sendCommand ( vdvSystem, "'SYSTEM_CallStatus-status=',Calls[DATA.DEVICE.PORT].State,'&site=',Calls[DATA.DEVICE.PORT].remoteNumber" )
 	    }
 	    case 'DIALERSTATUS-':
 	    {	
