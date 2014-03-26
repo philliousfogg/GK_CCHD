@@ -122,6 +122,7 @@ DATA_EVENT [vdvSystems]
 						    '&loc=',Systems[index].location,
 						    '&comp=',Systems[index].company,
 						    '&receive=',ITOA ( Systems[index].receiveOnly ),
+						    '&mobile=',ITOA ( Systems[index].mobile ),
 						    '&contact=',Systems[index].contact,
 						    '&invcam=',ITOA ( Systems[index].cameraInverse )" )
 	    }
@@ -134,6 +135,7 @@ DATA_EVENT [vdvSystems]
 								    '&loc=',Systems[index].location,
 								    '&comp=',Systems[index].company,
 								    '&receive=',ITOA ( Systems[index].receiveOnly ),
+								    '&mobile=',ITOA ( Systems[index].mobile ),
 								    '&contact=',Systems[index].contact,
 								    '&invcam=',ITOA ( Systems[index].cameraInverse )" )
 	    }	
@@ -213,6 +215,9 @@ DATA_EVENT [vdvSystems]
 		{
 		    //if this room is the teacher room then gather together all other 
 		    //rooms in the lesson.
+		    
+		    //Clear keypad
+		    SEND_COMMAND dvTP, "'@PPK-_login'"
 		    
 		    SEND_COMMAND dvTP, "'PAGE-Login'"
 		}

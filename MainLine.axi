@@ -42,6 +42,8 @@ if (ACTIVE_SYSTEM)
 [dvTPCodec, VCCameraBtns[9] ] = [ vdvCodecs[ACTIVE_SYSTEM], 305 ]
 [dvTPCodec, VCCameraBtns[30]] = [ vdvCodec, 303 ]
 
+[dvTPCodec, VCCameraBtns[53]] = [ vdvCodecs[ACTIVE_SYSTEM], 321 ]
+
 if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] != 0 )
 {
     [ dvTPCodec, VCCameraBtns[10] ] = CAMERA_PRESET_ACTIVE[ACTIVE_SYSTEM] == 1
@@ -201,6 +203,8 @@ ELSE
 //Site List Filter Buttons
 [ dvTP, UIBtns[87] ] = SITE_LIST_FILTER == SITE
 [ dvTP, UIBtns[88] ] = SITE_LIST_FILTER == VIRTUAL
+[ dvTP, UIBtns[89] ] = SITE_LIST_FILTER == MOBILE_UNITS
+[ dvTP, UIBtns[121] ] = !SITE_LIST_FILTER
 
 //Transmission Type
 [ dvTP, UIBtns[91] ] = ![vdvCodec, 309]

@@ -1070,6 +1070,45 @@ BUTTON_EVENT [ dvTPCodec, VCCameraBtns ]
 		    ON[vdvCodec, 303]
 		}
 	    }
+	    
+	    //Auto Answer
+	    CASE 52:
+	    {
+		IF ( [vdvCodec, DIAL_AUTO_ANSWER_ON] )
+		{
+		    OFF[vdvCodec, DIAL_AUTO_ANSWER_ON]
+		}
+		ELSE
+		{
+		    ON[vdvCodec, DIAL_AUTO_ANSWER_ON]
+		}
+	    }
+	    
+	    //IR Control on/off
+	    CASE 53:
+	    {
+		[vdvCodecs[SYSTEM_NUMBER], 321] = ![vdvCodec, 321]
+		[vdvCodecs_Cam2[SYSTEM_NUMBER], 321] = ![vdvCodecs_Cam2, 321]
+	    }
+	}
+    }
+    
+    HOLD[10]:
+    {
+	STACK_VAR INTEGER svButton
+	
+	svButton = GET_LAST ( VCCameraBtns )
+	
+	SWITCH ( svButton )
+	{
+	    CASE 7:
+	    {
+		[vdvCodecs[ACTIVE_SYSTEM], 322] = ![vdvCodecs[ACTIVE_SYSTEM], 322]
+	    }
+	    CASE 8:
+	    {
+		[vdvCodecs_Cam2[ACTIVE_SYSTEM], 322] = ![vdvCodecs_Cam2[ACTIVE_SYSTEM], 322]
+	    }
 	}
     }
 }

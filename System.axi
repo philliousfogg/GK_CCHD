@@ -16,6 +16,7 @@ LENGTH_DEVICES = 6
 
 VOLATILE INTEGER SITE = 1
 VOLATILE INTEGER VIRTUAL = 2
+VOLATILE INTEGER MOBILE_UNITS = 3
 
 DEFINE_VARIABLE
 
@@ -55,6 +56,7 @@ STRUCTURE _Systems
     integer nextLesson		//Is it being used for the next lesson
     integer liveLesson		//Is it being used for the current lesson
     integer receiveOnly		//Is the system a receive only room
+    integer mobile		//Is the system a mobile system
     integer roomType		//What is the room type Student Only or Teacher
     integer volume		//Room Volume Level
     integer cameraInverse	//if Cam 1 is rear and Cam 2 is front
@@ -388,6 +390,9 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 		{
 		    if ( !PROJECTOR_INIT_START[i] )
 		    {
+			// Set Codec presentation to on 
+			ON[vdvCodec, 309]
+			
 			SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
 			
 			//If Projector on set flag
@@ -557,6 +562,7 @@ DEFINE_FUNCTION SYSTEMS_thisSystem (
 				     CHAR location[64], 
 				     CHAR company[64], 
 				     INTEGER camInverse,
+				     INTEGER mobile,
 				     INTEGER receiveOnly
 				    )
 {
@@ -567,6 +573,7 @@ DEFINE_FUNCTION SYSTEMS_thisSystem (
     SYSTEMS[1].LOCATION 	= location
     SYSTEMS[1].COMPANY 		= company
     SYSTEMS[1].thisSystem	= true
+    SYSTEMS[1].mobile		= mobile
     SYSTEMS[1].receiveOnly	= receiveOnly
     SYSTEMS[1].cameraInverse	= camInverse
 }
@@ -597,7 +604,12 @@ DEFINE_FUNCTION Systems_AddSystem( _Command aCommand  )
 		systems[i].company = GetAttrValue('comp',aCommand)
 	    if ( GetAttrValue('contact',aCommand) != 'null' ) 
 		systems[i].contact = GetAttrValue('contact',aCommand)
-		
+	    
+	    if ( GetAttrValue('mobile',aCommand) != 'null' )
+	    {
+		systems[i].mobile = AtoI ( GetAttrValue('mobile',aCommand) )
+	    }
+	    
 	    if ( GetAttrValue('receive',aCommand) != 'null' )
 	    {
 		systems[i].receiveOnly = AtoI ( GetAttrValue('receive',aCommand) )
@@ -756,6 +768,16 @@ DEFINE_FUNCTION Systems_UpdateUIList(integer position)
 		    x++
 		    Systems_addSystemToList(x,i)
 		}
+		ELSE if ( ( SITE_LIST_FILTER == MOBILE_UNITS ) AND ( Systems[i].mobile ) )
+		{
+		    x++
+		    Systems_addSystemToList(x,i)
+		}
+		ELSE
+		{
+		    x++
+		    Systems_addSystemToList(x,i)
+		}
 	    }
 	}
     }
@@ -837,7 +859,9 @@ DEFINE_FUNCTION SYSTEM_addSplashScreenText(CHAR text[255])
 DEFINE_FUNCTION SYSTEM_ShowUIStart()
 {    
     SYSTEM_sendCommand ( vdvSystem, "'RefreshUI-'" )
-    SEND_COMMAND dvTP, "'PAGE-Login'"
+    
+    //Set This Room Name
+    SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[80] ),'-',SYSTEMS[SYSTEM_getIndexFromSysNum(SYSTEM_NUMBER)].NAME"
 } 
 
 //Show the projector Buttons in the system
@@ -863,26 +887,7 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
 	}
     }
     
-    //Show only the rooms in the lesson
-    Systems_UpdateUIList(1)
-    
     UIList[SystemUIList].Selected = 0
-    
-    //If there is already a selected menu
-    if ( SELECTED_MENU )
-    {
-	//Show Control Page
-	SEND_COMMAND dvTP, "'@PPN-[Menu]',uiMenu[ SELECTED_MENU - 50 ],';Admin'"  
-    }
-    
-    //Select DashBoard
-    ELSE
-    {
-	SELECTED_MENU = 51
-	
-	//Show Control Page
-	SEND_COMMAND dvTP, "'@PPN-[Menu]',uiMenu[ SELECTED_MENU - 50 ],';Admin'"  
-    }
     
     //Update Name
     if ( ACTIVE_SYSTEM )
@@ -897,10 +902,37 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
 	
 	//Set Active system to local system
 	ACTIVE_SYSTEM = SYSTEM_NUMBER
+	
+	//Set site list filter to site list
+	SITE_LIST_FILTER = 0
+	
+	//Set the list item to this system
+	setElementSelectedbyButton( SystemUIList, 11 )
+	
+	//Show only the rooms in the lesson
+	Systems_UpdateUIList(1)
     }
     
+    //Select DashBoard
+    if ( !SELECTED_MENU )
+    {
+	// Show Camera page if system is a mobile
+	if ( SYSTEMS[index].mobile OR LIVE_LESSON.Type == STUDENT )
+	{
+	    SELECTED_MENU = 52
+	}
+	// Presentation page
+	ELSE
+	{
+	    SELECTED_MENU = 54
+	}
+    }
+    
+    //Show Control Page
+    SEND_COMMAND dvTP, "'@PPN-[Menu]',uiMenu[ SELECTED_MENU - 50 ],';Admin'"
+    
     //Sets the buttons depending on if its a receive room
-    SYSTEM_evaluateReceive(Index)
+    SYSTEM_evaluateRoom(Index)
     
     //Get Current Lighting Levels
     SEND_COMMAND vdvLights[ACTIVE_SYSTEM], "'GET_LEVELS'"
@@ -929,7 +961,7 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
 	ELSE
 	{
 	    //Show Screen Layout Button
-	    SEND_COMMAND dvTP, "'^SHO-',ITOA( UIBtns[58] ),',1'"
+	    SEND_COMMAND dvTP, "'^SHO-',ITOA( UIBtns[58] ),',0'"
 	}
     }
     ELSE
@@ -1049,35 +1081,84 @@ DEFINE_FUNCTION integer SYSTEM_findVirtualRoom(integer lesson)
     return 0
 }
 
-DEFINE_FUNCTION SYSTEM_evaluateReceive(Integer Index)
+DEFINE_FUNCTION SYSTEM_setBtnVisibility( DEV TP, INTEGER btn, INTEGER show )
 {
-    //Hide/Show Buttons depending on room type
+    SEND_COMMAND TP, "'^SHO-',ITOA ( btn ),',',ITOA (show)"
+}
+
+DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index) 
+{    
+    // Hide all effected Buttons
+    
+    // Camera Front/Back Buttons 
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[7], 0 )
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[8], 0 )
+    
+    // Camera Help Text
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[31], 0 )
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[32], 0 )
+    
+    // Rear Projector Button
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[73], 0 )
+    
+    // All Functionality Menu buttons
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 0 )
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 0 )
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 0 )
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 0 )
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 0 )
+    
+    //Receive Room
     if ( Systems[index].receiveOnly )
     {
-	//Hide camera buttons
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[7] ),',0'"
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[8] ),',0'"
-	
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[31] ),',0'"
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[32] ),',0'"
-	
-	//Hide Rear Projector Button
-	SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[73] ),',0'"
+	// Mobile Rooms
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], true )
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], true )
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], true )
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
 	
 	//Make sure camera 1 is active camera
 	ACTIVE_CAMERA[ACTIVE_SYSTEM] = 1
     }
-    ELSE
+    
+    // Mobile Rooms
+    ELSE IF ( Systems[index].mobile )
     {
-	//Show camera buttons
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[7] ),',1'" 
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[8] ),',1'"
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+    }
+    
+    // Virtual Rooms
+    ELSE IF ( SYSTEMS[index].systemNumber > 500 )
+    {
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+    }
+    
+    // Normal CCHD Room
+    ELSE 
+    {
+	// Camera Front/Back Buttons 
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[7], 1 )
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[8], 1 )
 	
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[31] ),',1'"
-	SEND_COMMAND dvTPCodec, "'^SHO-',ITOA ( VCCameraBtns[32] ),',1'"
+	// Camera Help Text
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[31], 1 )
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[32], 1 )
 	
-	//Show Rear Projector Button
-	SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[73] ),',1'"
+	// Rear Projector Button
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[73], 1 )
+	
+	// All Functionality Menu buttons
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 1 )
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 1 )
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
+	
+	if ( SYSTEMS[Index].thisSystem )
+	{
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 1 )
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 1 )
+	}
     }
 }
 
@@ -1193,8 +1274,6 @@ SELECTED_MENU = 1
 MAPPED_CAMERAS[1] = 1
 MAPPED_CAMERAS[2] = 2
 
-//Set default Site list filter
-SITE_LIST_FILTER = SITE
 
 DEFINE_EVENT
 
@@ -1316,7 +1395,7 @@ BUTTON_EVENT [dvTP, UIBtns]
 		    SEND_COMMAND vdvLights[ACTIVE_SYSTEM], "'GET_LEVELS'"
 		    
 		    //Sets the buttons depending on if its a receive room
-		    SYSTEM_evaluateReceive( Index )
+		    SYSTEM_evaluateRoom( Index )
 		}
 		ELSE
 		{
@@ -1494,6 +1573,14 @@ BUTTON_EVENT [dvTP, UIBtns]
 		Systems_UpdateUIList(1)
 	    }
 	    
+	    //Filter Sites to Virtual
+	    CASE 89:
+	    {
+		SITE_LIST_FILTER = MOBILE_UNITS
+		
+		Systems_UpdateUIList(1)
+	    }
+	    
 	    //Refresh Site List
 	    CASE 90:
 	    {
@@ -1535,6 +1622,14 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    {
 		OFF[vdvAmplifier, VOL_DN]
 	    }
+	    
+	    //Filter Sites to All
+	    CASE 121:
+	    {
+		SITE_LIST_FILTER = 0
+		
+		Systems_UpdateUIList(1)
+	    }
 	}
     }
 }
@@ -1548,6 +1643,8 @@ DATA_EVENT [dvTP]
 	    SYSTEM_clearSplashScreenText()
 	    
 	    SYSTEM_addSplashScreenText('Starting System...')
+	    
+	    PERMISSION_LEVEL = 0
 	    
 	    SYSTEM_ShowUIStart()
 	}

@@ -30,7 +30,7 @@ VOLATILE INTEGER UIBtns[] = {
     54,	//Lights Control
     55, //Site List
     56, //Device Control
-    57, //Admin Settings
+    57, //Admin Settings (DEPRECATED)
     58,	//Screen Layout
     59, 
     60, //60 Spare
@@ -60,7 +60,7 @@ VOLATILE INTEGER UIBtns[] = {
     86, //Start Offline Lesson
     87, //Filter: Sites
     88, //Filter: Virtual
-    89, //89 Spare
+    89, //Filter: Mobile
     
     90, //90 Refresh System List
     91, //91 Use BridgeIt
@@ -70,7 +70,9 @@ VOLATILE INTEGER UIBtns[] = {
     100, //100 Amp Volume Up 
     101,  //101 Amp Volume Dn
     102,103,104,105,106,107,108,109,110, //Spares
-    111,112,113,114,115,116,117,118,119,120 //Offline Notification Buttons
+    111,112,113,114,115,116,117,118,119,120, //Offline Notification Buttons
+    
+    121 //Filter: All
 }
 
 VOLATILE INTEGER DialogsBtns[] = {
@@ -156,7 +158,10 @@ VOLATILE INTEGER VCCameraBtns[] = {
     //DTMF Tones
     40,41,42,43,44,45,46,47,48,49,
     50, //51: Star
-    51  //51: Hash
+    51, //51: Hash
+    
+    19, //52: Auto Answer 
+    20  //53: IR Disable
     
 }
 
@@ -206,3 +211,5 @@ VOLATILE INTEGER UILightsBtns[] = {
     28,29, //28->29: Spare
     30,31,32,33,34,35,36,37,38,39,40,41,42,43,44 //30->44: Save Preset 1-14
 }
+
+

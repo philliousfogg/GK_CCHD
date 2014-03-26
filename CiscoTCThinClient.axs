@@ -16,6 +16,8 @@ STRUCTURE _Camera
     CHAR tilt[4]
     CHAR zoom[4]
     CHAR focus[4]
+    INTEGER Ir
+    INTEGER backlight
 }
 
 STRUCTURE _call 
@@ -456,6 +458,39 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 		{
 		    CAMERAS[CameraIndex].SerialNumber = CISCO_removeWrap( cData, '"', '"' )
 		}
+		ELSE IF ( FIND_STRING ( cData, 'IrSensor', 1 ) )
+		{
+		    //Ir Sensor On or Off
+		    if ( FIND_STRING ( cData, 'Off', 1 ) )
+		    {
+			CAMERAS[CameraIndex].Ir = 0
+			
+			OFF[vdvDevices[CameraIndex], 321]
+		    }
+		    ELSE IF ( FIND_STRING ( cData, 'On', 1 ) )
+		    {
+			CAMERAS[CameraIndex].Ir = 1
+			
+			ON[vdvDevices[CameraIndex], 321]
+		    }
+		}
+		ELSE IF ( FIND_STRING ( cData, 'Backlight', 1 ) )
+		{
+		    //Ir Sensor On or Off
+		    if ( FIND_STRING ( cData, 'Off', 1 ) )
+		    {
+			CAMERAS[CameraIndex].BackLight = 0
+			
+			OFF[vdvDevices[CameraIndex], 322]
+		    }
+		    ELSE IF ( FIND_STRING ( cData, 'On', 1 ) )
+		    {
+			CAMERAS[CameraIndex].BackLight = 1
+			
+			ON[vdvDevices[CameraIndex], 322]
+		    }
+		}
+		
 		ELSE IF ( FIND_STRING ( cData, 'Position', 1 ) )
 		{
 		    IF ( FIND_STRING ( cData, 'Pan:', 1 ) )
@@ -1176,6 +1211,25 @@ CHANNEL_EVENT [vdvDevices, 0]
 		    CISCO_sendCommand("'xCommand FarEndControl Camera Move CallId:',ITOA ( CALLS[CHANNEL.DEVICE.PORT-7].CallId ),' Value:Down'")
 		}
 	    }
+	    
+	    //Ir Sensor on Camer
+	    CASE 321:
+	    {
+		// If User instructs the Ir to be switched on
+		if ( !CAMERAS[CHANNEL.DEVICE.PORT].Ir )
+		{
+		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] IrSensor: On'")
+		}
+	    }
+	    
+	    CASE 322:
+	    {
+		// If User instructs the Backlight to be switched on
+		if ( CAMERAS[CHANNEL.DEVICE.PORT].Backlight )
+		{
+		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] Backlight: Off'")
+		}
+	    }
 	}
     }
     
@@ -1260,6 +1314,26 @@ CHANNEL_EVENT [vdvDevices, 0]
 		    //Stop Tilting Down
 		    CISCO_sendCommand("'xCommand FarEndControl Camera Stop CallId: ',ITOA( CALLS[CHANNEL.DEVICE.PORT-7].CallId )")
 		}    
+	    }
+	    
+	    //Ir Sensor
+	    CASE 321:
+	    {
+		// If User instructs the Ir to be switched on
+		if ( !CAMERAS[CHANNEL.DEVICE.PORT].Ir )
+		{
+		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] IrSensor: Off'")
+		}
+	    }
+	    
+	    //Backlight
+	    CASE 322:
+	    {
+		// If User instructs the Backlight to be switched on
+		if ( !CAMERAS[CHANNEL.DEVICE.PORT].Backlight )
+		{
+		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] Backlight: Off'")
+		}
 	    }
 	}
     }
@@ -1365,6 +1439,12 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    
 	    //Auto Answer
 	    CASE DIAL_AUTO_ANSWER_ON:
+	    {
+		CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mode: On' )
+	    }
+	    
+	    //IR Function
+	    CASE 320:
 	    {
 		CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mode: On' )
 	    }

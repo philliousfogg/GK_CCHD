@@ -53,6 +53,7 @@ STRUCTURE _Systems
     integer nextLesson		//Is it being used for the next lesson
     integer liveLesson		//Is it being used for the current lesson
     integer receiveOnly		//Is the system a receive only room
+    integer mobile		//Is the system a mobile room
 }
 
 DEFINE_CONSTANT

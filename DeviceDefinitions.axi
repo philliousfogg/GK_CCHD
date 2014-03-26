@@ -66,6 +66,7 @@ dvTP 		= 10001:1:0
 dvTPCodec	= 10001:2:0
 dvTPRMS		= 10001:3:0
 dvTPLights 	= 10001:4:0
+dvTPSettings	= 10001:5:0 //> v2 User Interface
 
 dvTPRMS_Welcome = 10001:10:0
 
