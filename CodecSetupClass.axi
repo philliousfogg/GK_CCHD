@@ -594,9 +594,6 @@ DATA_EVENT [vdvCodec]
 {
     ONLINE:
     {
-	//Switch Auto Answer On
-	ON[vdvCodec, 239]
-	
 	//Switch On Camera Scaling
 	ON[vdvCodec, 312]
 	
@@ -1087,8 +1084,47 @@ BUTTON_EVENT [ dvTPCodec, VCCameraBtns ]
 	    //IR Control on/off
 	    CASE 53:
 	    {
-		[vdvCodecs[SYSTEM_NUMBER], 321] = ![vdvCodec, 321]
-		[vdvCodecs_Cam2[SYSTEM_NUMBER], 321] = ![vdvCodecs_Cam2, 321]
+		STACK_VAR INTEGER index
+		
+		index = SYSTEM_getIndexFromSysNum(SYSTEM_NUMBER)
+		
+		[vdvCodec, 320] = ![vdvCodec, 321]
+		
+		if ( !SYSTEMS[index].mobile AND !SYSTEMS[index].receiveOnly )
+		    [vdvCodecs_Cam2[SYSTEM_NUMBER], 321] = ![vdvCodec, 321]
+		    
+		[vdvCodec, 321] = ![vdvCodec, 321]
+		
+		// Override RMS Scheduling if Ir Sensor is on
+		if ( [vdvCodec, 321] )
+		{
+		    ON[OVERRIDE_RMS]
+		}
+	    }
+	    
+	    // Backlight compensation Cam 1
+	    CASE 54:
+	    {
+		[vdvCodecs[ACTIVE_SYSTEM], 322] = ![vdvCodecs[ACTIVE_SYSTEM], 322]
+	    }
+	    
+	    // Backlight compensation Cam 2
+	    CASE 55:
+	    {
+		[vdvCodecs_Cam2[ACTIVE_SYSTEM], 322] = ![vdvCodecs_Cam2[ACTIVE_SYSTEM], 322]
+	    }
+	    
+	    //Auto Answer Mic. Mute
+	    CASE 56:
+	    {
+		IF ( [vdvCodec, 325] )
+		{
+		    OFF[vdvCodec, 325]
+		}
+		ELSE
+		{
+		    ON[vdvCodec, 325]
+		}
 	    }
 	}
     }

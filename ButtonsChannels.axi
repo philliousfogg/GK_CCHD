@@ -161,8 +161,10 @@ VOLATILE INTEGER VCCameraBtns[] = {
     51, //51: Hash
     
     19, //52: Auto Answer 
-    20  //53: IR Disable
-    
+    20, //53: IR Disable
+    21, //54: Cam 1 Backlight
+    22,	//55: Cam 2 Backlight
+    25  //56: Auto Answer Mic Mute
 }
 
 VOLATILE INTEGER VCVolumeControls[] = {

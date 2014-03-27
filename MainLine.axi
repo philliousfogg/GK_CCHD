@@ -42,7 +42,12 @@ if (ACTIVE_SYSTEM)
 [dvTPCodec, VCCameraBtns[9] ] = [ vdvCodecs[ACTIVE_SYSTEM], 305 ]
 [dvTPCodec, VCCameraBtns[30]] = [ vdvCodec, 303 ]
 
-[dvTPCodec, VCCameraBtns[53]] = [ vdvCodecs[ACTIVE_SYSTEM], 321 ]
+[dvTPCodec, VCCameraBtns[52]] = [ vdvCodec, DIAL_AUTO_ANSWER_ON ]
+[dvTPCodec, VCCameraBtns[53]] = [ vdvCodec, 321 ]
+[dvTPCodec, VCCameraBtns[56]] = [ vdvCodec, 325 ]
+
+[dvTPCodec, VCCameraBtns[54]] = [ vdvCodecs[ACTIVE_SYSTEM], 322 ]
+[dvTPCodec, VCCameraBtns[55]] = [ vdvCodecs_Cam2[ACTIVE_SYSTEM], 322 ]
 
 if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] != 0 )
 {
@@ -161,6 +166,19 @@ WAIT 100
 	OFF[PROJECTOR_INIT_START[1]]
 	OFF[PROJECTOR_INIT_START[2]]
 	OFF[PROJECTOR_INIT_START[3]]
+	
+	// Reset Back Compensation
+	off[ vdvCodecs[SYSTEM_NUMBER], 322 ]
+	off[ vdvCodecs_Cam2[SYSTEM_NUMBER], 322 ]
+	
+	// Reset IR Sensor
+	off[ vdvCodecs[SYSTEM_NUMBER], 320 ]
+	off[ vdvCodecs[SYSTEM_NUMBER], 321 ]
+	off[ vdvCodecs_Cam2[SYSTEM_NUMBER], 321 ]
+	
+	// Reset Auto Answer to on
+	ON[vdvCodec, DIAL_AUTO_ANSWER_ON]
+	OFF[ vdvCodec, 325 ]
 	
 	//Reset RECURRING Shut down flag
 	if ( !RMS_LEVELS.Current )

@@ -50,6 +50,10 @@ STRUCTURE _Codec
     CHAR H323ID[255]
     CHAR Gatekeeper[255]
     CHAR H323Status[255]
+    
+    INTEGER IrSensor
+    INTEGER AutoAnswerMute
+    INTEGER AutoAnswer
 }
 
 DEFINE_CONSTANT
@@ -238,6 +242,25 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	OFF[ vdvDevices[1], POWER_FB ]
     }
     
+    ELSE IF ( FIND_STRING ( cData, 'xConfiguration SystemUnit', 1 ) )
+    {
+	if ( FIND_STRING ( cData, 'IrSensor', 1 ) )
+	{
+	    if ( FIND_STRING ( cData,'Auto', 1 ) OR FIND_STRING ( cData, 'On', 1 ) )
+	    {
+		CODEC.IrSensor = 1
+		
+		on[ vdvDevices[1], 320 ]
+	    }
+	    ELSE if ( FIND_STRING ( cData, 'Off', 1 ) )
+	    {
+		CODEC.IrSensor = 0
+		
+		off[ vdvDevices[1], 320 ]
+	    }
+	}
+    }
+    
     ELSE IF ( FIND_STRING( cData, 'H323', 1 ) )
     {
 	//Get E164
@@ -411,6 +434,56 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	    mode = 'Sending'
 	}
     }
+    
+    ELSE if ( FIND_STRING ( cData, 'xConfiguration Cameras Camera ', 1 ) )
+    {
+	STACK_VAR CameraIndex
+	STACK_VAR _Camera Blank
+	
+	//Remove 'Camera '
+	REMOVE_STRING ( cData, 'Camera ', 1 )
+	
+	//Get Camera Index
+	CameraIndex = ATOI ( REMOVE_STRING ( cData, ' ', 1 ) )
+	
+	//Only look at 2 cameras
+	IF ( CameraIndex <= 2 )
+	{   
+	    IF ( FIND_STRING ( cData, 'IrSensor', 1 ) )
+	    {
+		//Ir Sensor On or Off
+		if ( FIND_STRING ( cData, 'Off', 1 ) )
+		{
+		    CAMERAS[CameraIndex].Ir = 0
+		    
+		    OFF[vdvDevices[CameraIndex], 321]
+		}
+		ELSE IF ( FIND_STRING ( cData, 'On', 1 ) )
+		{
+		    CAMERAS[CameraIndex].Ir = 1
+		    
+		    ON[vdvDevices[CameraIndex], 321]
+		}
+	    }
+	    ELSE IF ( FIND_STRING ( cData, 'Backlight', 1 ) )
+	    {
+		//Ir Sensor On or Off
+		if ( FIND_STRING ( cData, 'Off', 1 ) )
+		{
+		    CAMERAS[CameraIndex].BackLight = 0
+		    
+		    OFF[vdvDevices[CameraIndex], 322]
+		}
+		ELSE IF ( FIND_STRING ( cData, 'On', 1 ) )
+		{
+		    CAMERAS[CameraIndex].BackLight = 1
+		    
+		    ON[vdvDevices[CameraIndex], 322]
+		}
+	    }
+	}
+    }
+
 
     ELSE if ( FIND_STRING ( cData, 's Camera', 1 ) )
     {
@@ -458,39 +531,6 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 		{
 		    CAMERAS[CameraIndex].SerialNumber = CISCO_removeWrap( cData, '"', '"' )
 		}
-		ELSE IF ( FIND_STRING ( cData, 'IrSensor', 1 ) )
-		{
-		    //Ir Sensor On or Off
-		    if ( FIND_STRING ( cData, 'Off', 1 ) )
-		    {
-			CAMERAS[CameraIndex].Ir = 0
-			
-			OFF[vdvDevices[CameraIndex], 321]
-		    }
-		    ELSE IF ( FIND_STRING ( cData, 'On', 1 ) )
-		    {
-			CAMERAS[CameraIndex].Ir = 1
-			
-			ON[vdvDevices[CameraIndex], 321]
-		    }
-		}
-		ELSE IF ( FIND_STRING ( cData, 'Backlight', 1 ) )
-		{
-		    //Ir Sensor On or Off
-		    if ( FIND_STRING ( cData, 'Off', 1 ) )
-		    {
-			CAMERAS[CameraIndex].BackLight = 0
-			
-			OFF[vdvDevices[CameraIndex], 322]
-		    }
-		    ELSE IF ( FIND_STRING ( cData, 'On', 1 ) )
-		    {
-			CAMERAS[CameraIndex].BackLight = 1
-			
-			ON[vdvDevices[CameraIndex], 322]
-		    }
-		}
-		
 		ELSE IF ( FIND_STRING ( cData, 'Position', 1 ) )
 		{
 		    IF ( FIND_STRING ( cData, 'Pan:', 1 ) )
@@ -534,11 +574,28 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
     
     IF ( FIND_STRING ( cData, '1 AutoAnswer Mode: On', 1 ) )
     {
+	Codec.AutoAnswer = 1
+	
 	ON[ vdvDevices[1], DIAL_AUTO_ANSWER_ON ]
     }
     ELSE IF ( FIND_STRING ( cData, '1 AutoAnswer Mode: Off', 1 ) )
     {
+	Codec.AutoAnswer = 0
+	
 	OFF[ vdvDevices[1], DIAL_AUTO_ANSWER_ON ]
+    }
+    
+    IF ( FIND_STRING ( cData, '1 AutoAnswer Mute: On', 1 ) )
+    {
+	Codec.AutoAnswerMute = 1
+	
+	ON[ vdvDevices[1], 325 ]
+    }
+    ELSE IF ( FIND_STRING ( cData, '1 AutoAnswer Mute: Off', 1 ) )
+    {
+	Codec.AutoAnswerMute = 0
+	
+	OFF[ vdvDevices[1], 325 ]
     }
     
     else if ( FIND_STRING ( cData, 'Status (status=Error):', 1 ) )
@@ -718,6 +775,8 @@ DEFINE_FUNCTION CISCO_registerFeedback()
     CISCO_sendCommand('xFeedback register configuration/H323/')
     CISCO_sendCommand('xFeedback register configuration/Video/OSD/mode')
     CISCO_sendCommand('xFeedback register configuration/Conference')
+    CISCO_sendCommand('xFeedback register configuration/camera')
+    CISCO_sendCommand('xFeedback register configuration/SystemUnit')
 }
 
 //Sends command to the device
@@ -1215,7 +1274,6 @@ CHANNEL_EVENT [vdvDevices, 0]
 	    //Ir Sensor on Camer
 	    CASE 321:
 	    {
-		// If User instructs the Ir to be switched on
 		if ( !CAMERAS[CHANNEL.DEVICE.PORT].Ir )
 		{
 		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] IrSensor: On'")
@@ -1224,10 +1282,9 @@ CHANNEL_EVENT [vdvDevices, 0]
 	    
 	    CASE 322:
 	    {
-		// If User instructs the Backlight to be switched on
-		if ( CAMERAS[CHANNEL.DEVICE.PORT].Backlight )
+		if ( !CAMERAS[CHANNEL.DEVICE.PORT].BACKLIGHT )
 		{
-		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] Backlight: Off'")
+		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] Backlight: On'")
 		}
 	    }
 	}
@@ -1319,8 +1376,7 @@ CHANNEL_EVENT [vdvDevices, 0]
 	    //Ir Sensor
 	    CASE 321:
 	    {
-		// If User instructs the Ir to be switched on
-		if ( !CAMERAS[CHANNEL.DEVICE.PORT].Ir )
+		if ( CAMERAS[CHANNEL.DEVICE.PORT].Ir )
 		{
 		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] IrSensor: Off'")
 		}
@@ -1329,8 +1385,7 @@ CHANNEL_EVENT [vdvDevices, 0]
 	    //Backlight
 	    CASE 322:
 	    {
-		// If User instructs the Backlight to be switched on
-		if ( !CAMERAS[CHANNEL.DEVICE.PORT].Backlight )
+		if ( CAMERAS[CHANNEL.DEVICE.PORT].BACKLIGHT )
 		{
 		    CISCO_sendCommand("'xConfiguration Cameras Camera[',ITOA( CHANNEL.DEVICE.PORT ),'] Backlight: Off'")
 		}
@@ -1440,13 +1495,28 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    //Auto Answer
 	    CASE DIAL_AUTO_ANSWER_ON:
 	    {
-		CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mode: On' )
+		if ( !Codec.AutoAnswer )
+		{
+		    CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mode: On' )
+		}
+	    }
+	    
+	    //Auto Answer Mute
+	    CASE 325:
+	    {
+		if ( !Codec.AutoAnswerMute )
+		{
+		    CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mute: On' )
+		}
 	    }
 	    
 	    //IR Function
 	    CASE 320:
 	    {
-		CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mode: On' )
+		if ( !Codec.IrSensor )
+		{
+		    CISCO_sendCommand ( 'xConfiguration SystemUnit IrSensor: Auto' )
+		}
 	    }
 	}
     }
@@ -1476,7 +1546,28 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    //Auto Answer
 	    CASE DIAL_AUTO_ANSWER_ON:
 	    {
-		CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mode: Off' )
+		if ( Codec.AutoAnswer )
+		{
+		    CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mode: Off' )
+		}
+	    }
+	    
+	    //Auto Answer Mute
+	    CASE 325:
+	    {
+		if ( Codec.AutoAnswerMute )
+		{
+		    CISCO_sendCommand ( 'xConfiguration Conference 1 AutoAnswer Mute: Off' )
+		}
+	    }
+	    
+	    //IR Function
+	    CASE 320:
+	    {
+		if ( Codec.IrSensor )
+		{
+		    CISCO_sendCommand ( 'xConfiguration SystemUnit IrSensor: Off' )
+		}
 	    }
 	}
     }

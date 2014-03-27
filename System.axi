@@ -460,7 +460,6 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 		    
 		    if ( !PROJECTOR_INIT_START[i] )
 		    {
-			
 			SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
 			
 			//If Projector on set flag
@@ -1101,6 +1100,9 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
     // Rear Projector Button
     SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[73], 0 )
     
+    // Camera 2 Backlight compensation
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[22], 0 )
+    
     // All Functionality Menu buttons
     SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 0 )
     SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 0 )
@@ -1153,6 +1155,9 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 1 )
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 1 )
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
+	
+	// Camera 2 Backlight compensation
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[22], 1 )
 	
 	if ( SYSTEMS[Index].thisSystem )
 	{
