@@ -72,7 +72,16 @@ VOLATILE INTEGER UIBtns[] = {
     102,103,104,105,106,107,108,109,110, //Spares
     111,112,113,114,115,116,117,118,119,120, //Offline Notification Buttons
     
-    121 //Filter: All
+    121, //Filter: All
+    122	 //Filtered Menu
+}
+
+VOLATILE INTEGER SiteMapBtns[] = {
+    
+    401,402,403,404,405,406,407,408,409,410, // CCHD Rooms
+    411,412,413,414,415,416,417,418,419,420, // CCHD Rooms
+    421,422,423,424,425,426,427,428,429,430, // CCHD Rooms
+    431,432,433,434,435,436,437,438,439,440  // CCHD Mobile Units
 }
 
 VOLATILE INTEGER DialogsBtns[] = {

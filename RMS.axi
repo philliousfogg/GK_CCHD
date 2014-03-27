@@ -112,6 +112,9 @@ DEFINE_FUNCTION RMS_clearLessonText()
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ i+9 ] ),'- '" 
     }
     
+    // Clear Map Points
+    UI_MAP_clearPoints()
+    
     //Set Page tite
     SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 17 ] ),'-No Lessons Today'"
     SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[ 86 ] ),',1'"
@@ -144,7 +147,8 @@ DEFINE_FUNCTION RMS_refreshLessonText()
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 16 ] ),'-', RMS_listAttendingSites(cLIVE)"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 17 ] ),'-Current Lesson'"
 	SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[ 86 ] ),',0'"
-
+	
+	UI_Map_attendingSites( cLive )
     }
     else if ( RMS_LEVELS.Next )
     {
@@ -158,6 +162,8 @@ DEFINE_FUNCTION RMS_refreshLessonText()
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 14 ] ),'-', startTime,' - ',endTime"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 16 ] ),'-', RMS_listAttendingSites(cNEXT)"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 17 ] ),'-Next Lesson'"
+	
+	UI_Map_attendingSites( cNext )
     }
     else
     {

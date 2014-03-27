@@ -762,7 +762,7 @@ DEFINE_FUNCTION Systems_UpdateUIList(integer position)
 		    x++
 		    Systems_addSystemToList(x,i)
 		}
-		ELSE if ( ( SITE_LIST_FILTER == SITE ) AND ( Systems[i].systemNumber < 500 ) )
+		ELSE if ( ( SITE_LIST_FILTER == SITE ) AND ( Systems[i].systemNumber < 500 ) AND ( !Systems[i].mobile ) )
 		{
 		    x++
 		    Systems_addSystemToList(x,i)
@@ -772,7 +772,7 @@ DEFINE_FUNCTION Systems_UpdateUIList(integer position)
 		    x++
 		    Systems_addSystemToList(x,i)
 		}
-		ELSE
+		ELSE if ( !SITE_LIST_FILTER )
 		{
 		    x++
 		    Systems_addSystemToList(x,i)
@@ -911,24 +911,7 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
 	//Show only the rooms in the lesson
 	Systems_UpdateUIList(1)
     }
-    
-    //Select DashBoard
-    if ( !SELECTED_MENU )
-    {
-	// Show Camera page if system is a mobile
-	if ( SYSTEMS[index].mobile OR LIVE_LESSON.Type == STUDENT )
-	{
-	    SELECTED_MENU = 52
-	}
-	// Presentation page
-	ELSE
-	{
-	    SELECTED_MENU = 54
-	}
-    }
-    
-    //Show Control Page
-    SEND_COMMAND dvTP, "'@PPN-[Menu]',uiMenu[ SELECTED_MENU - 50 ],';Admin'"
+  
     
     //Sets the buttons depending on if its a receive room
     SYSTEM_evaluateRoom(Index)
@@ -1118,23 +1101,40 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], true )
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], true )
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], true )
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	
+	if ( RMS_isVirtualRoom() )
+	{
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	}
 	
 	//Make sure camera 1 is active camera
 	ACTIVE_CAMERA[ACTIVE_SYSTEM] = 1
+	
+	// Select Camera
+	SELECTED_MENU = 52
     }
     
     // Mobile Rooms
     ELSE IF ( Systems[index].mobile )
     {
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	
+	if ( RMS_isVirtualRoom() )
+	{
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	}
+	
+	// Select Camera
+	SELECTED_MENU = 52
     }
     
     // Virtual Rooms
     ELSE IF ( SYSTEMS[index].systemNumber > 500 )
     {
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	
+	// Select Screen Layout
+	SELECTED_MENU = 58
     }
     
     // Normal CCHD Room
@@ -1153,7 +1153,12 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	
 	// All Functionality Menu buttons
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 1 )
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 1 )
+	
+	if ( RMS_isVirtualRoom() )
+	{
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 1 )
+	}
+	
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
 	
 	// Camera 2 Backlight compensation
@@ -1163,8 +1168,19 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	{
 	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 1 )
 	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 1 )
+	    
+	    // Select Presentation Page
+	    SELECTED_MENU = 54
+	}
+	ELSE
+	{
+	    // Select Camera Page
+	    SELECTED_MENU = 52
 	}
     }
+    
+    //Show Control Page
+    SEND_COMMAND dvTP, "'@PPN-[Menu]',uiMenu[ SELECTED_MENU - 50 ],';Admin'"
 }
 
 //Adds additional elements to the list (this is called from UI_TOOLs
@@ -1323,6 +1339,15 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    {
 		ON[vdvAmplifier, VOL_DN]
 	    }
+	    
+	    CASE 11:
+	    CASE 12:
+	    CASE 13:
+	    CASE 14:
+	    {
+		// Hide Site Add/Remove Context
+		SEND_COMMAND dvTP, "'@PPK-_SiteContext'"
+	    }
 	}
     }
     RELEASE:
@@ -1337,6 +1362,9 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    CASE 6:
 	    {
 		SYSTEM_logout()
+		
+		// Hide Site Add/Remove Context
+		SEND_COMMAND dvTP, "'@PPK-_SiteContext'"
 	    }
 	    
 	    //Switch to Resident PC
@@ -1568,6 +1596,8 @@ BUTTON_EVENT [dvTP, UIBtns]
 		SITE_LIST_FILTER = SITE
 		
 		Systems_UpdateUIList(1)
+		
+		SEND_COMMAND dvTP, "'@PPK-Filter'"
 	    }
 	    
 	    //Filter Sites to Virtual
@@ -1576,6 +1606,8 @@ BUTTON_EVENT [dvTP, UIBtns]
 		SITE_LIST_FILTER = VIRTUAL
 		
 		Systems_UpdateUIList(1)
+		
+		SEND_COMMAND dvTP, "'@PPK-Filter'"
 	    }
 	    
 	    //Filter Sites to Virtual
@@ -1584,6 +1616,8 @@ BUTTON_EVENT [dvTP, UIBtns]
 		SITE_LIST_FILTER = MOBILE_UNITS
 		
 		Systems_UpdateUIList(1)
+		
+		SEND_COMMAND dvTP, "'@PPK-Filter'"
 	    }
 	    
 	    //Refresh Site List
@@ -1634,6 +1668,39 @@ BUTTON_EVENT [dvTP, UIBtns]
 		SITE_LIST_FILTER = 0
 		
 		Systems_UpdateUIList(1)
+		
+		SEND_COMMAND dvTP, "'@PPK-Filter'"
+	    }
+	    
+	    //Show Filter Menu
+	    CASE 122:
+	    {
+		SEND_COMMAND dvTP, "'@PPN-Filter;Admin'"
+	    }
+	}
+    }
+    
+    HOLD[10]:
+    {
+	STACK_VAR INTEGER svBtn
+	
+	svBtn = GET_LAST( UIBtns )
+	
+	SWITCH ( svBtn )
+	{
+	    CASE 11:
+	    CASE 12:
+	    CASE 13:
+	    CASE 14:
+	    {
+		// Show Site Add/Remove Context
+		SEND_COMMAND dvTP, "'@PPN-_SiteContext;Admin'"
+		
+		WAIT 150 {
+		    
+		    // Hide Site Add/Remove Context
+		    SEND_COMMAND dvTP, "'@PPK-_SiteContext'"
+		}
 	    }
 	}
     }

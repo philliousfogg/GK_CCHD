@@ -260,5 +260,6 @@ WAIT 3000
     SEND_COMMAND vdvRMSEngine, "'GET APPTS-',LDATE"
 }
 
-
+// Map Feedback
+UI_MAP_feedback()
 
