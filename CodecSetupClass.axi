@@ -510,7 +510,17 @@ DEFINE_FUNCTION CODEC_getCameraPreset(INTEGER presetID)
 //Mover Camera 
 DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 {
+    STACK_VAR INTEGER index
+    
     SET_PULSE_TIME(2)
+    
+    index = SYSTEM_getIndexFromSysNum(ACTIVE_SYSTEM)
+    
+    // Force set to camera if system only has one camera
+    if ( SYSTEMS[index].receiveOnly OR SYSTEMS[index].mobile )
+    {
+	ACTIVE_CAMERA[ACTIVE_SYSTEM] = 1
+    }
     
     if ( ACTIVE_SYSTEM == SYSTEM_NUMBER )
     {

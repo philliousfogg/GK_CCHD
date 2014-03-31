@@ -143,7 +143,7 @@ DEFINE_FUNCTION RMS_refreshLessonText()
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 11 ] ),'-', LIVE_LESSON.Instructor"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 12 ] ),'-', LIVE_LESSON.Message"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 13 ] ),'-', LIVE_LESSON.Code"
-	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 14 ] ),'-', startTime,' - ',endTime"
+	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 14 ] ),'-', startTime,' - ',endTime,' (GMT)'"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 16 ] ),'-', RMS_listAttendingSites(cLIVE)"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 17 ] ),'-Current Lesson'"
 	SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[ 86 ] ),',0'"
@@ -159,7 +159,7 @@ DEFINE_FUNCTION RMS_refreshLessonText()
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 11 ] ),'-', NEXT_LESSON.Instructor"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 12 ] ),'-', NEXT_LESSON.Message"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 13 ] ),'-', NEXT_LESSON.Code"
-	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 14 ] ),'-', startTime,' - ',endTime"
+	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 14 ] ),'-', startTime,' - ',endTime,' (GMT)'"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 16 ] ),'-', RMS_listAttendingSites(cNEXT)"
 	SEND_COMMAND dvTP, "'TEXT',ITOA( RMSBtns[ 17 ] ),'-Next Lesson'"
 	

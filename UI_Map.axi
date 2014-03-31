@@ -92,7 +92,10 @@ DEFINE_FUNCTION UI_MAP_feedback()
 	
 	index = SYSTEM_getIndexFromSysNum(i)
 	
-	[dvTP, SiteMapBtns[i] ] = SYSTEMS[index].thisSystem
+	if ( SYSTEMS[index].systemNumber )
+	{
+	    [dvTP, SiteMapBtns[i] ] = SYSTEMS[index].thisSystem
+	}
     }
     
     // Cycle through mobile units and set this System
@@ -102,7 +105,10 @@ DEFINE_FUNCTION UI_MAP_feedback()
 	
 	index = SYSTEM_getIndexFromSysNum(MOBILE_MAP_POINT[i])
 	
-	[dvTP, SiteMapBtns[i + 30] ] = SYSTEMS[index].thisSystem
+	if ( SYSTEMS[index].systemNumber )
+	{
+	    [dvTP, SiteMapBtns[i + 30] ] = SYSTEMS[index].thisSystem
+	}
     }	
 }
 

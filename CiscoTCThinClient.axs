@@ -12,10 +12,10 @@ STRUCTURE _Camera
     CHAR Manufacturer[255]
     CHAR Model[255]
     CHAR SerialNumber[65]
-    CHAR pan[4]
-    CHAR tilt[4]
-    CHAR zoom[4]
-    CHAR focus[4]
+    CHAR pan[6]
+    CHAR tilt[6]
+    CHAR zoom[6]
+    CHAR focus[6]
     INTEGER Ir
     INTEGER backlight
 }

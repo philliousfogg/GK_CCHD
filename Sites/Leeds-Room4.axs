@@ -1,42 +1,93 @@
 PROGRAM_NAME='dotone'
 
-#WARN 'This System Requires Multroom Collaborator Dependances'
-
-#INCLUDE 'DeviceDefinitions.axi'
-#INCLUDE 'ButtonsChannels.axi'
-#INCLUDE 'SNAPI.axi'
-#INCLUDE 'Utilities.axi'
-#INCLUDE 'UI_Tools.axi'
-#INCLUDE 'Dialog.axi'
-#INCLUDE 'System.axi'
-#INCLUDE 'CodecSetupClass.axi'
-#INCLUDE 'Devices.axi'
-#INCLUDE 'RMS.axi'
-#INCLUDE 'RMSAsset.axi'
-#INCLUDE 'Lights.axi'
-#INCLUDE 'Events.axi'
-#INCLUDE 'MainLine.axi'
+#INCLUDE 'CCHD.axi'
 
 //RMS Virtual Room Comment out if not required
 #INCLUDE 'RMSVirtualRoom.axi'
 
 DEFINE_START
 
-//Define Device Modules
-DEFINE_MODULE 'NECPROJECTOR' proj1(vdvProjector1, dvProjector1)
-DEFINE_MODULE 'NECPROJECTOR' proj2(vdvProjector2, dvProjector2)
-DEFINE_MODULE 'NECPROJECTOR' proj3(vdvProjector3, dvProjector3)
+// Register Room
+SYSTEMS_thisSystem ( 	'Leeds - Room 4', 	//Room Name
+			'Leeds', 		//Location
+			'Global Knowledge', 	//Company
+			true,			//Camera Inverse
+			false,			//Mobile Room
+			false			//Receive Only Room
+)
 
-DEFINE_MODULE 'EDinLights' lights(vdvLight, dvLights)
-DEFINE_MODULE 'APART_CONCEPT1' amp( vdvAmplifier, dvAmplifier )
+//Front Smart Board
+DEVICES_register( 	'SmartBoard Projector',	//Device Name
+			'NEC',			//Manufacturer
+			'NP-U310WG',		//Model
+			'',			//Serial Number
+			'10.44.115.140',	//IP Address
+			'',			//Baud Rate
+			'',			//Password
+			vdvProjector1,		//Virtual Port
+			dvProjector1		//Physical Port
+)
 
-//Define RMS Modules
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvProjector1, dvProjector1, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvProjector2, dvProjector2, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvProjector3, dvProjector3, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvAmplifier, dvAmplifier, vdvRMSEngine)
-DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvLight, dvLights, vdvRMSEngine)
+//Front Smart Board
+DEVICES_register( 	'Front Far End Projector',//Device Name
+			'NEC',			//Manufacturer
+			'NP-U310WG',		//Model
+			'',			//Serial Number
+			'10.44.115.141',		//IP Address
+			'',			//Baud Rate
+			'',			//Password
+			vdvProjector2,		//Virtual Port
+			dvProjector2		//Physical Port
+)
 
+//Front Smart Board
+DEVICES_register( 	'Rear Far End Projector',//Device Name
+			'NEC',			//Manufacturer
+			'NP-U310WG',		//Model
+			'',			//Serial Number
+			'10.44.115.142',	//IP Address
+			'',			//Baud Rate
+			'',			//Password
+			vdvProjector3,		//Virtual Port
+			dvProjector3		//Physical Port
+)
+
+//Codec
+DEVICES_register( 	'Codec',	//Device Name
+			'Cisco',	//Manufacturer
+			'C40',		//Model
+			'',		//Serial Number
+			'10.44.115.139',//IP Address
+			'',		//Baud Rate
+			'TANDBERG',	//Password
+			vdvCodec,	//Virtual Port
+			dvCodec		//Physical Port
+)
+
+//Amplifier
+DEVICES_register( 	'Amplifier',	//Device Name
+			'Apart',	//Manufacturer
+			'Concept 1',	//Model
+			'',		//Serial Number
+			'',		//IP Address
+			'',		//Baud Rate
+			'',		//Password
+			vdvAmplifier,	//Virtual Port
+			dvAmplifier	//Physical Port
+)
+
+
+//Lights
+DEVICES_register( 	'Lighting Dimmer',//Device Name
+			'eDIN',		//Manufacturer
+			'NPU/4x3A LE',	//Model
+			'',		//Serial Number
+			'10.44.115.145',//IP Address
+			'',		//Baud Rate
+			'',		//Password
+			vdvLight,	//Virtual Port
+			dvLights	//Physical Port
+)
 
 DEFINE_EVENT
 
@@ -51,114 +102,6 @@ DATA_EVENT [ vdvLight ]
     }
 }
 
-DATA_EVENT [ vdvSystem ]
-{
-    ONLINE:
-    {	
-	SEND_COMMAND vdvSystem,"'SetRMSServer-url=10.255.33.21'" //Set RMS Server
-	SEND_COMMAND vdvVSystem,"'SetRMSServer-url=10.255.33.21'" //Set RMS Server
-	
-	SEND_COMMAND vdvSystem,"'SetSystemData-',
-				'sysnum=',ITOA(SYSTEM_NUMBER),
-				'&name=Leeds - Room 4',
-				'&loc=Leeds',
-				'&comp=Global Knowledge',
-				'&invcam=1'"
-	
-	//Front Smart Board
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
-				'name=SmartBoard Projector',
-				'&man=NEC',
-				'&model=NP-U260WG',
-				'&sn=',
-				'&ip=10.44.115.140', //Change IP
-				'&devd=33011',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=6',
-				'&pds=0'"
-	
-	//Front Far End
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
-				'name=Front Far End Projector',
-				'&man=NEC',
-				'&model=NP-U260WG',
-				'&sn=',
-				'&ip=10.44.115.141', //Change IP
-				'&devd=33012',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=7',
-				'&pds=0'"
-				
-	//Back Far End
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
-				'name=Rear Far End Projector',
-				'&man=NEC',
-				'&model=M260WS',
-				'&sn=',
-				'&ip=10.44.115.142', //Change IP
-				'&devd=33013',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=8',
-				'&pds=0'"
-	
-	//Codec
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
-				'name=Video Conference',
-				'&man=Cisco',
-				'&model=C40',
-				'&sn=',
-				'&ip=10.44.115.139', //Change IP
-				'&devd=41001',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=5',
-				'&pds=0'"
-	
-	//Amplifier
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
-				'name=Amplifier',
-				'&man=Apart',
-				'&model=Concept 1',
-				'&sn=',
-				'&devd=33014',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=5001',
-				'&pdp=1',
-				'&pds=0'"
-	//Lights
-	SEND_COMMAND vdvSystem,"'DEVICES_Add-',
-				'name=Lighting Dimmer',
-				'&man=eDIN',
-				'&model=NPU/4x3A LE',
-				'&sn=',
-				'&ip=10.44.115.145', //Change IP
-				'&devd=33015',
-				'&devp=1',
-				'&devs=0',
-				
-				'&pdd=0',
-				'&pdp=9',
-				'&pds=0'"				
-    }
-}
-
-
-DEFINE_EVENT 
-
-//
 DATA_EVENT [dvTP]
 {
     ONLINE:
