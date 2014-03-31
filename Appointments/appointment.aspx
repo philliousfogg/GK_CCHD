@@ -388,14 +388,18 @@
         var textBox1 = document.getElementById('ctl00_placeholderMain__welcomeText1');
         var textBox2 = document.getElementById('ctl00_placeholderMain__welcomeText2');
         var textBox3 = document.getElementById('ctl00_placeholderMain__welcomeText3');
+        var textBox4 = document.getElementById('ctl00_placeholderMain__welcomeText4');
         var roomType = document.getElementById('viju_teacher_option');
         var code = document.getElementById('viju_code');
         var pin = document.getElementById('viju_pin');
+        var externalSite = document.getElementById('viju_external_site');
+        var extCheckBox = document.getElementById('viju_ext_checkbox');
         var notValid = false;
 
         textBox1.value = '&type=' + roomType.options[roomType.selectedIndex].value;
         textBox2.value = '&pin=' + pin.value; 
         textBox3.value = '&code=' + code.value;
+        textBox4.value = '&ext=' + externalSite.value; 
 
 
         //Validate entry
@@ -439,6 +443,16 @@
             document.getElementById('viju_code_help').innerHTML = "";
         }
 
+        if ( externalSite.value == '' && extCheckBox.checked )
+        {
+            notValid = true;
+            document.getElementById('viju_ext_help').innerHTML = "Enter a valid SIP or IP address";
+        }
+        else
+        {
+            document.getElementById('viju_ext_help').innerHTML = "";
+        }
+
         //Show or hide the save buttondepending on validation
         if ( notValid )
         {
@@ -448,6 +462,15 @@
         {
             document.getElementById('Viju_SaveBtn').style.display = 'inline';
         }
+
+        if ( !extCheckBox.checked ) 
+        {
+            document.getElementById('viju_external_field_wrapper').style.display = 'none';
+        }
+        else
+        {
+            document.getElementById('viju_external_field_wrapper').style.display = 'inline';
+        }
     }
 
     function viju_setTextFields()
@@ -455,10 +478,12 @@
         var textBox1 = document.getElementById('ctl00_placeholderMain__welcomeText1');
         var textBox2 = document.getElementById('ctl00_placeholderMain__welcomeText2');
         var textBox3 = document.getElementById('ctl00_placeholderMain__welcomeText3');
+        var textBox4 = document.getElementById('ctl00_placeholderMain__welcomeText4');
         var subjectBox = document.getElementById('ctl00_placeholderMain_txtSubject');
         var roomType = document.getElementById('viju_teacher_option');
         var code = document.getElementById('viju_code');
         var pin = document.getElementById('viju_pin');
+        var externalSite = document.getElementById('viju_external_site');
         var temp;
         var notValid = false;
         var charIndex;
@@ -497,6 +522,10 @@
         temp = textBox3.value;
         temp = temp.replace( '&code=','');
         code.value = temp;
+
+        temp = textBox4.value;
+        temp = temp.replace( '&ext=','');
+        externalSite.value = temp;
     }
 
     function viju_hideUnusedPanels()
@@ -818,6 +847,7 @@
                                              <option value="0" selected="selected">None</option>
                                              <option value="1">Teacher</option>
                                              <option value="2">Student</option>
+                                             <option value="2">Virtual</option>
                                         </select>
                                     </td>
                                     <td class="property_table_caption">
@@ -846,6 +876,30 @@
                                         <span style="color: #f00" id="viju_code_help"></span>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="property_table_caption">
+                                        External Site:
+                                    </td>
+                                    <td class="property_table_value">
+                                        <input OnClick="Viju_updateLessonInfo()" id="viju_ext_checkbox" type="checkbox" name="viju_externalCheck" value="1"> 
+                                    </td>
+                                </tr>
+                                <tr id="viju_external_field_wrapper">
+                                    <td class="property_table_caption">
+                                        External Site IP/SIP Address:
+                                    </td>
+                                    <td class="property_table_value">
+                                        <input onchange="Viju_updateLessonInfo()" type="text" id="viju_external_site" /> 
+                                    </td>
+                                    <td class="property_table_caption">
+                                        <span style="color: #f00" id="viju_ext_help"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="property_table_caption">
+                                        External sites cannot be added to classes with virtual rooms.  Please instruct the external site to dial the virtual room when the lesson begins.
+                                    </td>
+                                </tr
                              </table>
                         </div>
                         <!---------  VIJU Lesson Information : END --------->

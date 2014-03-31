@@ -98,6 +98,28 @@ DEFINE_FUNCTION CHAR[255] RMS_listAttendingSites( integer lesson )
 	}
     }
     
+    // Check for external sites
+    if ( lesson == cNEXT )
+    {
+	if ( LENGTH_STRING( NEXT_LESSON.external ) )
+	{
+	    //Append external site address to sites attending with a line feed to 'list'
+	    //the items
+	    sitesAttending = "sitesAttending,$0D,$0A,NEXT_LESSON.external"
+	}
+    }
+    
+    // Check for external sites
+    ELSE IF ( lesson == cLIVE )
+    {
+	if ( LENGTH_STRING( LIVE_LESSON.external ) )
+	{
+	    //Append external site address to sites attending with a line feed to 'list'
+	    //the items
+	    sitesAttending = "sitesAttending,$0D,$0A,LIVE_LESSON.external"
+	}
+    }
+    
     return sitesAttending
 }
 

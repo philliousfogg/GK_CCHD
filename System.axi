@@ -82,6 +82,7 @@ STRUCTURE _Lesson
     CHAR Subject[64]
     CHAR Instructor[64]
     CHAR Message[100]
+    CHAR external[255]
     LONG Pin
     INTEGER Type
     CHAR Code[16]
@@ -204,25 +205,29 @@ DEFINE_FUNCTION SYSTEM_micMuteSiteFB()
 	{
 	    //Set Sysnum
 	    sysnum = GetDataIDFromDataSet ( SystemUIList, i )  
-	    
-	    //Index
-	    Index = SYSTEM_getIndexFromSysNum( sysnum ) 
-	    
-	    if ( sysnum < 500 )
+		
+	    if ( sysnum < 1000 )
 	    {
-		//Set the feedback on button
-		[dvTP, UIBtns[i+30] ] = [vdvCodecs[ sysnum ], VCONF_PRIVACY_FB ]
+		
+		//Index
+		Index = SYSTEM_getIndexFromSysNum( sysnum ) 
+		
+		if ( sysnum < 500 )
+		{
+		    //Set the feedback on button
+		    [dvTP, UIBtns[i+30] ] = [vdvCodecs[ sysnum ], VCONF_PRIVACY_FB ]
+		}
+		
+		//If in call then show end call button
+		if ( SysNum != SYSTEM_NUMBER)
+		{
+		    //Set the feedback on button
+		    [dvTP, UIBtns[i+40] ] = ( Systems[Index].liveLesson OR Systems[Index].NextLesson ) 
+		}
+		
+		//Notifys user of connection status
+		[dvTP, UIBtns[i+110]] = Systems[Index].status
 	    }
-	    
-	    //If in call then show end call button
-	    if ( SysNum != SYSTEM_NUMBER)
-	    {
-		//Set the feedback on button
-		[dvTP, UIBtns[i+40] ] = ( Systems[Index].liveLesson OR Systems[Index].NextLesson ) 
-	    }
-	    
-	    //Notifys user of connection status
-	    [dvTP, UIBtns[i+110]] = Systems[Index].status
 	}
     }
 }	
@@ -781,6 +786,16 @@ DEFINE_FUNCTION Systems_UpdateUIList(integer position)
 	}
     }
     
+    // Check for external Parties
+    if ( Systems[index].liveLesson )
+    {
+	if ( LENGTH_STRING ( LIVE_LESSON.external ) )
+	{
+	    x++
+	    addListElement( SystemUIList, LIVE_LESSON.external, x, 1001 )
+	}
+    }	
+    
     //Display list on the UI
     displayListData( SystemUIList, position, UIBtns, 0 )
 }
@@ -1203,22 +1218,26 @@ DEFINE_FUNCTION UI_TOOLS_DisplayListElement( integer List, char ref[], integer p
 		    //Show Call List Buttons
 		    SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-',SYSTEMS[ Index ].callStatus" //Show Call State
 		    
-		    //Don't show mic if virtual system
+		    //Don't show mic if virtual system and external call
 		    if ( SysNum < 501 ) 
 		    {
 			//Show Mic Mute Button
 			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',1'"
 		    }
 		    
-		    //Don't show the button if the this system
-		    if ( SysNum != SYSTEM_NUMBER )
+		    //Don't show the button if the this system and external call
+		    if ( SysNum != SYSTEM_NUMBER OR SysNum < 1000 )
 		    {
-			//Show Mic Mute Button
+			//Show +/- button for add remove class
 			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',1'"
 		    }
 		    
-		    //Show Offline Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',1'"
+		    //Don't show the button if this is an external call
+		    if ( SysNum < 1000 )
+		    {
+			//Show Offline Button
+			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',1'"
+		    }
 		}
 		
 		//If Clearing List
