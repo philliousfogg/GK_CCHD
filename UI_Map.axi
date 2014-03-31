@@ -20,6 +20,7 @@ DEFINE_FUNCTION UI_Map_attendingSites( integer lesson )
 {
     STACK_VAR INTEGER i 
     STACK_VAR INTEGER mobileCt
+    STACK_VAR CHAR site[255]
     
     UI_MAP_clearPoints()
     
@@ -79,6 +80,44 @@ DEFINE_FUNCTION UI_Map_attendingSites( integer lesson )
 	    break
 	}
     }
+    
+    // Check for external sites
+    if ( lesson == cNEXT )
+    {
+	if ( LENGTH_STRING( NEXT_LESSON.external ) )
+	{
+	    mobileCt ++
+	    
+	    if ( mobileCt <= 3 )
+	    {
+		MOBILE_MAP_POINT[mobileCt] = 1001
+		SYSTEM_setBtnVisibility( dvTP, SiteMapBtns[mobileCt + 30], true )
+		
+		site = NEXT_LESSON.external
+		
+		SEND_COMMAND dvTP, "'TEXT',ITOA( SiteMapBtns[mobileCt + 30] ),'-', removeLastbyte( REMOVE_STRING ( site, '@', 1 ) )"
+	    }
+	}
+    }
+    
+    // Check for external sites
+    ELSE IF ( lesson == cLIVE )
+    {
+	if ( LENGTH_STRING( LIVE_LESSON.external ) )
+	{
+	    mobileCt ++
+	    
+	    if ( mobileCt <= 3 )
+	    {
+		MOBILE_MAP_POINT[mobileCt] = 1001
+		SYSTEM_setBtnVisibility( dvTP, SiteMapBtns[mobileCt + 30], true )
+		
+		site = LIVE_LESSON.external
+		
+		SEND_COMMAND dvTP, "'TEXT',ITOA( SiteMapBtns[mobileCt + 30] ),'-', removeLastbyte( REMOVE_STRING ( site, '@', 1 ) )"
+	    }
+	}
+    }
 }
 
 DEFINE_FUNCTION UI_MAP_feedback()
@@ -92,9 +131,12 @@ DEFINE_FUNCTION UI_MAP_feedback()
 	
 	index = SYSTEM_getIndexFromSysNum(i)
 	
-	if ( SYSTEMS[index].systemNumber )
+	if ( index )
 	{
-	    [dvTP, SiteMapBtns[i] ] = SYSTEMS[index].thisSystem
+	    if ( SYSTEMS[index].systemNumber )
+	    {
+		[dvTP, SiteMapBtns[i] ] = SYSTEMS[index].thisSystem
+	    }
 	}
     }
     
@@ -105,9 +147,12 @@ DEFINE_FUNCTION UI_MAP_feedback()
 	
 	index = SYSTEM_getIndexFromSysNum(MOBILE_MAP_POINT[i])
 	
-	if ( SYSTEMS[index].systemNumber )
-	{
-	    [dvTP, SiteMapBtns[i + 30] ] = SYSTEMS[index].thisSystem
+	if ( index )
+	{	
+	    if ( SYSTEMS[index].systemNumber )
+	    {
+		[dvTP, SiteMapBtns[i + 30] ] = SYSTEMS[index].thisSystem
+	    }
 	}
     }	
 }
