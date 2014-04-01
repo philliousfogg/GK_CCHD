@@ -101,6 +101,35 @@ VOLATILE INTEGER H323_CHANGED
 VOLATILE CHAR pCallCommand[4][512]
 VOLATILE CHAR pStatus[4][24]
 
+// Sets module to offline mode
+DEFINE_FUNCTION CISCO_offline()
+{
+    STACK_VAR INTEGER i
+    STACK_VAR _CALL BlankCall
+    STACK_VAR _Codec BlankCodec
+    
+    //Set Offline flag in module
+    OFF[ vdvDevices[1], DEVICE_COMMUNICATING ]
+    
+    //Set Logged in flag to off
+    OFF[ vdvDevices[1], DATA_INITIALIZED ]
+    
+    //Clear all call and Codec Infomation
+    Codec = BlankCodec
+    
+    //Clear Call Data
+    FOR ( i=1; i<=4; i++ )
+    {
+	CALLS[i] = BlankCall
+    }
+    
+    //Switch off all channels in Virtual Device
+    FOR ( i=1; i<=400; i++ )
+    {
+	OFF[ vdvDevices[1], i ]
+    }    
+}
+
 //Pushes all the calls to up to the top
 DEFINE_FUNCTION CISCO_reorderCalls()
 {
@@ -230,6 +259,8 @@ DEFINE_FUNCTION char[255] removeLastbyte( char pString[255] )
 //Evaluates Incoming Data
 DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 {
+    ON[ vdvDevices[1], DEVICE_COMMUNICATING ] 
+    
     //Stand By
     IF ( FIND_STRING ( cData, 'Standby Active: Off', 1 ) )
     {
@@ -878,33 +909,7 @@ DATA_EVENT [dvCodec]
     }
     OFFLINE:
     {
-	STACK_VAR INTEGER i
-	STACK_VAR _CALL BlankCall
-	STACK_VAR _Codec BlankCodec
-	
-	//Set Offline flag in module
-	OFF[ vdvDevices[1], DEVICE_COMMUNICATING ]
-	
-	//Set Logged in flag to off
-	OFF[ vdvDevices[1], DATA_INITIALIZED ]
-	
-	//Clear all call and Codec Infomation
-	Codec = BlankCodec
-	
-	//Clear Call Data
-	FOR ( i=1; i<=4; i++ )
-	{
-	    CALLS[i] = BlankCall
-	}
-	
-	//Switch off all channels in Virtual Device
-	FOR ( i=1; i<=400; i++ )
-	{
-	    OFF[ vdvDevices[1], i ]
-	}
-	
-	//Attempt Reconnect
-	//CISCO_Connect( IP_ADDRESS )
+	CISCO_offline()
     }
     ONERROR:
     {
@@ -927,7 +932,7 @@ DATA_EVENT [dvCodec]
     }
     STRING:
     {
-	SEND_STRING 0, "'Rx: ', DATA.TEXT"
+	// SEND_STRING 0, "'Rx: ', DATA.TEXT"
 	
 	//if not logged in 
 	if ( ![ vdvDevices[1], DATA_INITIALIZED ] )
@@ -1638,6 +1643,21 @@ WAIT 50
     }
 }
 
+WAIT 100 {
+    
+    // Ping for serial number every 10 seconds
+    if ( [ vdvDevices[1], DEVICE_COMMUNICATING ]  )
+    {
+	OFF[ vdvDevices[1], DEVICE_COMMUNICATING ] 
+	CISCO_sendCommand ( 'xStatus SystemUnit Hardware Module SerialNumber' )
+    }
+    
+    // If there is still no response set to offline
+    else
+    {
+	CISCO_offline()
+    }
+}
 
 WAIT 5 {
     CISCO_reorderCalls()
