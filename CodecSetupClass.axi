@@ -242,6 +242,16 @@ DEFINE_FUNCTION CODEC_connectToSite( dev codec, integer CodecIndex, CHAR name[25
 		    }
 		}
 	    }
+	    
+	    // Is connected to the wrong site IP or SIP address
+	    else if ( 	FIND_STRING ( systems[codecIndex].callStatus, '@', 1 ) OR 
+			FIND_STRING ( systems[CodecIndex].callStatus, '.', 1 ) )
+		
+		//Disconnect call 
+		PULSE[codec, DIAL_FLASH_HOOK]
+	    {
+	    
+	    }
 	}
 	
 	//System is connected to the site
@@ -311,8 +321,20 @@ DEFINE_FUNCTION CODEC_connectSites()
 	    numberOfSites = SYSTEM_countLessonSites(cNEXT)
 	}
 	
+	// If the current lesson contains an external party
+	if ( LENGTH_STRING ( LIVE_LESSON.external ) )
+	{
+	    STACK_VAR INTEGER thisIndex 
+	    
+	    SEND_STRING 0, "'External PTP'"
+	    
+	    thisIndex = SYSTEM_getIndexFromSysNum(SYSTEM_NUMBER)
+	    
+	    CODEC_connectToSite(vdvCodec, thisIndex, LIVE_LESSON.external )
+	}
+	
 	//if there are only 2 sites then connect point to point
-	if ( numberOfSites == 2 )
+	else if ( numberOfSites == 2 )
 	{
 	    STACK_VAR INTEGER i,ct 
 	    
@@ -526,7 +548,11 @@ DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
     {
 	if ( Direction )
 	{
-	    if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] == 1 )
+	    if ( EXTERNAL_SITE )
+	    {
+		ON[vdvCodecFar[ACTIVE_SYSTEM], Direction]
+	    }
+	    else if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] == 1 )
 	    {
 		ON[vdvCodecs[ACTIVE_SYSTEM], Direction]
 	    }
@@ -549,7 +575,14 @@ DEFINE_FUNCTION CODEC_moveCamera( integer Direction )
 	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], PAN_LT ]
 	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], PAN_RT ]
 	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], TILT_DN ]
-	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], TILT_UP ]   
+	    OFF[vdvCodecs_Cam2[ACTIVE_SYSTEM], TILT_UP ]  
+	    
+	    OFF[vdvCodecFar[ACTIVE_SYSTEM], ZOOM_IN ]
+	    OFF[vdvCodecFar[ACTIVE_SYSTEM], ZOOM_OUT ]
+	    OFF[vdvCodecFar[ACTIVE_SYSTEM], PAN_LT ]
+	    OFF[vdvCodecFar[ACTIVE_SYSTEM], PAN_RT ]
+	    OFF[vdvCodecFar[ACTIVE_SYSTEM], TILT_DN ]
+	    OFF[vdvCodecFar[ACTIVE_SYSTEM], TILT_UP ]  	    
 	}
     }
     ELSE

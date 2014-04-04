@@ -25,10 +25,15 @@ DATA_EVENT [vdvLesson]
 		LIVE_LESSON.index	= index
 		LIVE_LESSON.Subject 	= getAttrValue( 'subjt', aCommand )
 		LIVE_LESSON.Instructor 	= getAttrValue( 'instr', aCommand )
-		LIVE_LESSON.Type 	= ATOI ( removeLastbyte( getAttrValue( 'type', aCommand ) ) )
-		LIVE_LESSON.Code	= removeLastbyte( getAttrValue( 'code', aCommand ) )
-		LIVE_LESSON.Pin		= ATOI ( removeLastbyte( getAttrValue( 'pin', aCommand ) ) )
-		LIVE_LESSON.External	= removeLastByte( getAttrValue( 'ext', aCommand ) )
+		LIVE_LESSON.Type 	= ATOI ( getAttrValue( 'type', aCommand ) )
+		LIVE_LESSON.Code	= getAttrValue( 'code', aCommand ) 
+		LIVE_LESSON.Pin		= ATOI ( getAttrValue( 'pin', aCommand ) )
+		
+		if ( getAttrValue( 'ext', aCommand ) != 'null' )
+		{
+		    LIVE_LESSON.External = removeLastByte( getAttrValue( 'ext', aCommand ) )
+		}
+		
 		LIVE_LESSON.Message  	= getAttrValue( 'message', aCommand )
 		LIVE_LESSON.StartTime 	= getAttrValue( 'start', aCommand )
 		LIVE_LESSON.EndTime 	= getAttrValue( 'end', aCommand )
@@ -44,10 +49,15 @@ DATA_EVENT [vdvLesson]
 		NEXT_LESSON.index	= index
 		NEXT_LESSON.Subject 	= getAttrValue( 'subjt', aCommand )
 		NEXT_LESSON.Instructor 	= getAttrValue( 'instr', aCommand )
-		NEXT_LESSON.Type 	= ATOI ( removeLastbyte( getAttrValue( 'type', aCommand ) ) )
-		NEXT_LESSON.Code  	= removeLastbyte( getAttrValue( 'code', aCommand ) )
-		NEXT_LESSON.Pin		= ATOI ( removeLastbyte( getAttrValue( 'pin', aCommand ) ) )
-		NEXT_LESSON.External	= removeLastByte( getAttrValue( 'ext', aCommand ) )
+		NEXT_LESSON.Type 	= ATOI ( getAttrValue( 'type', aCommand )  )
+		NEXT_LESSON.Code  	= getAttrValue( 'code', aCommand  )
+		NEXT_LESSON.Pin		= ATOI ( getAttrValue( 'pin', aCommand )  )
+		
+		if ( getAttrValue( 'ext', aCommand ) != 'null' )
+		{
+		   NEXT_LESSON.External	= removeLastByte( getAttrValue( 'ext', aCommand ) )
+		}
+		
 		NEXT_LESSON.Message  	= getAttrValue( 'message', aCommand ) 
 		NEXT_LESSON.StartTime 	= getAttrValue( 'start', aCommand )
 		NEXT_LESSON.EndTime 	= getAttrValue( 'end', aCommand )
@@ -203,6 +213,9 @@ DATA_EVENT [vdvSystems]
 	    {
 		STACK_VAR CHAR blankArray[10][255]
 		
+		// All popups on page
+		SYSTEM_hidePopups()
+		
 		//Reset Previous call state to refresh the call control
 		PREVIOUS_CALL_STATE = blankArray
 		
@@ -222,6 +235,9 @@ DATA_EVENT [vdvSystems]
 		    SEND_COMMAND dvTP, "'@PPK-_login'"
 		    
 		    SEND_COMMAND dvTP, "'PAGE-Login'"
+		    
+		    //Set External Control to off
+		    EXTERNAL_SITE = 0
 		}
 		
 		//Refresh RMS text

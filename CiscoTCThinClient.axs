@@ -54,6 +54,7 @@ STRUCTURE _Codec
     INTEGER IrSensor
     INTEGER AutoAnswerMute
     INTEGER AutoAnswer
+    INTEGER MicMute
 }
 
 DEFINE_CONSTANT
@@ -355,10 +356,14 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
     //Audio Microphones
     ELSE if ( FIND_STRING( cData, 'Audio Microphones Mute: Off', 1 ) )
     {
+	Codec.MicMute = 0
+	
 	OFF [vdvDevices[1], ACONF_PRIVACY_FB]
     }
     ELSE if ( FIND_STRING( cData, 'Audio Microphones Mute: On', 1 ) )
     {
+	Codec.MicMute = 1
+	
 	ON  [vdvDevices[1], ACONF_PRIVACY_FB]
     }
     ELSE if ( FIND_STRING( cData, 'Audio Volume:', 1 ) )
@@ -817,7 +822,7 @@ DEFINE_FUNCTION CISCO_sendCommand( Char Cmd[255] )
     SEND_STRING dvCodec, "Cmd,$0D,$0A"
     
     //To Debug
-    //SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
+    // SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
 }
 
 //See if there has been any changes to the call
@@ -886,6 +891,9 @@ DEFINE_FUNCTION CISCO_checkCallStatus( )
 DEFINE_START
 
 SET_VIRTUAL_CHANNEL_COUNT ( vdvDevices[1], 400 )
+SET_VIRTUAL_CHANNEL_COUNT ( vdvDevices[2], 400 )
+SET_VIRTUAL_CHANNEL_COUNT ( vdvDevices[3], 400 )
+SET_VIRTUAL_CHANNEL_COUNT ( vdvDevices[4], 400 )
 
 IP_ADDRESS 	= '0.0.0.0'
 USERNAME 	= 'admin'
@@ -932,7 +940,7 @@ DATA_EVENT [dvCodec]
     }
     STRING:
     {
-	// SEND_STRING 0, "'Rx: ', DATA.TEXT"
+	//SEND_STRING 0, "'Rx: ', DATA.TEXT"
 	
 	//if not logged in 
 	if ( ![ vdvDevices[1], DATA_INITIALIZED ] )
@@ -1412,16 +1420,22 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 		if ( [ vdvDevices[1], ACONF_PRIVACY_FB ] )
 		{
 		    //UnMute Microphones
-		    CISCO_sendCommand('xCommand Audio Microphones Unmute') 
+		    OFF[ vdvDevices[1], ACONF_PRIVACY_FB ]
 		}
 		ELSE
 		{
 		    //Mute Microphones
-		    CISCO_sendCommand('xCommand Audio Microphones Mute')
+		    ON[ vdvDevices[1], ACONF_PRIVACY_FB ]
 		}
 	    }
 	    
-	    //Case 
+	    
+	    // Mic Mute
+	    Case ACONF_PRIVACY_ON:
+	    {
+		//Mute Microphones
+		CISCO_sendCommand('xCommand Audio Microphones Mute')
+	    }
 	    
 	    //Selfview
 	    CASE 305:
@@ -1530,6 +1544,13 @@ CHANNEL_EVENT [vdvDevices[1], 0]
     {
 	SWITCH ( CHANNEL.CHANNEL )
 	{
+	    // UnMute Microphons
+	    CASE ACONF_PRIVACY_ON:
+	    {
+		//UnMute Microphones
+		CISCO_sendCommand('xCommand Audio Microphones Unmute')
+	    }
+	    
 	    //Switch the OSD Off
 	    CASE 303:
 	    {

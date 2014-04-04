@@ -33,7 +33,7 @@ VOLATILE INTEGER UIBtns[] = {
     57, //Admin Settings (DEPRECATED)
     58,	//Screen Layout
     59, 
-    60, //60 Spare
+    60, //60 Volume/Mic Disable
     
     //Alert Boxes
     61, //Alert Title
@@ -173,7 +173,9 @@ VOLATILE INTEGER VCCameraBtns[] = {
     20, //53: IR Disable
     21, //54: Cam 1 Backlight
     22,	//55: Cam 2 Backlight
-    25  //56: Auto Answer Mic Mute
+    25, //56: Auto Answer Mic Mute
+    
+    30	//57: Camera Presets Tray Button
 }
 
 VOLATILE INTEGER VCVolumeControls[] = {

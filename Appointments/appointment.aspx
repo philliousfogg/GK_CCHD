@@ -399,7 +399,6 @@
         textBox1.value = '&type=' + roomType.options[roomType.selectedIndex].value;
         textBox2.value = '&pin=' + pin.value; 
         textBox3.value = '&code=' + code.value;
-        textBox4.value = '&ext=' + externalSite.value; 
 
 
         //Validate entry
@@ -443,17 +442,36 @@
             document.getElementById('viju_code_help').innerHTML = "";
         }
 
-        if ( externalSite.value == '' && extCheckBox.checked )
+        
+        if ( extCheckBox.checked )
         {
-            notValid = true;
-            document.getElementById('viju_ext_help').innerHTML = "Enter a valid SIP or IP address";
+            if ( externalSite.value == '')
+            {
+                notValid = true;
+                document.getElementById('viju_ext_help').innerHTML = "Enter a valid SIP or IP address";
+            }
+            else if ( externalSite.value.indexOf("@training.globalknowledge.net") != -1 )
+            {
+                notValid = true;
+                document.getElementById('viju_ext_help').innerHTML = "Please use an external site address";
+            }
+            else if ( externalSite.value.indexOf('9976001') != -1 && externalSite.value.indexOf('@interoute.vc') != -1 )
+            {
+                notValid = true
+                document.getElementById('viju_ext_help').innerHTML = "You cannot add virtual rooms as an external site";
+            }
+            else
+            {
+                document.getElementById('viju_ext_help').innerHTML = "";
+                textBox4.value = '&ext=' + externalSite.value; 
+            }
         }
         else
         {
-            document.getElementById('viju_ext_help').innerHTML = "";
+            textBox4.value = ""; 
         }
 
-        //Show or hide the save buttondepending on validation
+        // Show or hide the save buttondepending on validation
         if ( notValid )
         {
             document.getElementById('Viju_SaveBtn').style.display = 'none';
@@ -484,6 +502,7 @@
         var code = document.getElementById('viju_code');
         var pin = document.getElementById('viju_pin');
         var externalSite = document.getElementById('viju_external_site');
+        var extCheckBox = document.getElementById('viju_ext_checkbox');
         var temp;
         var notValid = false;
         var charIndex;
@@ -523,9 +542,15 @@
         temp = temp.replace( '&code=','');
         code.value = temp;
 
-        temp = textBox4.value;
-        temp = temp.replace( '&ext=','');
-        externalSite.value = temp;
+        if ( textBox4.value != '')
+        {
+            temp = textBox4.value;
+            temp = temp.replace( '&ext=','');
+            externalSite.value = temp;
+            
+            extCheckBox.checked = true;
+        }
+        
     }
 
     function viju_hideUnusedPanels()
@@ -896,10 +921,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="property_table_caption">
+                                    <td colspan="3">
                                         External sites cannot be added to classes with virtual rooms.  Please instruct the external site to dial the virtual room when the lesson begins.
                                     </td>
-                                </tr
+                                </tr>
                              </table>
                         </div>
                         <!---------  VIJU Lesson Information : END --------->

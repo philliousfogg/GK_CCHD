@@ -21,6 +21,7 @@ VOLATILE INTEGER MOBILE_UNITS = 3
 DEFINE_VARIABLE
 
 VOLATILE INTEGER MASTER_PIN = 1988
+VOLATILE INTEGER EXTERNAL_SITE
 
 DEFINE_TYPE
 
@@ -186,6 +187,16 @@ DEFINE_FUNCTION DEBUG ( char text[255] )
     if ( [vdvSystem, SystemChannels[256]] )
     {
 	SEND_STRING 0, text
+    }
+}
+
+DEFINE_FUNCTION SYSTEM_listfeedback()
+{
+    STACK_VAR INTEGER x
+    
+    FOR ( x=1; x<=UIList[SystemUIList].displaySize; x++ ) 
+    {
+	[UIList[SystemUIList].UIDevice, UIBtns[x + UIList[SystemUIList].startBtn] ] = ( UIList[SystemUIList].Selected == UIList[SystemUIList].SLOT[x] AND UIList[SystemUIList].SLOT[x] )
     }
 }
 
@@ -787,7 +798,7 @@ DEFINE_FUNCTION Systems_UpdateUIList(integer position)
     }
     
     // Check for external Parties
-    if ( Systems[index].liveLesson )
+    if ( Systems[index].liveLesson AND !SITE_LIST_FILTER )
     {
 	if ( LENGTH_STRING ( LIVE_LESSON.external ) )
 	{
@@ -920,11 +931,14 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
 	//Set site list filter to site list
 	SITE_LIST_FILTER = 0
 	
-	//Set the list item to this system
-	setElementSelectedbyButton( SystemUIList, 11 )
+	// Set active camera
+	CODEC_SwitchCameras(ACTIVE_SYSTEM, 1)
 	
 	//Show only the rooms in the lesson
 	Systems_UpdateUIList(1)
+	
+	// Select list item
+	UILIST[SystemUIList].selected = Index
     }
   
     
@@ -1083,6 +1097,18 @@ DEFINE_FUNCTION SYSTEM_setBtnVisibility( DEV TP, INTEGER btn, INTEGER show )
     SEND_COMMAND TP, "'^SHO-',ITOA ( btn ),',',ITOA (show)"
 }
 
+DEFINE_FUNCTION SYSTEM_hidePopups()
+{
+    // Hide Site Add/Remove Context
+    SEND_COMMAND dvTP, "'@PPK-_SiteContext'"
+    
+    //Hide Camera Presets
+    SEND_COMMAND dvTP, "'@PPK-[VC]CameraPresets'"
+    
+    //Hide Lighting Presets
+    SEND_COMMAND dvTP, "'@PPK-[Lights]Presets'"
+}
+
 DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index) 
 {    
     // Hide all effected Buttons
@@ -1099,7 +1125,16 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
     SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[73], 0 )
     
     // Camera 2 Backlight compensation
-    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[22], 0 )
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[55], 0 )
+    
+    // Show Selfview Button
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[9], 1 )
+    
+    // Show Camera Preset Tray
+    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[57], 1 )
+    
+    // Hide Disabled Volume/Mic Buttons
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[60], 0 )
     
     // All Functionality Menu buttons
     SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 0 )
@@ -1108,8 +1143,24 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
     SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 0 )
     SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 0 )
     
+    //External Call
+    if ( index >= 1000 )
+    {
+	// Show Camera Buttons
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
+	
+	// Hide Selfview Button
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[9], 0 )
+	
+	// Hide Camera Preset Tray
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[57], 0 )
+	
+	// Show Disabled Volume/Mic Buttons
+	SYSTEM_setBtnVisibility ( dvTP, UIBtns[60], 1 )
+    }
+    
     //Receive Room
-    if ( Systems[index].receiveOnly )
+    ELSE if ( Systems[index].receiveOnly )
     {
 	// Mobile Rooms
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
@@ -1177,7 +1228,7 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
 	
 	// Camera 2 Backlight compensation
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[22], 1 )
+	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[55], 1 )
 	
 	if ( SYSTEMS[Index].thisSystem )
 	{
@@ -1200,63 +1251,66 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 
 //Adds additional elements to the list (this is called from UI_TOOLs
 DEFINE_FUNCTION UI_TOOLS_DisplayListElement( integer List, char ref[], integer pData, integer BtnIndex, integer TPport )
+    {
+	//Check to see we are using the correct list by UI Port.
+	if ( list == SystemUIList )
 	{
-	    //Check to see we are using the correct list by UI Port.
-	    if ( list == SystemUIList )
+	    STACK_VAR INTEGER Index
+	    STACK_VAR INTEGER SysNum
+	    
+	    //Get System Number 
+	    SysNum = pData
+	    
+	    //Index
+	    Index = SYSTEM_getIndexFromSysNum( sysnum )
+	    
+	    IF ( SysNum )
 	    {
-		STACK_VAR INTEGER Index
-		STACK_VAR INTEGER SysNum
+		//Show Call List Buttons
+		SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-',SYSTEMS[ Index ].callStatus" //Show Call State
 		
-		//Get System Number 
-		SysNum = pData
-		
-		//Index
-		Index = SYSTEM_getIndexFromSysNum( sysnum )
-		
-		IF ( SysNum )
+		//Don't show mic if virtual system and external call
+		if ( SysNum < 501 ) 
 		{
-		    //Show Call List Buttons
-		    SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-',SYSTEMS[ Index ].callStatus" //Show Call State
-		    
-		    //Don't show mic if virtual system and external call
-		    if ( SysNum < 501 ) 
-		    {
-			//Show Mic Mute Button
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',1'"
-		    }
-		    
-		    //Don't show the button if the this system and external call
-		    if ( SysNum != SYSTEM_NUMBER OR SysNum < 1000 )
+		    //Show Mic Mute Button
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',1'"
+		}
+		
+		//Don't show the button if the this system and external call
+		if ( SysNum != SYSTEM_NUMBER )
+		{
+		    if ( SysNum < 1000 )
 		    {
 			//Show +/- button for add remove class
 			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',1'"
 		    }
-		    
-		    //Don't show the button if this is an external call
-		    if ( SysNum < 1000 )
-		    {
-			//Show Offline Button
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',1'"
-		    }
 		}
 		
-		//If Clearing List
-		ELSE
+		//Don't show the button if this is an external call
+		if ( SysNum < 1000 )
 		{
-		    //Hide Call List Buttons
-		    SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-'" //Clear Call State
-		    
-		    //Hide Offline Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',0'"
-		    
-		    //Hide Mic Mute Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',0'"
-		    
-		    //Hide Mic Mute Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',0'"
+		    //Show Offline Button
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',1'"
 		}
 	    }
+	    
+	    //If Clearing List
+	    ELSE
+	    {
+		//Hide Call List Buttons
+		SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-'" //Clear Call State
+		
+		//Hide Offline Button
+		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',0'"
+		
+		//Hide Mic Mute Button
+		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',0'"
+		
+		//Hide Mic Mute Button
+		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',0'"
+	    }
 	}
+    }
 
 //Confirms PIN change
 DEFINE_FUNCTION System_changePinResponse( _Command parser )
@@ -1364,8 +1418,7 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    CASE 13:
 	    CASE 14:
 	    {
-		// Hide Site Add/Remove Context
-		SEND_COMMAND dvTP, "'@PPK-_SiteContext'"
+		SYSTEM_hidePopups()
 	    }
 	}
     }
@@ -1416,20 +1469,30 @@ BUTTON_EVENT [dvTP, UIBtns]
 		STACK_VAR INTEGER index
 		STACK_VAR INTEGER SysNum
 		
+		//Set External Control to off
+		EXTERNAL_SITE = 0
+		
 		//Set Active System
 		sysNum = GetDataIDFromDataSet ( SystemUIList, svBtn - 10 ) 
 		
 		//Get System Index
 		index = SYSTEM_getIndexFromSysNum( sysNum )
 		
+		//Set the list item
+		setElementSelectedbyButton( SystemUIList, svBtn )
+		
 		//If the system is not a virtual room
 		if ( SYSTEMS[index].systemNumber < 501 )
 		{
-		    //Set the list item
-		    setElementSelectedbyButton( SystemUIList, svBtn )
-		    
 		    //Set Active System
 		    ACTIVE_SYSTEM = sysnum
+		    
+		    // If there is not an camera active set a camera active
+		    if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] )
+		    {
+			// Set active camera if not set
+			CODEC_SwitchCameras(ACTIVE_SYSTEM, 1)
+		    }
 		    
 		    //Update Volume Level
 		    SEND_LEVEL dvTPCodec, VCVolumeControls[5], Systems[index].volume
@@ -1449,8 +1512,24 @@ BUTTON_EVENT [dvTP, UIBtns]
 		    //Sets the buttons depending on if its a receive room
 		    SYSTEM_evaluateRoom( Index )
 		}
+		
+		// If External Call
+		ELSE IF ( SysNum > 1000 )
+		{
+		    //Sets the buttons depending on if its external call
+		    SYSTEM_evaluateRoom( SysNum )
+		    
+		    ACTIVE_SYSTEM = SYSTEM_NUMBER
+		    
+		    // Set External Site Flag to on
+		    EXTERNAL_SITE = 1
+		}
+		
+		// If Virtual Room cannot control
 		ELSE
 		{
+		    UIList[SystemUIList].selected = 0
+		    
 		    SYSTEM_alert('Control Room','This room cannot be controlled.')
 		}
 	    }
@@ -1533,6 +1612,9 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    CASE 57:
 	    CASE 58:
 	    {
+		// Hide all popups
+		SYSTEM_hidePopups()
+		
 		//Set the Menu and the selected option
 		SELECTED_MENU = svBtn
 		

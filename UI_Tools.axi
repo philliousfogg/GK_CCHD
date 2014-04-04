@@ -205,9 +205,9 @@ DEFINE_FUNCTION incrementList(integer List, integer step, INTEGER UIButtonSet[] 
     //Increment by Page
     ELSE
     {
-	STACK_VAR SINTEGER newPosition
-	newPosition = UIList[List].Position - UIList[List].displaySize
-
+	STACK_VAR INTEGER newPosition
+	newPosition = UIList[List].Position - UIList[List].displaySize 
+	
 	if ( newPosition > 0 )
 	{
 	    displayListData(List, newPosition, UIButtonSet, 1 )
@@ -248,22 +248,6 @@ DEFINE_FUNCTION decrementList( integer List, integer step, INTEGER UIButtonSet[]
     }
 }
 
-DEFINE_FUNCTION feedback()
-{
-    STACK_VAR INTEGER i,x,ct
-    
-    FOR ( i=1; i<=LISTS_LENGTH; i++ )
-    {
-	IF ( UIList[i].ID )
-	{
-	    FOR ( x=1; x<=UIList[i].displaySize; x++ ) 
-	    {
-		[UIList[i].UIDevice, UIBtns[x + UIList[i].startBtn] ] = ( UIList[i].Selected == UIList[i].SLOT[x] AND UIList[i].SLOT[x] )
-	    }
-	}
-    }
-}
 
 DEFINE_PROGRAM
 
-feedback()

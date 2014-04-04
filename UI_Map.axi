@@ -82,7 +82,7 @@ DEFINE_FUNCTION UI_Map_attendingSites( integer lesson )
     }
     
     // Check for external sites
-    if ( lesson == cNEXT )
+    /*if ( lesson == cNEXT )
     {
 	if ( LENGTH_STRING( NEXT_LESSON.external ) )
 	{
@@ -95,7 +95,7 @@ DEFINE_FUNCTION UI_Map_attendingSites( integer lesson )
 		
 		site = NEXT_LESSON.external
 		
-		SEND_COMMAND dvTP, "'TEXT',ITOA( SiteMapBtns[mobileCt + 30] ),'-', removeLastbyte( REMOVE_STRING ( site, '@', 1 ) )"
+		SEND_COMMAND dvTP, "'TEXT',ITOA( SiteMapBtns[mobileCt + 30] ),'-External'"
 	    }
 	}
     }
@@ -114,10 +114,10 @@ DEFINE_FUNCTION UI_Map_attendingSites( integer lesson )
 		
 		site = LIVE_LESSON.external
 		
-		SEND_COMMAND dvTP, "'TEXT',ITOA( SiteMapBtns[mobileCt + 30] ),'-', removeLastbyte( REMOVE_STRING ( site, '@', 1 ) )"
+		SEND_COMMAND dvTP, "'TEXT',ITOA( SiteMapBtns[mobileCt + 30] ),'-External'"
 	    }
 	}
-    }
+    }*/
 }
 
 DEFINE_FUNCTION UI_MAP_feedback()

@@ -339,6 +339,7 @@ vdvSystem39 	= 33050:1:39
 vdvSystem40	= 33050:1:40
 
 vdvSystem101	= 33050:1:101
+vdvSystem102	= 33050:1:102
 
 //Virtual Rooms
 vdvVSystem1	= 33055:1:1
@@ -608,7 +609,8 @@ volatile dev vdvSystems[] = {
     vdvSystem39, 	
     vdvSystem40,
     
-    vdvSystem101
+    vdvSystem101,
+    vdvSystem102
 } 
 
 VOLATILE dev vdvLights[] = {
