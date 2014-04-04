@@ -12,6 +12,7 @@ SYSTEMS_thisSystem ( 	'Oslo - Room 2', 	//Room Name
 			'Oslo', 		//Location
 			'Global Knowledge', 	//Company
 			true,			//Camera Inverse
+			false,			//Mobile Room
 			false			//Receive Only Room
 )
 

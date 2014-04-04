@@ -19,12 +19,28 @@ STRUCTURE _COMMAND
  
 DEFINE_CONSTANT 
 
+// Shrowds password characters with *
+DEFINE_FUNCTION CHAR[64] UTILITIES_shrowdPassword(char password[64])
+{
+    STACK_VAR INTEGER i
+    STACK_VAR CHAR shrowded[64]
+    
+    for ( i=1; i<=LENGTH_STRING ( password ); i++ )
+    {
+	shrowded = "shrowded, '*'"
+    }
+    
+    return shrowded
+}
+
 //Strip last byte
 DEFINE_FUNCTION char[255] removeLastbyte( char pString[255] )
 {
     SET_LENGTH_STRING ( pString, ( LENGTH_STRING ( pString ) - 1 ) )
     RETURN pString
 }
+
+
 
 //gets Attr from GET Method
 DEFINE_FUNCTION Char[255] GetAttrValue(Char Attr[64], _COMMAND parser)

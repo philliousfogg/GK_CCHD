@@ -74,9 +74,14 @@ DEFINE_FUNCTION addListElement( integer List, char Label[255], integer slot, int
 
 DEFINE_FUNCTION integer GetDataIDFromDataSet ( integer List, Integer slotNum )
 {
-    STACK_VAR Result
-    Result = UIList[List].DataSet[UIList[List].SLOT[slotNum]].DataID
-    RETURN Result
+    if ( UIList[List].SLOT[slotNum] )
+    {
+	return UIList[List].DataSet[UIList[List].SLOT[slotNum]].DataID
+    }
+    ELSE
+    {
+	return 0
+    }
 }
 
 //Returns the slot number from a data Index

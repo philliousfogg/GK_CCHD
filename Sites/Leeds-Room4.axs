@@ -19,7 +19,7 @@ SYSTEMS_thisSystem ( 	'Leeds - Room 4', 	//Room Name
 //Front Smart Board
 DEVICES_register( 	'SmartBoard Projector',	//Device Name
 			'NEC',			//Manufacturer
-			'NP-U310WG',		//Model
+			'NP-U260WG',		//Model
 			'',			//Serial Number
 			'10.44.115.140',	//IP Address
 			'',			//Baud Rate
@@ -28,10 +28,10 @@ DEVICES_register( 	'SmartBoard Projector',	//Device Name
 			dvProjector1		//Physical Port
 )
 
-//Front Smart Board
+//Front Far End
 DEVICES_register( 	'Front Far End Projector',//Device Name
 			'NEC',			//Manufacturer
-			'NP-U310WG',		//Model
+			'NP-U260WG',		//Model
 			'',			//Serial Number
 			'10.44.115.141',		//IP Address
 			'',			//Baud Rate
@@ -40,10 +40,10 @@ DEVICES_register( 	'Front Far End Projector',//Device Name
 			dvProjector2		//Physical Port
 )
 
-//Front Smart Board
+//Rear Far End
 DEVICES_register( 	'Rear Far End Projector',//Device Name
 			'NEC',			//Manufacturer
-			'NP-U310WG',		//Model
+			'M260WS',		//Model
 			'',			//Serial Number
 			'10.44.115.142',	//IP Address
 			'',			//Baud Rate

@@ -3,6 +3,9 @@ PROGRAM_NAME='DeviceDefinitions'
 //Define all virtual and duet devices in the Estate
 DEFINE_DEVICE
 
+//Master
+dvSystem 	= 0:1:0
+
 //Physical Devices RS232
 dvAmplifier 	= 5001:1:0
 

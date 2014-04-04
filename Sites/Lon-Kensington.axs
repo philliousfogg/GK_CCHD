@@ -16,7 +16,7 @@ SYSTEMS_thisSystem ( 	'London - Kensington', 	//Room Name
 //Front Smart Board
 DEVICES_register( 	'SmartBoard Projector',	//Device Name
 			'NEC',			//Manufacturer
-			'NP-U310WG',		//Model
+			'NP-U260WG',		//Model
 			'',			//Serial Number
 			'10.44.83.140',	//IP Address
 			'',			//Baud Rate
@@ -25,10 +25,10 @@ DEVICES_register( 	'SmartBoard Projector',	//Device Name
 			dvProjector1		//Physical Port
 )
 
-//Front Smart Board
+//Front Far End
 DEVICES_register( 	'Front Far End Projector',//Device Name
 			'NEC',			//Manufacturer
-			'NP-U310WG',		//Model
+			'NP-U260WG',		//Model
 			'',			//Serial Number
 			'10.44.83.141',		//IP Address
 			'',			//Baud Rate
@@ -37,10 +37,10 @@ DEVICES_register( 	'Front Far End Projector',//Device Name
 			dvProjector2		//Physical Port
 )
 
-//Front Smart Board
+//Front Back End
 DEVICES_register( 	'Rear Far End Projector',//Device Name
 			'NEC',			//Manufacturer
-			'NP-U310WG',		//Model
+			'NP-U260WG',		//Model
 			'',			//Serial Number
 			'10.44.83.142',	//IP Address
 			'',			//Baud Rate
