@@ -142,7 +142,7 @@ DEFINE_FUNCTION displayListData( integer List, integer start, INTEGER UIButtonSe
 {
     STACK_VAR INTEGER i, x
     
-    clearDisplayedData( List, UIButtonSet, HideBtns )
+    //clearDisplayedData( List, UIButtonSet, HideBtns )
 
     x = start
     
@@ -158,6 +158,20 @@ DEFINE_FUNCTION displayListData( integer List, integer start, INTEGER UIButtonSe
 	    UI_TOOLS_DisplayListElement( List, UIList[List].ref, UIList[List].DataSet[x].DataID, i,UIList[List].UIDevice.PORT )
 	    //SEND_STRING vdvSystem, "'DisplayListData-id=',ITOA ( List ),'&ref=',UIList[List].ref,'&data=',ITOA ( UIList[List].DataSet[x].DataID ),'&button=',ITOA ( i ),'&uiport=',ITOA( UIList[List].UIDevice.PORT )"
 	    x++
+	}
+	ELSE
+	{
+	    SEND_COMMAND UIList[List].UIDevice, "'TEXT',ITOA( UIButtonSet[i + UIList[List].startBtn ] ),'-'"
+	    
+	    //If buttons need to be hidden then Hide the buttons
+	    IF ( HideBtns )
+		SEND_COMMAND UIList[List].UIDevice, "'^SHO-',ITOA( UIButtonSet[i + UIList[List].startBtn ] ),',0'"
+	    
+	    //This must be declared in the code <list#>,<listRef>,<data>,<button>,<TP.Port>
+	    UI_TOOLS_DisplayListElement( List, UIList[List].ref,0,i,UIList[List].UIDevice.PORT )
+	    //SEND_STRING vdvSystem, "'DisplayListData-id=',ITOA ( List ),'&ref=',UIList[List].ref,'&button=',ITOA ( i ),'&uiport=',ITOA( UIList[List].UIDevice.PORT )"
+	    
+	    UIList[List].SLOT[i] = 0
 	}
     }
     

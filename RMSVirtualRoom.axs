@@ -64,6 +64,8 @@ VOLATILE INTEGER STUDENT = 2
 VOLATILE INTEGER cNEXT 	 = 1
 VOLATILE INTEGER cLIVE	 = 2
 
+volatile integer LENGTH_SYSTEMS = 40
+
 DEFINE_VARIABLE
 
 
@@ -295,6 +297,19 @@ DATA_EVENT [vdvSystems]
 	    STACK_VAR INTEGER index
 	    
 	    reqSys = DATA.DEVICE.SYSTEM
+	    
+	    // if primary GW
+	    if ( reqSys == 101 )
+	    {
+		reqSys = LENGTH_SYSTEMS + 1
+	    }
+	    
+	    // if secondary GW
+	    else if ( reqSys == 102 )
+	    {
+		reqSys = LENGTH_SYSTEMS + 2
+	    }
+	    
 	    
 	    SYSTEM_sendCommand ( vdvSystems[reqSys],"'SetSystemData-',
 						'sysnum=',ITOA(SYSTEM_NUMBER+500),

@@ -1627,7 +1627,7 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Gateway 1</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Gateway 1</Identifier>
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>
@@ -1882,6 +1882,164 @@
 </File>
 <File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
 <FilePathName>UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>
+<FilePathName>Utilities.axi</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+</Project>
+<Project><Identifier>MobileUnits</Identifier>
+<Designer></Designer>
+<DealerID></DealerID>
+<SalesOrder></SalesOrder>
+<PurchaseOrder></PurchaseOrder>
+<Comments></Comments>
+<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Mobile Unit</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>192.168.0.9:1319:1: :admin:ya73iW7dB7Ed6g5l</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName>YWRtaW4</UserName>
+<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<Comments></Comments>
+<File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
+<FilePathName>APART_CONCEPT1.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>ButtonsChannels</Identifier>
+<FilePathName>ButtonsChannels.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>CCHD</Identifier>
+<FilePathName>CCHD.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>CCHDMobile</Identifier>
+<FilePathName>CCHDMobile.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>CiscoTCThinClient</Identifier>
+<FilePathName>CiscoTCThinClient.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>CodecSetupClass</Identifier>
+<FilePathName>CodecSetupClass.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>DeviceDefinitions</Identifier>
+<FilePathName>DeviceDefinitions.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Devices</Identifier>
+<FilePathName>Devices.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Dialog</Identifier>
+<FilePathName>Dialog.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParser</Identifier>
+<FilePathName>EventCommandParser.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>EventCommandParserWithBuffer</Identifier>
+<FilePathName>EventCommandParserWithBuffer.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>Events</Identifier>
+<FilePathName>Events.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
+<FilePathName>i!-ConnectLinxEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MainLine</Identifier>
+<FilePathName>MainLine.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>MobileConnectionManager</Identifier>
+<FilePathName>MobileConnectionManager.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>NECPROJECTOR</Identifier>
+<FilePathName>NECPROJECTOR.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>PinManager</Identifier>
+<FilePathName>PinManager.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMS</Identifier>
+<FilePathName>RMS.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSAsset</Identifier>
+<FilePathName>RMSAsset.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSBasicDeviceMod</Identifier>
+<FilePathName>RMSBasicDeviceMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSCommon</Identifier>
+<FilePathName>RMSCommon.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSEngineMod</Identifier>
+<FilePathName>RMSEngineMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSScheduling</Identifier>
+<FilePathName>RMSScheduling.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSUIBase</Identifier>
+<FilePathName>RMSUIBase.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSUIMod</Identifier>
+<FilePathName>RMSUIMod.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>RMSVirtualRoom.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="TKO"><Identifier>RMSVirtualRoom</Identifier>
+<FilePathName>RMSVirtualRoom.tko</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>MobileUnit1</Identifier>
+<FilePathName>Sites\MobileUnit1.axs</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>System</Identifier>
+<FilePathName>System.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>TimeDateLib</Identifier>
+<FilePathName>TimeDateLib.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Map</Identifier>
+<FilePathName>UI_Map.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UI_Tools</Identifier>
+<FilePathName>UI_Tools.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="None" Type="Include"><Identifier>UISettings</Identifier>
+<FilePathName>UISettings.axi</FilePathName>
 <Comments></Comments>
 </File>
 <File CompileType="None" Type="Include"><Identifier>Utilities</Identifier>

@@ -97,6 +97,15 @@ DATA_EVENT [vdvSystem]
     }
 }
 
+// Get pin master number from GW1 or GW2
+DATA_EVENT [vdvSystem101]
+DATA_EVENT [vdvSystem102]
+{
+    ONLINE:
+    {
+	SEND_COMMAND DATA.DEVICE, "'GET_PIN-'"
+    }
+}
 
 
 DATA_EVENT [vdvSystems]
@@ -125,10 +134,19 @@ DATA_EVENT [vdvSystems]
 	    
 	    reqSys = DATA.DEVICE.SYSTEM
 	    
-	    //If End Points
-	    if ( reqSys < LENGTH_SYSTEMS )
+	    // if primary GW
+	    if ( reqSys == 101 )
 	    {
-		SYSTEM_sendCommand ( vdvSystems[reqSys],"'SetSystemData-',
+		reqSys = LENGTH_SYSTEMS + 1
+	    }
+	    
+	    // if secondary GW
+	    else if ( reqSys == 102 )
+	    {
+		reqSys = LENGTH_SYSTEMS + 2
+	    }
+	    
+	    SYSTEM_sendCommand ( vdvSystems[reqSys],"'SetSystemData-',
 						    'sysnum=',ITOA(SYSTEM_NUMBER),
 						    '&name=',Systems[index].name,
 						    '&loc=',Systems[index].location,
@@ -137,22 +155,6 @@ DATA_EVENT [vdvSystems]
 						    '&mobile=',ITOA ( Systems[index].mobile ),
 						    '&contact=',Systems[index].contact,
 						    '&invcam=',ITOA ( Systems[index].cameraInverse )" )
-	    }
-	    //Return to Gateway and all systems
-	    else
-	    {
-		SYSTEM_sendCommand ( vdvSystems[LENGTH_SYSTEMS + 1],"'SetSystemData-',
-								    'sysnum=',ITOA(SYSTEM_NUMBER),
-								    '&name=',Systems[index].name,
-								    '&loc=',Systems[index].location,
-								    '&comp=',Systems[index].company,
-								    '&receive=',ITOA ( Systems[index].receiveOnly ),
-								    '&mobile=',ITOA ( Systems[index].mobile ),
-								    '&contact=',Systems[index].contact,
-								    '&invcam=',ITOA ( Systems[index].cameraInverse )" )
-	    }	
-	    
-	    
 	    
 	    //Get Current Dialer Status
 	    SEND_COMMAND vdvCodec, "'?DIALERSTATUS'"
@@ -383,8 +385,8 @@ DATA_EVENT [vdvSystems]
 	    //Update Text on user interface
 	    RMS_refreshLessonText()
 	    
-	    //Show only the rooms in the lesson
-	    Systems_UpdateUIList(0)
+	    //Update UI List
+	    UPDATE_SYSTEM_LIST = UILIST[SystemUIList].position
 	}
 	
 	
@@ -400,8 +402,6 @@ DATA_EVENT [vdvSystems]
 	    lesson = ATOI ( getAttrValue('lesson', aCommand ) )
 	    code = getAttrValue('code', aCommand )
 	    
-	    SEND_STRING 0, "'Sys# ', ITOA ( sysnum ), ' Lesson ', ITOA ( lesson ), ' Code ', Code"
-	    
 	    //Get the Index from the system number
 	    index = SYSTEM_getIndexFromSysNum( sysnum )
 	    
@@ -410,7 +410,6 @@ DATA_EVENT [vdvSystems]
 		//
 		if ( FIND_STRING(NEXT_LESSON.code, code, 1 ) )
 		{
-		    SEND_STRING 0, "'Next'"
 		    
 		    //Set the system to the same lesson as this system lesson
 		    ON[SYSTEMS[index].nextLesson]
@@ -423,7 +422,6 @@ DATA_EVENT [vdvSystems]
 		//
 		if ( FIND_STRING( LIVE_LESSON.code, code, 1 ) )
 		{
-		    SEND_STRING 0, "'Live'"
 		    
 		    ON[SYSTEMS[index].liveLesson]
 		    
@@ -434,8 +432,8 @@ DATA_EVENT [vdvSystems]
 	    //Update Text on user interface
 	    RMS_refreshLessonText()
 	    
-	    //Show only the rooms in the lesson
-	    Systems_UpdateUIList(0)
+	    //Update UI List
+	    UPDATE_SYSTEM_LIST = UILIST[SystemUIList].position
 	}
 	
 	

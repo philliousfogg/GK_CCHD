@@ -102,6 +102,7 @@ VOLATILE INTEGER ACTIVE_CAMERA[LENGTH_SYSTEMS]
 VOLATILE INTEGER MAPPED_CAMERAS[2]  //By default sets front cam as 1 and Back cam as 2 but can be
 				    //remapped for existing rooms
 
+VOLATILE INTEGER UPDATE_SYSTEM_LIST
 
 //User variables
 VOLATILE INTEGER SYSTEM_PIN = 7988
@@ -174,6 +175,26 @@ VOLATILE INTEGER CAM_CONTROL_TIMEOUT
 DEFINE_MUTUALLY_EXCLUSIVE
 
 ( [dvRelay, 1], [dvRelay, 2] )
+
+// Apply filter to site List
+DEFINE_FUNCTION SYSTEMS_setFilter( integer filter )
+{
+    STACK_VAR INTEGER index
+
+    SITE_LIST_FILTER = filter   
+    
+    Systems_UpdateUIList(1)
+    
+    // Set Active system to 0
+    ACTIVE_SYSTEM = 0
+    
+    SYSTEM_evaluateRoom(0)
+    
+    // Select first Site from List
+    UIList[SystemUIList].selected = 0
+
+    SEND_COMMAND dvTP, "'@PPK-Filter'"
+} 
 
 //Send Command with delimiter added
 DEFINE_FUNCTION SYSTEM_sendCommand ( DEV device, CHAR tCommand[512] )
@@ -728,12 +749,6 @@ DEFINE_FUNCTION Systems_UpdateUIList(integer position)
     STACK_VAR INTEGER i,x
     STACK_VAR INTEGER index
     
-    //if no position then maintain list position
-    if ( !position )
-    {
-	position = UIList[SystemUIList].Position
-    }    
-    
     //Clear List Elements
     clearListElements(SystemUIList)
     
@@ -807,7 +822,7 @@ DEFINE_FUNCTION Systems_UpdateUIList(integer position)
 	}
     }	
     
-    //Display list on the UI
+    // Display list on the UI
     displayListData( SystemUIList, position, UIBtns, 0 )
 }
 
@@ -830,7 +845,7 @@ DEFINE_FUNCTION Systems_Remove( integer sysNum )
     }
     
     //Update UI List
-    Systems_UpdateUIList(0)
+    UPDATE_SYSTEM_LIST = UILIST[SystemUIList].position
 }
 
 //Sets the current status of the system
@@ -858,7 +873,7 @@ DEFINE_FUNCTION System_Status( integer sysNum, integer status )
     }
     
     //Update UI List
-    Systems_UpdateUIList(0)
+    UPDATE_SYSTEM_LIST = UILIST[SystemUIList].position
 }
 
 //Clear Splash Screen Text
@@ -919,6 +934,9 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
     {
 	//Get index from Active System number
 	Index = SYSTEM_getIndexFromSysNum(ACTIVE_SYSTEM)
+	
+	// Set active site in UI List
+	UILIST[SystemUIList].selected = Index
     }
     ELSE
     {
@@ -934,7 +952,7 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
 	// Set active camera
 	CODEC_SwitchCameras(ACTIVE_SYSTEM, 1)
 	
-	//Show only the rooms in the lesson
+	///Update UI List
 	Systems_UpdateUIList(1)
 	
 	// Select list item
@@ -1008,8 +1026,8 @@ DEFINE_FUNCTION Systems_CallStatus( integer sysnum, char status[255] )
 	    {
 		Systems[i].callStatus = status 
 		
-		//Update UI
-		Systems_UpdateUIList(0)
+		//Update UI List
+		UPDATE_SYSTEM_LIST = UILIST[SystemUIList].position
 		
 		//Set Active System Status
 		if ( sysnum == ACTIVE_SYSTEM )
@@ -1111,6 +1129,9 @@ DEFINE_FUNCTION SYSTEM_hidePopups()
 
 DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index) 
 {    
+    // Clear all control popups
+    SEND_COMMAND dvTP, "'@PPX'"
+    
     // Hide all effected Buttons
     
     // Camera Front/Back Buttons 
@@ -1143,110 +1164,123 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
     SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 0 )
     SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 0 )
     
-    //External Call
-    if ( index >= 1000 )
+    //If index specified
+    if ( index )
     {
-	// Show Camera Buttons
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
-	
-	// Hide Selfview Button
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[9], 0 )
-	
-	// Hide Camera Preset Tray
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[57], 0 )
-	
-	// Show Disabled Volume/Mic Buttons
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[60], 1 )
-    }
-    
-    //Receive Room
-    ELSE if ( Systems[index].receiveOnly )
-    {
-	// Mobile Rooms
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], true )
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], true )
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], true )
-	
-	if ( RMS_isVirtualRoom() )
+	//External Call
+	if ( index >= 1000 )
 	{
-	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
-	}
-	
-	//Make sure camera 1 is active camera
-	ACTIVE_CAMERA[ACTIVE_SYSTEM] = 1
-	
-	// Select Camera
-	SELECTED_MENU = 52
-    }
-    
-    // Mobile Rooms
-    ELSE IF ( Systems[index].mobile )
-    {
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
-	
-	if ( RMS_isVirtualRoom() )
-	{
-	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
-	}
-	
-	// Select Camera
-	SELECTED_MENU = 52
-    }
-    
-    // Virtual Rooms
-    ELSE IF ( SYSTEMS[index].systemNumber > 500 )
-    {
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
-	
-	// Select Screen Layout
-	SELECTED_MENU = 58
-    }
-    
-    // Normal CCHD Room
-    ELSE 
-    {
-	// Camera Front/Back Buttons 
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[7], 1 )
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[8], 1 )
-	
-	// Camera Help Text
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[31], 1 )
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[32], 1 )
-	
-	// Rear Projector Button
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[73], 1 )
-	
-	// All Functionality Menu buttons
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 1 )
-	
-	if ( RMS_isVirtualRoom() )
-	{
-	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 1 )
-	}
-	
-	SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
-	
-	// Camera 2 Backlight compensation
-	SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[55], 1 )
-	
-	if ( SYSTEMS[Index].thisSystem )
-	{
-	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 1 )
-	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 1 )
+	    // Show Camera Buttons
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
 	    
-	    // Select Presentation Page
-	    SELECTED_MENU = 54
+	    // Hide Selfview Button
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[9], 0 )
+	    
+	    // Hide Camera Preset Tray
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[57], 0 )
+	    
+	    // Show Disabled Volume/Mic Buttons
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[60], 1 )
 	}
-	ELSE
+	
+	//Receive Room
+	ELSE if ( Systems[index].receiveOnly AND !SYSTEMS[Index].thisSystem )
 	{
-	    // Select Camera Page
+	    // Mobile Rooms
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], true )
+	    
+	    if ( RMS_isVirtualRoom() )
+	    {
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	    }
+	    
+	    //Make sure camera 1 is active camera
+	    ACTIVE_CAMERA[ACTIVE_SYSTEM] = 1
+	    
+	    if ( SYSTEMS[Index].thisSystem )
+	    {
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 1 )
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 1 )
+		
+		// Select Presentation Page
+		SELECTED_MENU = 54
+	    }
+	    ELSE
+	    {
+		// Select Camera Page
+		SELECTED_MENU = 52
+	    }
+	}
+	
+	// Mobile Rooms
+	ELSE IF ( Systems[index].mobile )
+	{
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
+	    
+	    if ( RMS_isVirtualRoom() )
+	    {
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	    }
+	    
+	    // Select Camera
 	    SELECTED_MENU = 52
 	}
+	
+	// Virtual Rooms
+	ELSE IF ( SYSTEMS[index].systemNumber > 500 )
+	{
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], true )
+	    
+	    // Select Screen Layout
+	    SELECTED_MENU = 58
+	}
+	
+	// Normal CCHD Room
+	ELSE
+	{
+	    // Camera Front/Back Buttons 
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[7], 1 )
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[8], 1 )
+	    
+	    // Camera Help Text
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[31], 1 )
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[32], 1 )
+	    
+	    // Rear Projector Button
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[73], 1 )
+	    
+	    // All Functionality Menu buttons
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 1 )
+	    
+	    if ( RMS_isVirtualRoom() )
+	    {
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 1 )
+	    }
+	    
+	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
+	    
+	    // Camera 2 Backlight compensation
+	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[55], 1 )
+	    
+	    if ( SYSTEMS[Index].thisSystem )
+	    {
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 1 )
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 1 )
+		
+		// Select Presentation Page
+		SELECTED_MENU = 54
+	    }
+	    ELSE
+	    {
+		// Select Camera Page
+		SELECTED_MENU = 52
+	    }
+	}
+	
+	//Show Control Page
+	SEND_COMMAND dvTP, "'@PPN-[Menu]',uiMenu[ SELECTED_MENU - 50 ],';Admin'"
     }
-    
-    //Show Control Page
-    SEND_COMMAND dvTP, "'@PPN-[Menu]',uiMenu[ SELECTED_MENU - 50 ],';Admin'"
 }
 
 //Adds additional elements to the list (this is called from UI_TOOLs
@@ -1275,6 +1309,11 @@ DEFINE_FUNCTION UI_TOOLS_DisplayListElement( integer List, char ref[], integer p
 		    //Show Mic Mute Button
 		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',1'"
 		}
+		ELSE
+		{
+		    //Show Mic Mute Button
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',0'"
+		}
 		
 		//Don't show the button if the this system and external call
 		if ( SysNum != SYSTEM_NUMBER )
@@ -1284,6 +1323,11 @@ DEFINE_FUNCTION UI_TOOLS_DisplayListElement( integer List, char ref[], integer p
 			//Show +/- button for add remove class
 			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',1'"
 		    }
+		    else
+		    {
+			//Show +/- button for add remove class
+			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',0'"
+		    }
 		}
 		
 		//Don't show the button if this is an external call
@@ -1291,6 +1335,11 @@ DEFINE_FUNCTION UI_TOOLS_DisplayListElement( integer List, char ref[], integer p
 		{
 		    //Show Offline Button
 		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',1'"
+		}
+		else
+		{
+		    //Show Offline Button
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',0'"
 		}
 	    }
 	    
@@ -1528,7 +1577,11 @@ BUTTON_EVENT [dvTP, UIBtns]
 		// If Virtual Room cannot control
 		ELSE
 		{
-		    UIList[SystemUIList].selected = 0
+		    // Clear panel controls
+		    SYSTEM_evaluateRoom( 0 )
+		    
+		    // Deselect system
+		    UILIST[SystemUIList].selected = 0
 		    
 		    SYSTEM_alert('Control Room','This room cannot be controlled.')
 		}
@@ -1626,9 +1679,6 @@ BUTTON_EVENT [dvTP, UIBtns]
 		{
 		    //Get all data from systems
 		    SYSTEM_sendCommand ( vdvSystem, "'3GetSystemData-'" )
-		    
-		    //Show only the rooms in the lesson
-		    Systems_UpdateUIList(0)
 		}
 		
 		//Show Control Page
@@ -1694,31 +1744,19 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    //Filter Sites to Sites
 	    CASE 87:
 	    {
-		SITE_LIST_FILTER = SITE
-		
-		Systems_UpdateUIList(1)
-		
-		SEND_COMMAND dvTP, "'@PPK-Filter'"
+		SYSTEMS_setFilter( SITE )
 	    }
 	    
 	    //Filter Sites to Virtual
 	    CASE 88:
 	    {
-		SITE_LIST_FILTER = VIRTUAL
-		
-		Systems_UpdateUIList(1)
-		
-		SEND_COMMAND dvTP, "'@PPK-Filter'"
+		SYSTEMS_setFilter( VIRTUAL )
 	    }
 	    
-	    //Filter Sites to Virtual
+	    //Filter Sites to Mobile
 	    CASE 89:
 	    {
-		SITE_LIST_FILTER = MOBILE_UNITS
-		
-		Systems_UpdateUIList(1)
-		
-		SEND_COMMAND dvTP, "'@PPK-Filter'"
+		SYSTEMS_setFilter( MOBILE_UNITS )
 	    }
 	    
 	    //Refresh Site List
@@ -1766,11 +1804,7 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    //Filter Sites to All
 	    CASE 121:
 	    {
-		SITE_LIST_FILTER = 0
-		
-		Systems_UpdateUIList(1)
-		
-		SEND_COMMAND dvTP, "'@PPK-Filter'"
+		SYSTEMS_setFilter(0)
 	    }
 	    
 	    //Show Filter Menu

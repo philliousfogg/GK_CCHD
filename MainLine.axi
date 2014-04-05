@@ -260,6 +260,22 @@ WAIT 3000
     SEND_COMMAND vdvRMSEngine, "'GET APPTS-',LDATE"
 }
 
+// Smooth out Refresh UI List
+WAIT 20
+{
+    // If list needs updating
+    if ( UPDATE_SYSTEM_LIST )
+    {
+	// Update list using UPDATE_SYSTEM_LIST as position
+	Systems_UpdateUIList( UPDATE_SYSTEM_LIST )
+	
+	UPDATE_SYSTEM_LIST = 0
+    }
+}
+
 // Map Feedback
 UI_MAP_feedback()
+
+// UI System List Feedback
+SYSTEM_listfeedback()
 
