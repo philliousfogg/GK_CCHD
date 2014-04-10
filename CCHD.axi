@@ -57,3 +57,12 @@ DATA_EVENT[vdvRMSEngine]
 	SEND_COMMAND DATA.DEVICE, "'SERVER-10.255.33.21'"
     }
 }
+
+DATA_EVENT [ vdvCLActions ]
+{
+    ONLINE:
+    {
+	// Set Temporary Room Info
+	SEND_COMMAND DATA.DEVICE, "'SET ROOM INFO-Mobile ',ITOA( SYSTEM_NUMBER - 30 ),',Mobile,Global Knowledge'"
+    }
+}

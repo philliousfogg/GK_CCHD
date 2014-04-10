@@ -55,6 +55,7 @@ STRUCTURE _Codec
     INTEGER AutoAnswerMute
     INTEGER AutoAnswer
     INTEGER MicMute
+    INTEGER Presenting
 }
 
 DEFINE_CONSTANT
@@ -431,6 +432,8 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	    
 	    mode = 'Sending'
 	    
+	    Codec.Presenting = 0
+	    
 	    OFF[ vdvDevices[1], 309 ]
 	}
 	
@@ -465,6 +468,8 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	//Presenting Sending
 	IF ( FIND_STRING ( cData, 'Presentation Mode: Sending', 1 ) )
 	{
+	    Codec.Presenting = 1
+	    
 	    ON [ vdvDevices[1], 309 ]
 	    
 	    mode = 'Sending'
@@ -1508,7 +1513,10 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    //Start Presenting
 	    CASE 309:
 	    {
-		CISCO_sendCommand( 'xCommand Presentation Start' )
+		if ( !Codec.Presenting )
+		{
+		    CISCO_sendCommand( 'xCommand Presentation Start' )
+		}
 	    }
 	    
 	    //Auto Answer
@@ -1566,7 +1574,10 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    //Stop Presenting
 	    CASE 309:
 	    {
-		CISCO_sendCommand( 'xCommand Presentation Stop' )
+		if ( Codec.Presenting )
+		{
+		    CISCO_sendCommand( 'xCommand Presentation Stop' )
+		}
 	    }
 	    
 	    //Auto Answer

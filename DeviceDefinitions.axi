@@ -19,7 +19,12 @@ dvIO_3100	= 5001:17:0
 
 //Ethernet Ports
 dvVRMSSocket 	= 0:4:0
+
+#IF_NOT_DEFINED dvRMSSocket
+
 dvRMSSocket 	= 0:13:0
+
+#END_IF
 
 #IF_NOT_DEFINED dvCodec
 

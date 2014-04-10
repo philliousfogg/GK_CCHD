@@ -853,6 +853,9 @@ DATA_EVENT[vdvRMSEngine]
 	    SYSTEM_sendCommand ( vdvSystem,"'SetSystemData-',
 				'sysnum=',ITOA(SYSTEM_NUMBER),
 				'&name=',DATA.TEXT" )
+	    
+	    //Set This Room Name
+	    SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[80] ),'-',DATA.TEXT"
 	}
 	
 	//Location
