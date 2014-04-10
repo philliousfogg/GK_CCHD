@@ -55,6 +55,9 @@ STRUCTURE _Codec
     INTEGER AutoAnswerMute
     INTEGER AutoAnswer
     INTEGER MicMute
+    INTEGER Presenting
+    INTEGER Selfview
+    INTEGER OSD
 }
 
 DEFINE_CONSTANT
@@ -392,11 +395,15 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
     }
     ELSE if ( FIND_STRING( cData, 'Video Selfview Mode: On', 1 ) )
     {
+	Codec.SelfView = 1
+	
 	//Selfview flag on
 	ON[vdvDevices[1], 305]
     }
     ELSE if ( FIND_STRING( cData, 'Video Selfview Mode: Off', 1 ) )
     {
+	Codec.SelfView = 0
+	
 	//Selfview flag on
 	OFF[vdvDevices[1], 305]
     }
@@ -430,6 +437,8 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	    }
 	    
 	    mode = 'Sending'
+	    
+	    Codec.Presenting = 0
 	    
 	    OFF[ vdvDevices[1], 309 ]
 	}
@@ -465,6 +474,8 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
 	//Presenting Sending
 	IF ( FIND_STRING ( cData, 'Presentation Mode: Sending', 1 ) )
 	{
+	    Codec.Presenting = 1
+	    
 	    ON [ vdvDevices[1], 309 ]
 	    
 	    mode = 'Sending'
@@ -600,10 +611,14 @@ DEFINE_FUNCTION CISCO_evaluateData(CHAR cData[1024])
     {
 	IF ( FIND_STRING ( cData, 'OSD Mode: On', 1 ) )
 	{
+	    Codec.OSD = 1
+	    
 	    ON[ vdvDevices[1], 303 ]
 	}
 	ELSE IF ( FIND_STRING ( cData, 'OSD Mode: Off', 1 ) )
 	{
+	    Codec.OSD = 0
+	    
 	    OFF[ vdvDevices[1], 303 ]
 	}
     }	
@@ -1440,7 +1455,10 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    //Selfview
 	    CASE 305:
 	    {
-		CISCO_sendCommand( 'xCommand Video Selfview Set Mode: On' )
+		if ( !Codec.Selfview )
+		{
+		    CISCO_sendCommand( 'xCommand Video Selfview Set Mode: On' )
+		}
 	    }
 	    
 	    //Cycle Selfview Window Position
@@ -1502,13 +1520,19 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    //Switch the OSD on
 	    CASE 303:
 	    {
-		CISCO_sendCommand( 'xConfiguration Video OSD Mode: On' )
+		if ( !Codec.OSD )
+		{
+		    CISCO_sendCommand( 'xConfiguration Video OSD Mode: On' )
+		}
 	    }
 	    
 	    //Start Presenting
 	    CASE 309:
 	    {
-		CISCO_sendCommand( 'xCommand Presentation Start' )
+		if ( !Codec.Presenting )
+		{
+		    CISCO_sendCommand( 'xCommand Presentation Start' )
+		}
 	    }
 	    
 	    //Auto Answer
@@ -1554,19 +1578,28 @@ CHANNEL_EVENT [vdvDevices[1], 0]
 	    //Switch the OSD Off
 	    CASE 303:
 	    {
-		CISCO_sendCommand( 'xConfiguration Video OSD Mode: Off' )
+		if ( Codec.OSD )
+		{
+		    CISCO_sendCommand( 'xConfiguration Video OSD Mode: Off' )
+		}
 	    }
 	    
 	    //Selfview
 	    CASE 305:
 	    {
-		CISCO_sendCommand( 'xCommand Video Selfview Set Mode: Off' )
+		if ( Codec.Selfview )
+		{
+		    CISCO_sendCommand( 'xCommand Video Selfview Set Mode: Off' )
+		}
 	    }
 	    
 	    //Stop Presenting
 	    CASE 309:
 	    {
-		CISCO_sendCommand( 'xCommand Presentation Stop' )
+		if ( Codec.Presenting )
+		{
+		    CISCO_sendCommand( 'xCommand Presentation Stop' )
+		}
 	    }
 	    
 	    //Auto Answer
