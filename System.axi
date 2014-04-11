@@ -3,7 +3,6 @@ PROGRAM_NAME='SystemClass'
 DEFINE_CONSTANT 
 
 volatile integer LENGTH_SYSTEMS = 40
-volatile integer LISTS_LENGTH = 1
 
 VOLATILE INTEGER TEACHER = 1
 VOLATILE INTEGER STUDENT = 2
@@ -96,6 +95,8 @@ DEFINE_VARIABLE
 VOLATILE _Systems Systems[LENGTH_SYSTEMS]
 
 VOLATILE INTEGER SystemUIList	//The UI Room List Index number
+VOLATILE INTEGER URL_UI_LIST	//URL Table UI List
+
 VOLATILE INTEGER ACTIVE_SYSTEM	//Current Active System 
 VOLATILE INTEGER CONNECT_SITES 	//Instructs system to try and connect to sites in the lesson
 VOLATILE INTEGER ACTIVE_CAMERA[LENGTH_SYSTEMS]
@@ -171,6 +172,26 @@ VOLATILE INTEGER SITE_LIST_FILTER
 VOLATILE CHAR RMS_SERVER_URL[255]
 
 VOLATILE INTEGER CAM_CONTROL_TIMEOUT
+
+VOLATILE INTEGER FLASH
+
+//URL List Variables___________________________________________________________
+
+VOLATILE URL_STRUCT URL_ENTRY
+VOLATILE INTEGER URL_ENTRY_SYSTEM_NUM
+PERSISTENT URL_STRUCT GATEWAYS[2]
+VOLATILE URL_STRUCT DEFAULT_GATEWAYS[2]
+PERSISTENT INTEGER GW_SYSTEM_NUM[2]
+VOLATILE INTEGER DEFAULT_GW_SYSTEM_NUM[2]
+VOLATILE INTEGER GW_ONLINE[2]
+VOLATILE URL_STRUCT URL_LIST[20]
+VOLATILE URL_STRUCT _URL_LIST[20]  // Comparer 
+
+VOLATILE SLONG URL_LIST_LENGTH
+VOLATILE SLONG _URL_LIST_LENGTH
+
+VOLATILE INTEGER GW_TIME_OUT[2]
+
 
 DEFINE_MUTUALLY_EXCLUSIVE
 
@@ -1285,81 +1306,107 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 
 //Adds additional elements to the list (this is called from UI_TOOLs
 DEFINE_FUNCTION UI_TOOLS_DisplayListElement( integer List, char ref[], integer pData, integer BtnIndex, integer TPport )
+{
+    //Check to see we are using the correct list by UI Port.
+    if ( list == SystemUIList )
     {
-	//Check to see we are using the correct list by UI Port.
-	if ( list == SystemUIList )
+	STACK_VAR INTEGER Index
+	STACK_VAR INTEGER SysNum
+	
+	//Get System Number 
+	SysNum = pData
+	
+	//Index
+	Index = SYSTEM_getIndexFromSysNum( sysnum )
+	
+	IF ( SysNum )
 	{
-	    STACK_VAR INTEGER Index
-	    STACK_VAR INTEGER SysNum
+	    //Show Call List Buttons
+	    SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-',SYSTEMS[ Index ].callStatus" //Show Call State
 	    
-	    //Get System Number 
-	    SysNum = pData
-	    
-	    //Index
-	    Index = SYSTEM_getIndexFromSysNum( sysnum )
-	    
-	    IF ( SysNum )
+	    //Don't show mic if virtual system and external call
+	    if ( SysNum < 501 ) 
 	    {
-		//Show Call List Buttons
-		SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-',SYSTEMS[ Index ].callStatus" //Show Call State
-		
-		//Don't show mic if virtual system and external call
-		if ( SysNum < 501 ) 
-		{
-		    //Show Mic Mute Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',1'"
-		}
-		ELSE
-		{
-		    //Show Mic Mute Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',0'"
-		}
-		
-		//Don't show the button if the this system and external call
-		if ( SysNum != SYSTEM_NUMBER )
-		{
-		    if ( SysNum < 1000 )
-		    {
-			//Show +/- button for add remove class
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',1'"
-		    }
-		    else
-		    {
-			//Show +/- button for add remove class
-			SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',0'"
-		    }
-		}
-		
-		//Don't show the button if this is an external call
+		//Show Mic Mute Button
+		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',1'"
+	    }
+	    ELSE
+	    {
+		//Show Mic Mute Button
+		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',0'"
+	    }
+	    
+	    //Don't show the button if the this system and external call
+	    if ( SysNum != SYSTEM_NUMBER )
+	    {
 		if ( SysNum < 1000 )
 		{
-		    //Show Offline Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',1'"
+		    //Show +/- button for add remove class
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',1'"
 		}
 		else
 		{
-		    //Show Offline Button
-		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',0'"
+		    //Show +/- button for add remove class
+		    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',0'"
 		}
 	    }
 	    
-	    //If Clearing List
-	    ELSE
+	    //Don't show the button if this is an external call
+	    if ( SysNum < 1000 )
 	    {
-		//Hide Call List Buttons
-		SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-'" //Clear Call State
-		
-		//Hide Offline Button
+		//Show Offline Button
+		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',1'"
+	    }
+	    else
+	    {
+		//Show Offline Button
 		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',0'"
-		
-		//Hide Mic Mute Button
-		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',0'"
-		
-		//Hide Mic Mute Button
-		SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',0'"
 	    }
 	}
+	
+	//If Clearing List
+	ELSE
+	{
+	    //Hide Call List Buttons
+	    SEND_COMMAND dvTP, "'TEXT',ITOA ( UIBtns[BtnIndex + 20] ),'-'" //Clear Call State
+	    
+	    //Hide Offline Button
+	    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 110] ),',0'"
+	    
+	    //Hide Mic Mute Button
+	    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 30] ),',0'"
+	    
+	    //Hide Mic Mute Button
+	    SEND_COMMAND dvTP, "'^SHO-',ITOA ( UIBtns[BtnIndex + 40] ),',0'"
+	}
     }
+    
+    // Check to see we are using the correct list.
+    if ( list == URL_UI_LIST )
+    {
+	IF ( pData )
+	{
+	    // Show Remove Entry Button
+	    SEND_COMMAND dvTPUrl, "'^SHO-',ITOA ( URL_UI_BTNS[BtnIndex + 20] ),',1'"
+	    
+	    if ( URL_LIST[pData].Flags == 227 )
+	    {
+		// Show Remove Entry Button
+		SEND_COMMAND dvTPUrl, "'^SHO-',ITOA ( URL_UI_BTNS[BtnIndex + 30] ),',1'"
+	    }
+	}
+	
+	// If Clearing List
+	ELSE
+	{
+	    // Hide Remove Entry
+	    SEND_COMMAND dvTPUrl, "'^SHO-',ITOA ( URL_UI_BTNS[BtnIndex + 20] ),',0'"
+	    
+	    // Hide Remove Entry
+	    SEND_COMMAND dvTPUrl, "'^SHO-',ITOA ( URL_UI_BTNS[BtnIndex + 30] ),',0'"
+	}
+    }
+}
 
 //Confirms PIN change
 DEFINE_FUNCTION System_changePinResponse( _Command parser )
