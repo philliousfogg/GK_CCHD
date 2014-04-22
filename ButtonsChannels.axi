@@ -249,7 +249,9 @@ VOLATILE INTEGER URL_UI_BTNS[] = {
     83, // 43: Add URL_ENTRY to URL List
     84, // 44: URL_Entry.SystemNumber Field
     85, // 45: Add Url Entry Popup
-    86  // 46: Cancel URl Entry Popup
+    86, // 46: Cancel URl Entry Popup
+    87, // 47: Remove All Entries
+    88	// 48: Make This System the Master
 }
 
 

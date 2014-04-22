@@ -13,6 +13,7 @@ dvCodec		= 5001:2:0
 #INCLUDE 'Dialog.axi'
 #INCLUDE 'System.axi'
 #INCLUDE 'URLTable.axi'
+#INCLUDE 'IP_Table.axi'
 #INCLUDE 'UISettings.axi'
 #INCLUDE 'UI_Map.axi'
 #INCLUDE 'CodecSetupClass.axi'
@@ -96,6 +97,6 @@ DATA_EVENT[vdvRMSEngine]
 {
     ONLINE:
     {
-	SEND_COMMAND DATA.DEVICE, "'SERVER-10.255.33.21'"
+	SEND_COMMAND DATA.DEVICE, "'SERVER-bookings.training.globalknowledge.net'"
     }
 }

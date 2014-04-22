@@ -3,11 +3,11 @@ PROGRAM_NAME='MobileGateway'
 DEFINE_DEVICE
 
 // RMS Sockets_________________________________________________________________
-dvRMSSocket1	= 0:11:0
+/*dvRMSSocket1	= 0:11:0
 dvRMSSocket2	= 0:12:0
 dvRMSSocket3	= 0:13:0
 dvRMSSocket4	= 0:14:0
-dvRMSSocket5	= 0:15:0
+dvRMSSocket5	= 0:15:0*/
 
 // RMS Virtual Devices (This is what the mobile gateways talk to_______________
 

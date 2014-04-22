@@ -9,6 +9,7 @@ PROGRAM_NAME='CCHD'
 #INCLUDE 'Keyboard.axi'
 #INCLUDE 'System.axi'
 #INCLUDE 'URLTable.axi'
+#INCLUDE 'IP_Table.axi'
 #INCLUDE 'UISettings.axi'
 #INCLUDE 'UI_Map.axi'
 #INCLUDE 'CodecSetupClass.axi'
@@ -57,14 +58,5 @@ DATA_EVENT[vdvRMSEngine]
     ONLINE:
     {
 	SEND_COMMAND DATA.DEVICE, "'SERVER-10.255.33.21'"
-    }
-}
-
-DATA_EVENT [ vdvCLActions ]
-{
-    ONLINE:
-    {
-	// Set Temporary Room Info
-	SEND_COMMAND DATA.DEVICE, "'SET ROOM INFO-Mobile ',ITOA( SYSTEM_NUMBER - 30 ),',Mobile,Global Knowledge'"
     }
 }
