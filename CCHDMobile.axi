@@ -25,6 +25,19 @@ DEFINE_MODULE 'APART_CONCEPT1' amp( vdvAmplifier, dvAmplifier )
 //Define RMS Modules
 DEFINE_MODULE 'RMSBasicDeviceMod' mRMSProj(vdvAmplifier, dvAmplifier, vdvRMSEngine)
 
+//Define RMS Modules
+DEFINE_MODULE 'i!-ConnectLinxEngineMod' mdlCL(vdvCLActions)
+DEFINE_MODULE 'RMSEngineMod' mdlRMSEng(vdvRMSEngine, dvRMSSocket, vdvCLActions)
+
+// RMSUIMod - The RMS User Interface.  Requires KeyboardMod.
+// Channel And Variable Text Code Defined Inside The Module
+DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine,
+				  vdvLesson,
+                                  dvRMSTP,dvRMSTP_Base,
+				  dvRMSTPWelcome,
+				  dvRMSTPWelcome_Base,
+				  RMS_MEETING_DEFAULT_SUBJECT,
+				  RMS_MEETING_DEFAULT_MESSAGE)
 
 DEFINE_EVENT
 
@@ -32,6 +45,6 @@ DATA_EVENT[vdvRMSEngine]
 {
     ONLINE:
     {
-	SEND_COMMAND DATA.DEVICE, "'SERVER-10.255.33.21'"
+	SEND_COMMAND DATA.DEVICE, "'SERVER-bookings.training.globalknowledge.net'"
     }
 }
