@@ -39,6 +39,7 @@ VOLATILE INTEGER nRMSStandby
 VOLATILE INTEGER nRMSConnection
 VOLATILE INTEGER nVOL_LEVEL
 VOLATILE INTEGER nMUTE_STATUS
+VOLATILE INTEGER nGW_ACTIVE
 
 VOLATILE INTEGER PROJ_STATUS
 VOLATILE INTEGER PROJ_PICTURE_MUTE
@@ -94,6 +95,16 @@ DEFINE_FUNCTION RMSDevMonRegisterCallback()
 
     RMSNetLinxDeviceOnline(dvTP,"'User Interface'")
    
+    //System Parameter Registration____________________________________________
+    
+    RMSRegisterDeviceIndexParam(dvSystem,'Active Gateway',
+      1,RMS_COMP_GREATER_THAN,RMS_STAT_CONTROLSYSTEM_ERR,
+      FALSE,0,
+      RMS_PARAM_SET,nGW_ACTIVE,
+      'None|Primary|Secondary') 
+    
+    //End of System Parameter__________________________________________________
+    
     //Codec Parameter Registration_____________________________________________
     
     RMSRegisterDeviceIndexParam(dvCodec,'Mic Mute Status',
@@ -213,6 +224,16 @@ DEFINE_FUNCTION RMSDevMonRegisterCallback()
 	    }
 	}
     }
+}
+
+// Gateway Changes
+DEFINE_FUNCTION RMSSetActiveGateway(INTEGER nValue)
+LOCAL_VAR CHAR bInit
+{
+  IF (nGW_ACTIVE <> nValue || bInit = FALSE)
+    RMSChangeIndexParam(dvSystem,'Active Gateway',nValue)
+  nGW_ACTIVE = nValue
+  bInit = TRUE
 }
 
 //Codec Parameter Changes

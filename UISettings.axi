@@ -8,7 +8,8 @@ VOLATILE CHAR UI_SETTINGS_POP[][16] = {
     'Scheduling',
     'Room',
     'Codec',
-    'CCHD'
+    'CCHD',
+    'IPTable'
 }
 
 // Settings Buttons for v2 > panel

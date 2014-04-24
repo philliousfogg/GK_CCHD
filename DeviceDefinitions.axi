@@ -19,7 +19,12 @@ dvIO_3100	= 5001:17:0
 
 //Ethernet Ports
 dvVRMSSocket 	= 0:4:0
+
+#IF_NOT_DEFINED dvRMSSocket
+
 dvRMSSocket 	= 0:13:0
+
+#END_IF
 
 #IF_NOT_DEFINED dvCodec
 
@@ -36,7 +41,8 @@ dvLights 	= 0:9:0
 dvIP		= 0:10:0
 
 INTERNET	= 0:20:0
-
+GW1_COMMS	= 0:21:0
+GW2_COMMS	= 0:22:0
 
 vdvProjector1 	= 33011:1:0
 vdvProjector2 	= 33012:1:0
@@ -70,6 +76,7 @@ dvTPCodec	= 10001:2:0
 dvTPRMS		= 10001:3:0
 dvTPLights 	= 10001:4:0
 dvTPSettings	= 10001:5:0 //> v2 User Interface
+dvTPUrl		= 10001:6:0 //> v2 User Interface
 
 dvTPRMS_Welcome = 10001:10:0
 

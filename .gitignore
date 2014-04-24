@@ -3,6 +3,7 @@
 *.src
 *.tkn
 *.jar
+*.apw
 
 # test files
 Developer.axs

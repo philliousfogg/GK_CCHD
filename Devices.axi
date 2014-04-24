@@ -55,7 +55,7 @@ DEFINE_FUNCTION DEVICES_Connect(integer deviceIndex)
     //If Device is registered in the system
     if ( deviceIndex > 0 )
     {
-	SEND_STRING 0, "'Connecting ',DEVICES[deviceIndex].name"
+	//SEND_STRING 0, "'Connecting ',DEVICES[deviceIndex].name"
 	
 	if ( !FIND_STRING( DEVICES[deviceIndex].IPAddress, 'null', 1 ) )
 	{			    
@@ -182,13 +182,13 @@ DEFINE_FUNCTION DEVICES_pictureMuteTimeOut( _Command parser )
 	    //Leave projector on 
 	    CASE 1: 
 	    {
-		SEND_STRING 0, 'Ok'
+		//SEND_STRING 0, 'Ok'
 		ct[deviceIndex] = 0
 	    }
 	    //Power Off Projector Now
 	    CASE 2: 
 	    {
-		SEND_STRING 0, 'Cancel'
+		//SEND_STRING 0, 'Cancel'
 		ct[deviceIndex] = ( PIC_MUTE_TIMEOUT + PIC_MUTE_MESSAGE_TIMEOUT )
 	    }
 	}

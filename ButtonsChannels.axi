@@ -2,7 +2,7 @@ PROGRAM_NAME='ButtonsChannels'
 
 DEFINE_CONSTANT
 
-VOLATILE INTEGER LISTS_LENGTH = 1
+VOLATILE INTEGER LISTS_LENGTH = 2
 
 DEFINE_VARIABLE
 
@@ -223,6 +223,35 @@ VOLATILE INTEGER UILightsBtns[] = {
     27, //27: Timeout Text
     28,29, //28->29: Spare
     30,31,32,33,34,35,36,37,38,39,40,41,42,43,44 //30->44: Save Preset 1-14
+}
+
+// URL UI Btns (Port 6)
+VOLATILE INTEGER URL_UI_BTNS[] = {
+    
+    41, // 1: Add GW1 
+    42, // 2: Add GW2
+    43, // 3: Refresh URL List
+    44, // 4: Assign URL Entry to GW1
+    45, // 5: Assign URL Entry to GW2
+    46, // 6: Restore to Default Hard Coded Gateways
+    47, // 7: Switch to GW1
+    48, // 8: Switch to GW2
+    49, // 9: Increment URL UI List
+    50, // 10: Decrement URL UI List
+    51,52,53,54,55,56,57,58,59, // 11->19 URL UI Entry
+    60, // 20: GW Connection Status (Text)
+    61,62,63,64,65,66,67,68,69, // 21->29 URL UI Entry Remove
+    70, // 30: GW 2 Active
+    71,72,73,74,75,76,77,78,79, // 31->39 URL UI Connection Status
+    80, // 40: URL_Entry.Url Field
+    81, // 41: URL_Entry.User Field
+    82, // 42: URL_Entry.Password Field
+    83, // 43: Add URL_ENTRY to URL List
+    84, // 44: URL_Entry.SystemNumber Field
+    85, // 45: Add Url Entry Popup
+    86, // 46: Cancel URl Entry Popup
+    87, // 47: Remove All Entries
+    88	// 48: Make This System the Master
 }
 
 
