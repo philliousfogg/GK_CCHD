@@ -576,14 +576,14 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 	{
 	    if ( DEVICES[i].id )
 	    {
-		SEND_STRING 0, "'Device Number = ', ITOA ( DEVICES[i].vDevice.number )"
+		//SEND_STRING 0, "'Device Number = ', ITOA ( DEVICES[i].vDevice.number )"
 		
 		//SmartBoard Projector 
 		if ( DEVICES[i].vDevice.number == 33011 AND !PROJECTOR_INIT_START[i] )
 		{
 		    STACK_VAR index
 		    
-		    SEND_STRING 0, "'ON = ', ITOA ( DEVICES[i].vDevice.number )"
+		    //SEND_STRING 0, "'ON = ', ITOA ( DEVICES[i].vDevice.number )"
 		    
 		    SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
 		    
@@ -633,6 +633,9 @@ DEFINE_FUNCTION SYSTEMS_thisSystem (
     SYSTEMS[1].mobile		= mobile
     SYSTEMS[1].receiveOnly	= receiveOnly
     SYSTEMS[1].cameraInverse	= camInverse
+
+    //Update the RMS file
+    SEND_COMMAND vdvCLActions, "'SET ROOM INFO-',systems[1].Name ,',',systems[1].location,',',systems[1].company"
 }
 
 
@@ -719,9 +722,6 @@ DEFINE_FUNCTION Systems_AddSystem( _Command aCommand  )
 	    }
 	}
     }
-    
-    //Update the RMS file
-    SEND_COMMAND vdvCLActions, "'SET ROOM INFO-',systems[i].Name ,',',systems[i].location,',',systems[i].company"
     
     //Update Room Status to On
     System_Status(sysNum, 1)
@@ -1151,7 +1151,7 @@ DEFINE_FUNCTION SYSTEM_hidePopups()
 DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index) 
 {    
     // Clear all control popups
-    SEND_COMMAND dvTP, "'@PPX'"
+    SEND_COMMAND dvTP, "'@PPOF-[Menu]CameraControls'"
     
     // Hide all effected Buttons
     
@@ -1435,11 +1435,11 @@ DEFINE_FUNCTION System_changePinResponse( _Command parser )
 		
 		SYSTEM_sendCommand ( vdvSystem, "'SET_PIN-pin=',ref" )
 		
-		SEND_STRING 0, 'ok'
+		//SEND_STRING 0, 'ok'
 	    }
 	    CASE 2: 
 	    {
-		SEND_STRING 0, 'Cancel'
+		//SEND_STRING 0, 'Cancel'
 	    }
 	}
     }

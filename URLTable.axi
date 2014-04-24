@@ -1,5 +1,11 @@
 PROGRAM_NAME='URLTable'
 
+DEFINE_VARIABLE
+
+VOLATILE INTEGER GW_AVAILABLE[2]
+VOLATILE INTEGER GW_ALERT_ON
+VOLATILE INTEGER ACTIVE_GW
+VOLATILE INTEGER Attempt
 
 // Deletes all entries from URL List
 DEFINE_FUNCTION URL_UI_removeAllEntries()
@@ -26,6 +32,9 @@ DEFINE_FUNCTION URL_UI_feedback()
     
     // Get list
     URL_LIST_LENGTH = GET_URL_LIST( dvSystem, URL_LIST, 1 )
+    
+    // Active Gateway is GW 2
+    [dvTPUrl, URL_UI_BTNS[30]] = ACTIVE_GW == 2
     
     // Check for difference in list length
     if  ( URL_LIST_LENGTH != _URL_LIST_LENGTH )
@@ -153,6 +162,10 @@ DEFINE_FUNCTION URL_UI_switchGateways(INTEGER RemoveGW, INTEGER AddGW)
 {
     STACK_VAR INTEGER URLIndex
     
+    ACTIVE_GW = AddGW
+    
+    RMSSetActiveGateway(AddGW)
+    
     URLIndex = URL_UI_getURLIndexForGW(RemoveGW) 
     
     // remove gateway is active then remove
@@ -279,78 +292,215 @@ DEFINE_FUNCTION integer URL_UI_getActiveGW()
     return 0
 }
 
+// Checks connectivity of the Gateway
+DEFINE_FUNCTION INTEGER URL_UI_isEntryConnected(INTEGER Index)
+{
+    return ( URL_LIST[Index].Flags == 227 ) OR ( URL_LIST[Index].Flags == 225 )
+}
+
+// Gets the entry index of the GW in the URL_LIST
+DEFINE_FUNCTION INTEGER URL_UI_getIndexOfGW(INTEGER GW)
+{
+    STACK_VAR INTEGER i
+    
+    // Cycle through URL List
+    FOR ( i=1; i<=TYPE_CAST ( URL_LIST_LENGTH ); i++ )
+    {
+	// Find GW 1
+	IF ( GATEWAYS[GW].url == URL_LIST[i].URL )
+	{
+	    return i
+	}
+    }
+    
+    return 0
+}
+
+// Sets GW Alert with Text
+DEFINE_FUNCTION URL_UI_setGWAlert( Char message[255])
+{
+    
+    SEND_COMMAND dvTPUrl, "'TEXT',ITOA ( URL_UI_BTNS[20] ),'-',message"
+    
+    // if UI alert not displaying
+    if ( !GW_ALERT_ON )
+    {
+	SEND_COMMAND dvTPUrl, "'@PPN-_GWStatus;Admin'"
+	SEND_COMMAND dvTPUrl, "'@PPN-_GWStatus;Login'"
+	SEND_COMMAND dvTPUrl, "'@PPN-_GWStatus;Settings'"
+	
+	ON[GW_ALERT_ON]
+    }
+}
+
+// Clear GW Alert 
+DEFINE_FUNCTION URL_UI_clearGWAlert()
+{
+    if ( GW_ALERT_ON )
+    {
+	WAIT 50
+	{
+	    SEND_COMMAND dvTPURL, "'@PPK-_GWStatus'"
+	    
+	    OFF[GW_ALERT_ON]
+	}
+    }
+}
+
 // Checks primary gateway availability
 DEFINE_FUNCTION URL_UI_failOver()
 {
     STACK_VAR INTEGER GW
+    STACK_VAR INTEGER GWIndex
     
-    // Get active GW
-    GW = URL_UI_getActiveGW()
+    // Get Currently active gateway
+    GW = ACTIVE_GW
     
-    // If no active gateway set the promary gateway
-    if ( !GW )
+    // Get the Index of the currently active index
+    GWIndex = URL_UI_getIndexOfGW(GW)
+     
+    // Is the primary gateway active
+    if ( GW == 1 )
     {
-	// If not add primary gateway to URL List
-	ADD_URL_ENTRY( dvSystem, GATEWAYS[1] )
-    }
-    
-    // if the there is a gateway connection
-    ELSE
-    {
-	STACK_VAR INTEGER urlIndex
-	
-	// Get the URL List index for the active Gateway
-	urlIndex = URL_UI_getURLIndexForGW(GW)
-	
-	// If gateway is active
-	if ( !GW_ONLINE[GW] )
+	// Is the active gateway connected 
+	if ( !URL_UI_isEntryConnected(GWIndex) )
 	{
-	    // Is this the first time the gateway has dropped out
-	    if ( !GW_TIME_OUT[GW] ) 
+	    URL_UI_setGWAlert("'Waiting to Connect to Primary Gateway - ',ITOA ( Attempt ),' secs'")
+	    
+	    // If it has checked the connection 3 times
+	    if ( Attempt <= 20 )
 	    {
-		// Check for duplications
-		URL_UI_removeDuplicates()
-		
-		// Set Time out flag so at next pass (10secs) it drops to the else if still not connected
-		GW_TIME_OUT[GW] = true
+		// Increment attempt counter
+		Attempt ++
 	    }
+	    
 	    ELSE
-	    {	
-		// Primary Gateway
-		if ( GW == 1 )
+	    {
+		// See if the GW is physically available
+		if ( GW_AVAILABLE[2] )
 		{
-		    // Switch to Gateway 2
+		    URL_UI_setGWAlert ( "'Switching to Secondary Gateway...'" )
+		    
+		    // Swap to GW 2
 		    URL_UI_switchGateways( 1, 2 )
+		    
+		    // Reset GW_AVAILABLE flag
+		    GW_AVAILABLE[2] = 0
+		    
+		    // Reset attempt counter
+		    Attempt = 0
 		}
-		// Secondary Gateway
-		else
+		else 
 		{
-		    // Switch to Gateway 1
-		    URL_UI_switchGateways( 2, 1 )
-		}	
+		    URL_UI_setGWAlert ( "'Checking Secondary Gateway Availability - ',ITOA ( Attempt - 20 ),' secs'" )
+		    
+		    // Try the secondary gateway for 30
+		    if ( Attempt <= 30 )
+		    {
+			Attempt ++
+		    }
+		    
+		    // Reset and try gateway 1
+		    else
+		    {
+			Attempt = 0
+		    }
+		    
+		    // Attempts a connections with Gateway 2
+		    IP_CLIENT_OPEN ( GW2_COMMS.Port, GATEWAYS[2].url, 1319, IP_TCP )  
+		}
 	    }
 	}
 	ELSE
 	{
-	    GW_TIME_OUT[GW] = false
-	}
-	
-	// If the primary gateway comes online
-	IF ( GW_ONLINE[1] AND GW_TIME_OUT[1] ) 
-	{
-	    // Switch to Gateway 1
-	    URL_UI_switchGateways( 2, 1 )
+	    // Clear any alerts
+	    URL_UI_clearGWAlert()
 	    
-	    // reset timeout
-	    GW_TIME_OUT[1] = false
+	    // reset attempt counter
+	    ATTEMPT = 0
+	}
+    }
+    
+    // Is the secondary gateway active
+    ELSE IF ( GW == 2 )
+    {
+	// Is the active gateway connected 
+	if ( !URL_UI_isEntryConnected(GWIndex) )
+	{
+	    URL_UI_setGWAlert("'Waiting to Connect to Secondary Gateway - ',ITOA ( Attempt ),' secs'")
+	    
+	    // If it has checked the connection 3 times
+	    if ( Attempt <= 20 )
+	    {
+		// Increment attempt counter
+		Attempt ++
+	    }
+	    ELSE
+	    {
+		// See if the GW 1 is physically available
+		if ( GW_AVAILABLE[1] )
+		{
+		    URL_UI_setGWAlert ( "'Switching to Primary Gateway...'" )
+		    
+		    // Swap to GW 2
+		    URL_UI_switchGateways( 2, 1 )
+		    
+		    // Reset GW_AVAILABLE flag
+		    GW_AVAILABLE[1] = 0
+		    
+		    // Reset attempt counter
+		    Attempt = 0
+		}
+		else 
+		{
+		    URL_UI_setGWAlert ( "'Checking Primary Gateway Availability...'" )
+		    
+		    // Attempts a connections with Gateway 1
+		    IP_CLIENT_OPEN ( GW1_COMMS.Port, GATEWAYS[1].url, 1319, IP_TCP )  
+		}
+	    }
 	}
 	
-	// If the secondary gateway comes online
-	ELSE IF ( GW_ONLINE[2] AND GW_TIME_OUT[2] )
+	// Keep trying primary gateway
+	ELSE
 	{
-	    GW_TIME_OUT[2] = false
+	    // Clear Alert
+	    URL_UI_clearGWAlert()
+	    
+	    // See if the GW 1 is physically available
+	    if ( GW_AVAILABLE[1] )
+	    {
+		// Swap to GW 2
+		URL_UI_switchGateways( 2, 1 )
+		
+		// Reset GW_AVAILABLE flag
+		GW_AVAILABLE[1] = 0
+	    }
+	    else 
+	    {
+		if ( Attempt > 3 )
+		{
+		    // Attempts a connections with Gateway 1
+		    IP_CLIENT_OPEN ( GW1_COMMS.Port, GATEWAYS[1].url, 1319, IP_TCP )  
+		    
+		    Attempt = 0
+		}
+		else
+		{
+		    Attempt ++
+		}
+	    }
 	}
-    } 
+    }
+    
+    // Is neither gateway active
+    ELSE
+    {
+	URL_UI_setGWAlert ( "'Connecting to Primary Gateway...'" )
+	
+	// Switch to GW 1
+	URL_UI_switchGateways( 2, 1 )
+    }
 }
 
 
@@ -359,27 +509,38 @@ DEFINE_START
 // Removes All Url Entries to prevent duplications
 URL_UI_removeAllEntries()
 
-// Define Gateway 1
-DEFAULT_GATEWAYS[1].Flags 	= 3
-DEFAULT_GATEWAYS[1].Port 	= 1319
-DEFAULT_GATEWAYS[1].URL		= 'amxgw1.training.globalknowledge.net'
-DEFAULT_GATEWAYS[1].User	= 'admin'
-DEFAULT_GATEWAYS[1].Password	= 'ya73iW7dB7Ed6g5l'
-DEFAULT_GW_SYSTEM_NUM[1]	= 101
-
-
-// Define Gatway 2
-DEFAULT_GATEWAYS[2].Flags 	= 3
-DEFAULT_GATEWAYS[2].Port 	= 1319
-DEFAULT_GATEWAYS[2].URL		= 'amxgw2.training.globalknowledge.net'
-DEFAULT_GATEWAYS[2].User	= 'admin'
-DEFAULT_GATEWAYS[2].Password	= 'ya73iW7dB7Ed6g5l'
-DEFAULT_GW_SYSTEM_NUM[2]	= 102
-
 // Create a URL UI list
 URL_UI_LIST = NewList(dvTPUrl, 10, 4, 'urlist')
 
+// Initialise Gateway 1 Entry
+if ( !GATEWAYS[1].port )
+{
+    GATEWAYS[1] = DEFAULT_GATEWAYS[1]
+    GW_SYSTEM_NUM[1] = DEFAULT_GW_SYSTEM_NUM[1]
+}
+
+
+// Initialise Gateway 2 Entry
+if ( !GATEWAYS[2].port )
+{
+    GATEWAYS[2] = DEFAULT_GATEWAYS[2]
+    GW_SYSTEM_NUM[2] = DEFAULT_GW_SYSTEM_NUM[2]
+}
+
 DEFINE_EVENT
+
+DATA_EVENT [ GW1_COMMS ]
+DATA_EVENT [ GW2_COMMS ]
+{
+    ONLINE:
+    {
+	// Set GW_AVAILABLE flag to on
+	ON [ GW_AVAILABLE[DATA.DEVICE.PORT - 20] ]
+	
+	// Close Connection
+	IP_CLIENT_CLOSE ( DATA.DEVICE.PORT )
+    }
+}
 
 BUTTON_EVENT [dvTPUrl, URL_UI_BTNS]
 {
@@ -633,6 +794,14 @@ DATA_EVENT [ dvTPUrl ]
 	
 	// Refresh list when panel comes online
 	URL_UI_getURList(1)
+	
+	// if UI alert is supposed to be displaying
+	if ( GW_ALERT_ON )
+	{		
+	    SEND_COMMAND dvTPUrl, "'@PPN-_GWStatus;Admin'"
+	    SEND_COMMAND dvTPUrl, "'@PPN-_GWStatus;Login'"
+	    SEND_COMMAND dvTPUrl, "'@PPN-_GWStatus;Settings'"
+	}
     }
 }
 
@@ -728,7 +897,7 @@ DEFINE_PROGRAM
 
 URL_UI_feedback()
 
-WAIT 5
+WAIT 10
 {
-    FLASH = !FLASH
+    URL_UI_failOver()
 }

@@ -239,9 +239,9 @@ VOLATILE INTEGER URL_UI_BTNS[] = {
     49, // 9: Increment URL UI List
     50, // 10: Decrement URL UI List
     51,52,53,54,55,56,57,58,59, // 11->19 URL UI Entry
-    60, // 20: Spare
+    60, // 20: GW Connection Status (Text)
     61,62,63,64,65,66,67,68,69, // 21->29 URL UI Entry Remove
-    70, // 30: Spare
+    70, // 30: GW 2 Active
     71,72,73,74,75,76,77,78,79, // 31->39 URL UI Connection Status
     80, // 40: URL_Entry.Url Field
     81, // 41: URL_Entry.User Field

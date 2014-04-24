@@ -41,7 +41,8 @@ dvLights 	= 0:9:0
 dvIP		= 0:10:0
 
 INTERNET	= 0:20:0
-
+GW1_COMMS	= 0:21:0
+GW2_COMMS	= 0:22:0
 
 vdvProjector1 	= 33011:1:0
 vdvProjector2 	= 33012:1:0

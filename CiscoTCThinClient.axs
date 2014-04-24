@@ -827,7 +827,7 @@ DEFINE_FUNCTION CISCO_sendCommand( Char Cmd[255] )
     SEND_STRING dvCodec, "Cmd,$0D,$0A"
     
     //To Debug
-    // SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
+    //SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
 }
 
 //See if there has been any changes to the call
@@ -901,8 +901,8 @@ SET_VIRTUAL_CHANNEL_COUNT ( vdvDevices[3], 400 )
 SET_VIRTUAL_CHANNEL_COUNT ( vdvDevices[4], 400 )
 
 IP_ADDRESS 	= '0.0.0.0'
-USERNAME 	= 'admin'
-PA55W0RD	= 'TANDBERG'
+USERNAME 	= 'AMX'
+PA55W0RD	= '986TjL362Toz'
 CODEC.SWVersion = '1.0.0'
 
 CREATE_BUFFER dvCodec, BUFFER

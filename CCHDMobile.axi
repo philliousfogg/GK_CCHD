@@ -55,6 +55,22 @@ DEFINE_MODULE 'RMSUIMod' mdlRMSUI(vdvRMSEngine,
 
 DEFINE_START
 
+// Define Gateway 1
+DEFAULT_GATEWAYS[1].Flags 	= 3
+DEFAULT_GATEWAYS[1].Port 	= 1319
+DEFAULT_GATEWAYS[1].URL		= 'amxgw1.training.globalknowledge.net'
+DEFAULT_GATEWAYS[1].User	= 'admin'
+DEFAULT_GATEWAYS[1].Password	= 'ya73iW7dB7Ed6g5l'
+DEFAULT_GW_SYSTEM_NUM[1]	= 101
+
+// Define Gatway 2
+DEFAULT_GATEWAYS[2].Flags 	= 3
+DEFAULT_GATEWAYS[2].Port 	= 1319
+DEFAULT_GATEWAYS[2].URL		= 'amxgw2.training.globalknowledge.net'
+DEFAULT_GATEWAYS[2].User	= 'admin'
+DEFAULT_GATEWAYS[2].Password	= 'ya73iW7dB7Ed6g5l'
+DEFAULT_GW_SYSTEM_NUM[2]	= 102
+
 // Register Room
 SYSTEMS_thisSystem ( 	"'Mobile Unit ',ITOA(SYSTEM_NUMBER-30)",	//Room Name
 			'Mobile', 		//Location
