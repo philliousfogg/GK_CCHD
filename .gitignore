@@ -4,6 +4,7 @@
 *.tkn
 *.jar
 *.apw
+*.xlsx
 
 # test files
 Developer.axs
