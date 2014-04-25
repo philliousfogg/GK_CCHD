@@ -747,7 +747,7 @@ DATA_EVENT[vdvRMSEngine]
 	    //Hide Waiting
 	    SEND_COMMAND dvTP, "'@PPK-_Waiting'"
 	    
-	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
+	    If ( PERMISSION_LEVEL OR LIVE_LESSON.TYPE == TEACHER )
 	    {
 		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=EndLessonError',
 						    '&title=End Current Lesson',
@@ -765,11 +765,6 @@ DATA_EVENT[vdvRMSEngine]
 	{
 	    //Hide Waiting
 	    SEND_COMMAND dvTP, "'@PPK-_Waiting'"
-	    
-	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
-	    {
-		
-	    }
 	}
 	
 	//Extend Lesson Error
@@ -781,7 +776,7 @@ DATA_EVENT[vdvRMSEngine]
 	    //Hide Waiting
 	    SEND_COMMAND dvTP, "'@PPK-_Waiting'"
 	    
-	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
+	    If ( PERMISSION_LEVEL OR LIVE_LESSON.TYPE == TEACHER )
 	    {
 		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=ExLessonError',
 						    '&title=Extend Current Lesson',
@@ -827,12 +822,12 @@ DATA_EVENT[vdvRMSEngine]
 	    //Hide Waiting
 	    SEND_COMMAND dvTP, "'@PPK-_Waiting'"
 	    
-	    If ( PERMISSION_LEVEL < 3 OR LIVE_LESSON.TYPE == TEACHER )
+	    If ( PERMISSION_LEVEL OR LIVE_LESSON.TYPE == TEACHER )
 	    {
 	    
 		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=ExLessonSuccess',
 						    '&title=Extend Current Lesson',
-						    '&message=Lesson has been Extended until - ',LIVE_LESSON.endTime,$0A,$0D,$0A,$0D,
+						    '&message=Lesson has been Extended',$0A,$0D,$0A,$0D,
 						    'Press ok to continue',
 						    '&res1=Ok&norepeat=1'" )
 						

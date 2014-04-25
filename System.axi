@@ -438,6 +438,8 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
     {
 	STACK_VAR INTEGER i
 	
+	SEND_STRING 0, "'TEACHER'"
+	
 	//Projectors
 	FOR ( i=1; i<=LENGTH_DEVICES; i++ )
 	{
@@ -503,6 +505,8 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
     else if ( type == STUDENT )
     {
 	STACK_VAR INTEGER i
+	
+	SEND_STRING 0, "'STUDENT'"
 	
 	//Projectors
 	FOR ( i=1; i<=LENGTH_DEVICES; i++ )
@@ -571,30 +575,46 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
     {
 	STACK_VAR INTEGER i
 	
+	SEND_STRING 0, "'OFFLINE'"
+	
 	//Projectors
 	FOR ( i=1; i<=LENGTH_DEVICES; i++ )
 	{
 	    if ( DEVICES[i].id )
 	    {
 		//SEND_STRING 0, "'Device Number = ', ITOA ( DEVICES[i].vDevice.number )"
-		
+		    
 		//SmartBoard Projector 
-		if ( DEVICES[i].vDevice.number == 33011 AND !PROJECTOR_INIT_START[i] )
+		if ( DEVICES[i].vDevice.number == 33011 )
 		{
 		    STACK_VAR index
 		    
-		    //SEND_STRING 0, "'ON = ', ITOA ( DEVICES[i].vDevice.number )"
-		    
-		    SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
-		    
-		    index = SYSTEMS_getTeacherRoom()
-		    
-		    SYSTEM_setProjectorInput( DEVICES[i].vDevice, 'VGA,1' )
-		    
-		    //If Projector on set flag
-		    if ( [DEVICES[i].vDevice, POWER_FB] AND ( ![ DEVICES[i].vDevice, LAMP_WARMING_FB ] OR ![ DEVICES[i].vDevice, LAMP_COOLING_FB ] )  )
+		    if ( !PROJECTOR_INIT_START[i] )
 		    {
-			ON[PROJECTOR_INIT_START[i]]
+			//SEND_STRING 0, "'ON = ', ITOA ( DEVICES[i].vDevice.number )"
+			
+			// Set Codec Presentation to Off
+			OFF [ vdvCodec, 309 ]
+			
+			SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
+			
+			index = SYSTEMS_getTeacherRoom()
+			
+			//If Projector on set flag
+			if ( [DEVICES[i].vDevice, POWER_FB] AND ( ![ DEVICES[i].vDevice, LAMP_WARMING_FB ] OR ![ DEVICES[i].vDevice, LAMP_COOLING_FB ] )  )
+			{
+			    ON[PROJECTOR_INIT_START[i]]
+			}
+		    }
+		    
+		    //If codec presentation is set
+		    if ( [vdvCodec, 309] )
+		    {
+			SYSTEM_setProjectorInput( DEVICES[i].vDevice, 'HDMI,1' )
+		    }
+		    ELSE
+		    {
+			SYSTEM_setProjectorInput( DEVICES[i].vDevice, 'VGA,1' )
 		    }
 		}
 		

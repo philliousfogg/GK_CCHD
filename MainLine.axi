@@ -102,7 +102,7 @@ WAIT 100
 	if ( LIVE_LESSON.Type )
 	{
 	    //If only participant then setup room as Offline
-	    if ( SYSTEM_countLessonSites(cLIVE) < 2 )
+	    if ( SYSTEM_countLessonSites(cLIVE) < 2 AND !LENGTH_STRING ( LIVE_LESSON.external ) )
 	    {
 		//Setup room for this lesson
 		SYSTEM_setupRoom( OFF_LINE )
@@ -176,6 +176,9 @@ WAIT 100
 	// Reset Auto Answer to on
 	ON[vdvCodec, DIAL_AUTO_ANSWER_ON]
 	OFF[ vdvCodec, 325 ]
+	
+	// Set Codec Presentation to Off
+	OFF [ vdvCodec, 309 ]
 	
 	//Reset RECURRING Shut down flag
 	if ( !RMS_LEVELS.Current )
