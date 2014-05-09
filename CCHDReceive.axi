@@ -9,6 +9,7 @@ PROGRAM_NAME='CCHD'
 #INCLUDE 'Keyboard.axi'
 #INCLUDE 'System.axi'
 #INCLUDE 'URLTable.axi'
+#INCLUDE 'IP_Table.axi'
 #INCLUDE 'UISettings.axi'
 #INCLUDE 'UI_Map.axi'
 #INCLUDE 'CodecSetupClass.axi'
@@ -20,6 +21,22 @@ PROGRAM_NAME='CCHD'
 #INCLUDE 'MainLine.axi'
 
 DEFINE_START
+
+// Define Gateway 1
+DEFAULT_GATEWAYS[1].Flags 	= 3
+DEFAULT_GATEWAYS[1].Port 	= 1319
+DEFAULT_GATEWAYS[1].URL		= 'amxgw1.training.globalknowledge.net'
+DEFAULT_GATEWAYS[1].User	= 'admin'
+DEFAULT_GATEWAYS[1].Password	= 'ya73iW7dB7Ed6g5l'
+DEFAULT_GW_SYSTEM_NUM[1]	= 101
+
+// Define Gatway 2
+DEFAULT_GATEWAYS[2].Flags 	= 3
+DEFAULT_GATEWAYS[2].Port 	= 1319
+DEFAULT_GATEWAYS[2].URL		= 'amxgw2.training.globalknowledge.net'
+DEFAULT_GATEWAYS[2].User	= 'admin'
+DEFAULT_GATEWAYS[2].Password	= 'ya73iW7dB7Ed6g5l'
+DEFAULT_GW_SYSTEM_NUM[2]	= 102
 
 //Define Device Modules
 DEFINE_MODULE 'NECPROJECTOR' proj1(vdvProjector1, dvProjector1)
@@ -54,6 +71,6 @@ DATA_EVENT[vdvRMSEngine]
 {
     ONLINE:
     {
-	SEND_COMMAND DATA.DEVICE, "'SERVER-10.255.33.21'"
+	SEND_COMMAND DATA.DEVICE, "'SERVER-amxrms1.training.globalknowledge.net'"
     }
 }

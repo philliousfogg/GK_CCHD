@@ -1399,10 +1399,6 @@
 <FilePathName>Events.axi</FilePathName>
 <Comments></Comments>
 </File>
-<File CompileType="Netlinx" Type="MasterSrc"><Identifier>FailoverTest</Identifier>
-<FilePathName>FailoverTest.axs</FilePathName>
-<Comments></Comments>
-</File>
 <File CompileType="None" Type="TKO"><Identifier>i!-ConnectLinxEngineMod</Identifier>
 <FilePathName>i!-ConnectLinxEngineMod.tko</FilePathName>
 <Comments></Comments>
@@ -1631,7 +1627,7 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Gateway 1</Identifier>
+<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Gateway 1</Identifier>
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>
@@ -1900,7 +1896,7 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Mobile Unit</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Mobile Unit</Identifier>
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>

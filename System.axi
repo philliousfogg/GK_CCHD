@@ -453,6 +453,9 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 			// Set Codec presentation to on 
 			ON[vdvCodec, 309]
 			
+			// Switch Mic Mute off
+			OFF[vdvCodec, ACONF_PRIVACY_ON]
+			
 			SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
 			
 			//If Projector on set flag
@@ -522,6 +525,9 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 		    
 		    if ( !PROJECTOR_INIT_START[i] )
 		    {
+			// Switch Mic Mute off
+			OFF[vdvCodec, ACONF_PRIVACY_ON]
+			
 			SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
 			
 			//If Projector on set flag
@@ -1175,6 +1181,12 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
     
     // Hide all effected Buttons
     
+    // Hide Projector 3 PWR Buttons
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[73], 0 )
+    
+    // Hide Projector 3 Mute Buttons
+    SYSTEM_setBtnVisibility ( dvTP, UIBtns[79], 0 )
+    
     // Camera Front/Back Buttons 
     SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[7], 0 )
     SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[8], 0 )
@@ -1293,6 +1305,16 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	    
 	    // All Functionality Menu buttons
 	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], 1 )
+	    
+	    // If not receive room show Projector 3 buttons
+	    if ( !SYSTEMS[Index].receiveOnly )
+	    {
+		// Hide Projector 3 PWR Buttons
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[73], 1 )
+		
+		// Hide Projector 3 Mute Buttons
+		SYSTEM_setBtnVisibility ( dvTP, UIBtns[79], 1 )
+	    }
 	    
 	    if ( RMS_isVirtualRoom() )
 	    {

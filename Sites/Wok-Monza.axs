@@ -59,7 +59,7 @@ DEVICES_register( 	'Codec',	//Device Name
 			'',		//Serial Number
 			'10.44.43.11',	//IP Address
 			'',		//Baud Rate
-			'TANDBERG',	//Password
+			'986TjL362Toz',	//Password
 			vdvCodec,	//Virtual Port
 			dvCodec		//Physical Port
 )

@@ -59,7 +59,7 @@ DEVICES_register( 	'Codec',	//Device Name
 			'',		//Serial Number
 			'10.44.115.139',//IP Address
 			'',		//Baud Rate
-			'TANDBERG',	//Password
+			'986TjL362Toz',	//Password
 			vdvCodec,	//Virtual Port
 			dvCodec		//Physical Port
 )
@@ -146,7 +146,32 @@ CHANNEL_EVENT [vdvProjector3, PWR_ON ]
     }
 }
 
+DEFINE_VARIABLE
+
+VOLATILE INTEGER LESSON_START_DROP_SCREEN
+
 DEFINE_PROGRAM
+
+WAIT 100
+{
+    // Is there a lesson
+    if ( RMS_LEVELS.Current )
+    {
+	// Drop Screen at Begining of the lesson
+	if ( !LESSON_START_DROP_SCREEN )
+	{
+	    // Drop Screen
+	    ON[SCREEN_CONTROL]
+	    
+	    // Set Init
+	    ON [ LESSON_START_DROP_SCREEN ]
+	}
+    }
+    ELSE
+    {
+	OFF[ LESSON_START_DROP_SCREEN ]
+    }
+}
 
 
 [dvIO, 2] = !SCREEN_CONTROL

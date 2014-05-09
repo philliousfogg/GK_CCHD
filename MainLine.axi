@@ -193,6 +193,8 @@ WAIT 100
 	//Revaluate Levels
 	RMS_evaluateLevels()
     }
+    
+    RMSSetScheduling(OVERRIDE_RMS)
 }
 
 //When system should be trying to connect a call

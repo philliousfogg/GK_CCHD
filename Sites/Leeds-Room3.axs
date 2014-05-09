@@ -2,9 +2,14 @@ PROGRAM_NAME='dotone'
 
 #INCLUDE 'CCHDReceive.axi'
 
+DEFINE_DEVICE
+
+dvScreens = 5002:1:3
+
 DEFINE_MUTUALLY_EXCLUSIVE
 
-([dvRelay,3],[dvRelay,4])
+([dvScreens,1],[dvScreens,2])
+([dvScreens,3],[dvScreens,4])
 
 
 DEFINE_START
@@ -49,7 +54,7 @@ DEVICES_register( 	'Codec',	//Device Name
 			'',		//Serial Number
 			'10.44.116.11',//IP Address
 			'',		//Baud Rate
-			'TANDBERG',	//Password
+			'986TjL362Toz',	//Password
 			vdvCodec,	//Virtual Port
 			dvCodec		//Physical Port
 )
@@ -91,12 +96,34 @@ DATA_EVENT [ vdvLight ]
     }
 }
 
-DEFINE_PROGRAM
+CHANNEL_EVENT [vdvProjector1, PWR_OFF]
+{
+    ON:
+    {
+	PULSE[dvScreens, 2]
+    }
+}
+    
+CHANNEL_EVENT [vdvProjector1, PWR_ON ]
+{
+    ON:
+    {
+	PULSE[dvScreens, 1]
+    }
+}
 
-//Drop Electric Screen
-[dvRelay, 4] = ( RMS_LEVELS.Current OR OVERRIDE_RMS OR [vdvProjector1, POWER_FB] OR [ vdvProjector2, POWER_FB ] )
-
-//Raise Electic Screen
-[dvRelay, 3] = !( RMS_LEVELS.Current OR OVERRIDE_RMS OR [vdvProjector1, POWER_FB] OR [ vdvProjector2, POWER_FB ] )
-
-
+CHANNEL_EVENT [vdvProjector2, PWR_OFF]
+{
+    ON:
+    {
+	PULSE[dvScreens, 4]
+    }
+}
+    
+CHANNEL_EVENT [vdvProjector2, PWR_ON ]
+{
+    ON:
+    {
+	PULSE[dvScreens, 3]
+    }
+}

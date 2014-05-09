@@ -40,6 +40,7 @@ VOLATILE INTEGER nRMSConnection
 VOLATILE INTEGER nVOL_LEVEL
 VOLATILE INTEGER nMUTE_STATUS
 VOLATILE INTEGER nGW_ACTIVE
+VOLATILE INTEGER nScheduling 
 
 VOLATILE INTEGER PROJ_STATUS
 VOLATILE INTEGER PROJ_PICTURE_MUTE
@@ -98,10 +99,16 @@ DEFINE_FUNCTION RMSDevMonRegisterCallback()
     //System Parameter Registration____________________________________________
     
     RMSRegisterDeviceIndexParam(dvSystem,'Active Gateway',
-      1,RMS_COMP_GREATER_THAN,RMS_STAT_CONTROLSYSTEM_ERR,
+      1,RMS_COMP_GREATER_THAN,RMS_STAT_ROOM_COMM_ERR,
       FALSE,0,
       RMS_PARAM_SET,nGW_ACTIVE,
       'None|Primary|Secondary') 
+      
+    RMSRegisterDeviceIndexParam(dvSystem,'Scheduling',
+      0,RMS_COMP_GREATER_THAN,RMS_STAT_ROOM_COMM_ERR,
+      FALSE,0,
+      RMS_PARAM_SET,nGW_ACTIVE,
+      'Normal|Overide: Teacher|Overide: Student|Overide: Offline|Overide') 
     
     //End of System Parameter__________________________________________________
     
@@ -233,6 +240,16 @@ LOCAL_VAR CHAR bInit
   IF (nGW_ACTIVE <> nValue || bInit = FALSE)
     RMSChangeIndexParam(dvSystem,'Active Gateway',nValue)
   nGW_ACTIVE = nValue
+  bInit = TRUE
+}
+
+// Gateway Changes
+DEFINE_FUNCTION RMSSetScheduling(INTEGER nValue)
+LOCAL_VAR CHAR bInit
+{
+  IF (nScheduling <> nValue || bInit = FALSE)
+    RMSChangeIndexParam(dvSystem,'Scheduling',nValue)
+  nScheduling = nValue
   bInit = TRUE
 }
 

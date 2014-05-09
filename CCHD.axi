@@ -74,6 +74,6 @@ DATA_EVENT[vdvRMSEngine]
 {
     ONLINE:
     {
-	SEND_COMMAND DATA.DEVICE, "'SERVER-10.255.33.21'"
+	SEND_COMMAND DATA.DEVICE, "'SERVER-amxrms1.training.globalknowledge.net'"
     }
 }
