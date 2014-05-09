@@ -5,6 +5,8 @@
 *.jar
 *.apw
 *.xlsx
+!i!-ConnectLinxEngineMod.tko
+!RMSEngineMod.tko
 
 # test files
 Developer.axs
