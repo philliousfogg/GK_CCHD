@@ -80,6 +80,10 @@ VOLATILE CHAR CURRENT_CAMERA_POSTION[2][255]
 
 VOLATILE INTEGER SELFVIEW_POSITION
 
+// Volume Ramping Variables
+VOLATILE INTEGER VOLUME_UP
+VOLATILE INTEGER VOLUME_DOWN
+
 //Remaps Camera buttons if cameras are reversed
 DEFINE_FUNCTION Codec_setCameraMapping (INTEGER index)
 {
@@ -836,13 +840,13 @@ BUTTON_EVENT [ dvTPCodec, VCVolumeControls ]
 	    //Audio Vol Up
 	    CASE 2:
 	    {
-		ON[vdvCodecs[ACTIVE_SYSTEM], VOL_UP]
+		ON[VOLUME_UP]
 	    }
 	    
 	    //Audio Vol Dn
 	    CASE 3:
 	    {
-		ON[vdvCodecs[ACTIVE_SYSTEM], VOL_DN]
+		ON[VOLUME_DOWN]
 	    }
 	}
     }	
@@ -867,7 +871,7 @@ BUTTON_EVENT [ dvTPCodec, VCVolumeControls ]
 		//This will register a volume change for a tap
 		WAIT 3
 		{
-		    OFF[vdvCodecs[ACTIVE_SYSTEM], VOL_UP]
+		    OFF[VOLUME_UP]
 		}
 	    }
 	    
@@ -876,7 +880,7 @@ BUTTON_EVENT [ dvTPCodec, VCVolumeControls ]
 	    {
 		WAIT 3
 		{
-		    OFF[vdvCodecs[ACTIVE_SYSTEM], VOL_DN]
+		    OFF[VOLUME_DOWN]
 		}
 	    }
 	    
@@ -1223,5 +1227,22 @@ WAIT 10
 	
 	//Switch to MCU Camera Control Subpage
 	SEND_COMMAND dvTP, "'@PPN-[Menu]ScreenLayout;Admin'"
+    }
+}
+
+WAIT 2
+{
+    if ( ACTIVE_SYSTEM )
+    {
+    
+	if ( VOLUME_UP )
+	{
+	    SEND_COMMAND vdvCodecs[ACTIVE_SYSTEM], "'VOL_UP'"
+	}
+	ELSE IF ( VOLUME_DOWN )
+	{
+	    SEND_COMMAND vdvCodecs[ACTIVE_SYSTEM], "'VOL_DN'"
+	}
+    
     }
 }

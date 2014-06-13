@@ -5,6 +5,7 @@
 *.jar
 *.apw
 *.xlsx
+*.docx
 !i!-ConnectLinxEngineMod.tko
 !RMSEngineMod.tko
 

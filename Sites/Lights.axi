@@ -25,6 +25,8 @@ VOLATILE CHAR LIGHTS_TIMEOUT_CHAR[6][3] = {
 }
 
 VOLATILE INTEGER LIGHTS_TIMEOUT = 6
+
+
 (***********************************************************)
 (*        SUBROUTINE/FUNCTION DEFINITIONS GO BELOW         *)
 (***********************************************************)
@@ -260,6 +262,9 @@ DATA_EVENT [vdvLights]
 		if ( channelActive )
 		{
 		    STACK_VAR CHAR label[16]
+		    
+		    // Show Light menu
+		    SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
 		    
 		    //get label value
 		    label = getAttrValue( 'label', aCommand )

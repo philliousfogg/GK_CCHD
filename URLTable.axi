@@ -510,7 +510,7 @@ DEFINE_START
 URL_UI_removeAllEntries()
 
 // Create a URL UI list
-URL_UI_LIST = NewList(dvTPUrl, 10, 4, 'urlist')
+URL_UI_LIST = NewList(dvTPUrl, 10, 4, 'urlist', 49, 50 )
 
 // Initialise Gateway 1 Entry
 if ( !GATEWAYS[1].port )

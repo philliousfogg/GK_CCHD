@@ -138,10 +138,13 @@ DATA_EVENT [vdvDevices]
     ONLINE:
     {
 	//Set IP Address
-	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.8.3'"
+	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.2.67'"
+	
+	//Set Username
+	SEND_COMMAND vdvDevice1, "'PROPERTY-Username,admin'"
 	
 	//Set Password
-	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,TANDBERG'"
+	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,!V1ju15?'"
 	
 	//Reinitialise
 	SEND_COMMAND vdvDevice1, "'REINIT'"
@@ -266,10 +269,10 @@ BUTTON_EVENT [dvTP, 3]
     PUSH:
     {
 	//Set IP Address
-	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.8.5'"
+	SEND_COMMAND vdvDevice1, "'PROPERTY-IP_Address,10.115.2.67'"
 	
 	//Set Password
-	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,!V1ju13?'"
+	SEND_COMMAND vdvDevice1, "'PROPERTY-Password,!V1ju15?'"
 	
 	//Reinitialise
 	SEND_COMMAND vdvDevice1, "'REINIT'"

@@ -837,7 +837,7 @@ DEFINE_FUNCTION CISCO_sendCommand( Char Cmd[255] )
     SEND_STRING dvCodec, "Cmd,$0D,$0A"
     
     //To Debug
-    //SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
+    SEND_STRING 0, "'Tx: ',Cmd,$0D,$0A"
 }
 
 //See if there has been any changes to the call
@@ -955,7 +955,7 @@ DATA_EVENT [dvCodec]
     }
     STRING:
     {
-	//SEND_STRING 0, "'Rx: ', DATA.TEXT"
+	SEND_STRING 0, "'Rx: ', DATA.TEXT"
 	
 	//if not logged in 
 	if ( ![ vdvDevices[1], DATA_INITIALIZED ] )
@@ -1190,6 +1190,40 @@ DATA_EVENT [vdvDevices]
 		REMOVE_STRING (DATA.TEXT, ',', 1 )
 		
 		CISCO_sendCommand ( "'xConfiguration Video DefaultPresentationSource: ', DATA.TEXT" )
+	    }
+	}
+	
+	// Adjust Volume control
+	if ( FIND_STRING ( DATA.TEXT, 'VOLUME-', 1 ) )
+	{
+	    // Remove VOLUME-
+	    REMOVE_STRING ( DATA.TEXT, '-', 1 )
+	    
+	    // Send Volume Command
+	    CISCO_sendCommand( "'xConfiguration Audio Volume: ',DATA.TEXT"  )
+	}
+	
+	// Step volume down
+	if ( FIND_STRING ( DATA.TEXT, 'VOL_DN', 1 ) )
+	{
+	    // if volume level is greater than zero
+	    if ( VOLUME_LEVEL > 5 )
+	    {
+		CISCO_sendCommand( "'xConfiguration Audio Volume: ',  ITOA ( VOLUME_LEVEL - 5 )"  )
+	    }
+	    ELSE 
+	    {
+		CISCO_sendCommand( "'xConfiguration Audio Volume: 0'"  )
+	    }
+	}
+	
+	// Step volume up
+	if ( FIND_STRING ( DATA.TEXT, 'VOL_UP', 1 ) )
+	{
+	    // if volume level is less than 100
+	    if ( VOLUME_LEVEL < 100 )
+	    {
+		CISCO_sendCommand( "'xConfiguration Audio Volume: ',  ITOA ( VOLUME_LEVEL + 5 )"  )
 	    }
 	}
     }	
@@ -1646,11 +1680,23 @@ WAIT 2
 {
     if ( [vdvDevices[1], VOL_DN] )
     {
-	CISCO_sendCommand( "'xConfiguration Audio Volume: ',  ITOA ( VOLUME_LEVEL - 5 )"  )
+	// if volume level is greater than zero
+	if ( VOLUME_LEVEL > 5 )
+	{
+	    CISCO_sendCommand( "'xConfiguration Audio Volume: ',  ITOA ( VOLUME_LEVEL - 5 )"  )
+	}
+	ELSE 
+	{
+	    CISCO_sendCommand( "'xConfiguration Audio Volume: 0'"  )
+	}
     }
     ELSE if ( [vdvDevices[1], VOL_UP] )
     {
-	CISCO_sendCommand( "'xConfiguration Audio Volume: ',  ITOA ( VOLUME_LEVEL + 5 )"  )
+	// if volume level is less than 100
+	if ( VOLUME_LEVEL < 100 )
+	{
+	    CISCO_sendCommand( "'xConfiguration Audio Volume: ',  ITOA ( VOLUME_LEVEL + 5 )"  )
+	}
     }
 }
 

@@ -73,7 +73,7 @@ DEFINE_FUNCTION DEVICES_Connect(integer deviceIndex)
 	    SEND_COMMAND DEVICES[deviceIndex].vDevice, "'PROPERTY-Password,',DEVICES[deviceIndex].Password"
 	}
 	
-	SYSTEM_addSplashScreenText("'Attempting to Connect to ',DEVICES[deviceIndex].Name")
+	//SYSTEM_addSplashScreenText("'Attempting to Connect to ',DEVICES[deviceIndex].Name")
 	
 	//Set the REINT Command / Attempt connection
 	SEND_COMMAND DEVICES[deviceIndex].vDevice, "'REINIT'"

@@ -458,7 +458,7 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 			
 			SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
 			
-			//If Projector on set flag
+			// If Projector on set flag
 			if ( [DEVICES[i].vDevice, POWER_FB] AND ( ![ DEVICES[i].vDevice, LAMP_WARMING_FB ] OR ![ DEVICES[i].vDevice, LAMP_COOLING_FB ] ) )
 			{
 			    ON[PROJECTOR_INIT_START[i]]
@@ -1241,7 +1241,6 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	{
 	    // Mobile Rooms
 	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[52], true )
-	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], true )
 	    
 	    if ( RMS_isVirtualRoom() )
 	    {
@@ -1253,7 +1252,10 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 	    
 	    if ( SYSTEMS[Index].thisSystem )
 	    {
+		
+		// Show Lighting menu button
 		SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 1 )
+		
 		SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 1 )
 		
 		// Select Presentation Page
@@ -1321,14 +1323,15 @@ DEFINE_FUNCTION SYSTEM_evaluateRoom(Integer Index)
 		SYSTEM_setBtnVisibility ( dvTP, UIBtns[58], 1 )
 	    }
 	    
-	    SYSTEM_setBtnVisibility ( dvTP, UIBtns[53], 1 )
 	    
 	    // Camera 2 Backlight compensation
 	    SYSTEM_setBtnVisibility ( dvTPCodec, VCCameraBtns[55], 1 )
 	    
 	    if ( SYSTEMS[Index].thisSystem )
 	    {
+		// Show Lighting menu button
 		SYSTEM_setBtnVisibility ( dvTP, UIBtns[54], 1 )
+		
 		SYSTEM_setBtnVisibility ( dvTP, UIBtns[56], 1 )
 		
 		// Select Presentation Page
@@ -1497,7 +1500,7 @@ SET_VIRTUAL_CHANNEL_COUNT(vdvSystem, 1024)
 ACTIVE_SYSTEM = SYSTEM_NUMBER
 
 //Create a system list
-SystemUIList = NewList(dvTP, 10, 4, 'sylist')
+SystemUIList = NewList(dvTP, 10, 4, 'sylist', 9, 10 )
 
 //Set the selected menu to 1
 SELECTED_MENU = 1

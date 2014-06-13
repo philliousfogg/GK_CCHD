@@ -22,6 +22,9 @@ STRUCTURE _UIList
     Char ref[6]		//6 Character Ref
     _ListData DataSet[255]	//Data set for the list 
     INTEGER ShowList		//Tells List Loop to rewrite List every 2secs
+    INTEGER btns[255]		//List of buttons
+    INTEGER incBtn		//Increment List Button
+    INTEGER decBtn		//decrement List Button
 }
 
 
@@ -32,7 +35,7 @@ DEFINE_VARIABLE
 VOLATILE _UIList UIList[LISTS_LENGTH]
 
 
-DEFINE_FUNCTION integer NewList( dev UIDevice, integer startBtn, integer displaySize, char ref[6] )
+DEFINE_FUNCTION integer NewList( dev UIDevice, integer startBtn, integer displaySize, char ref[6], integer incBtn, integer decBtn )
 {
     STACK_VAR INTEGER i,x 
     
@@ -52,6 +55,8 @@ DEFINE_FUNCTION integer NewList( dev UIDevice, integer startBtn, integer display
     UIList[x].displaySize = displaySize
     UIList[x].Position = 1
     UIList[x].ref = ref
+    UIList[x].incBtn = incBtn
+    UIList[x].decBtn = decBtn
     
     FOR ( i=1; i<=255; i++ )
     {
@@ -141,8 +146,16 @@ DEFINE_FUNCTION clearListElements(integer List)
 DEFINE_FUNCTION displayListData( integer List, integer start, INTEGER UIButtonSet[], INTEGER HideBtns )
 {
     STACK_VAR INTEGER i, x
+    STACK_VAR sINTEGER difference
+
+    difference = TYPE_CAST ( ( start + UIList[list].displaySize - 1 ) ) - TYPE_CAST ( getListDataSetLength(List) )
     
-    //clearDisplayedData( List, UIButtonSet, HideBtns )
+    // if they is a difference and make sure that we are not just at the top of the list
+    if ( difference > 0 AND ( getListDataSetLength(List) > UIList[List].displaySize ) )
+    {
+	// create new start position
+	start = start - TYPE_CAST ( difference )
+    }
 
     x = start
     
@@ -173,6 +186,30 @@ DEFINE_FUNCTION displayListData( integer List, integer start, INTEGER UIButtonSe
 	    
 	    UIList[List].SLOT[i] = 0
 	}
+    }
+    
+    // Handle increment button
+    if ( start == 1 )
+    {
+	// Hide up button
+	SEND_COMMAND UIList[List].UIDevice, "'^SHO-',ITOA( UIList[List].incBtn ),',0'"
+    }
+    ELSE
+    {
+	// Hide up button
+	SEND_COMMAND UIList[List].UIDevice, "'^SHO-',ITOA( UIList[List].incBtn ),',1'"
+    }
+    
+    // Handle decrement button
+    if ( getListDataSetLength(List) <= ( start + UIList[List].displaySize - 1 ) OR getListDataSetLength(List) <= UIList[List].displaySize )
+    {
+	// Hide down button
+	SEND_COMMAND UIList[List].UIDevice, "'^SHO-',ITOA( UIList[List].decBtn ),',0'"
+    }
+    ELSE
+    {
+	// Hide down button
+	SEND_COMMAND UIList[List].UIDevice, "'^SHO-',ITOA( UIList[List].decBtn ),',1'"
     }
     
     UIList[List].Position = Start
