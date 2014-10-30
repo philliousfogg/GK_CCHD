@@ -6,16 +6,31 @@ DEFINE_DEVICE
 #INCLUDE 'DeviceDefinitions.axi'
 #INCLUDE 'Utilities.axi'
 
+DEFINE_CONSTANT
+
+VOLATILE INTEGER TL = 1
+
 DEFINE_VARIABLE
 
+// Define Timline intervals
+VOLATILE LONG TL_INTERVALS[] = {
 
-DEFINE_PROGRAM
+    30000  // Every 30 Seconds
+}
 
-WAIT 300
+DEFINE_START
+
+// Create system polling timeline
+TIMELINE_CREATE ( TL, TL_INTERVALS, 1, TIMELINE_ABSOLUTE, TIMELINE_REPEAT )
+
+DEFINE_EVENT
+
+TIMELINE_EVENT [ TL ]
 {
     //Request System Data every 30 secs
     SEND_COMMAND vdvSystem, "'MGGetSystemData-'"
 }
+
 
 
 //Pin Manager__________________________________________________________________

@@ -93,6 +93,7 @@ DATA_EVENT [vdvSystem]
 	    Codec_RetryConnectCallResponse( aCommand )
 	    DEVICES_pictureMuteTimeOut( aCommand )
 	    System_changePinResponse( aCommand )
+	    System_restablishCallResponse( aCommand )
 	}
     }
 }

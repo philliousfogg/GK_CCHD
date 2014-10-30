@@ -4,6 +4,7 @@
 <!-- Common Elements -->
 <!ELEMENT Identifier (#PCDATA)>
 <!ELEMENT Comments (#PCDATA)>
+<!ELEMENT MasterDirectory (#PCDATA)>
 <!ELEMENT CreationDate (#PCDATA)>
 
 <!-- Workspace Elements-->
@@ -42,15 +43,16 @@
 
 <!ELEMENT System  (  Identifier,
                  SysID,
-                 TransSerial?,
-                 TransModem?,
                  TransTCPIP?,
+                 TransSerial?,
+                 TransTCPIPEx?,
+                 TransSerialEx?,
+                 TransUSBEx?,
+                 TransVNMEx?,
                  VirtualNetLinxMasterFlag?,
-                 VNMRestoreIPSettings?,
                  VNMSystemID?,
                  VNMIPAddress?,
                  VNMMaskAddress?,
-                 IsAuthenticationEnabled?,
                  UserName?,
                  Password?,
                  Comments?,
@@ -59,18 +61,20 @@
 <!ATTLIST System
       IsActive   (true | false)   "false"
       Platform   (Axcess | Netlinx)   "Axcess"
-      Transport   (Serial | Modem | TCPIP) "Serial">
+      Transport   (Serial | Modem | TCPIP) "Serial"
+      TransportEx   (Serial | USB | TCPIP | VNM) "Serial">
 
 <!ELEMENT SysID (#PCDATA)>
 <!ELEMENT TransSerial (#PCDATA)>
-<!ELEMENT TransModem (#PCDATA)>
 <!ELEMENT TransTCPIP (#PCDATA)>
-<!ELEMENT VirtualNetLinxMasterFlag (#PCDATA)>
-<!ELEMENT VNMRestoreIPSettings (#PCDATA)>
+<!ELEMENT TransTCPIPEx (#PCDATA)>
+<!ELEMENT TransSerialEx (#PCDATA)>
+<!ELEMENT TransUSBEx (#PCDATA)>
+<!ELEMENT TransVNMEx (#PCDATA)>
 <!ELEMENT VNMSystemID (#PCDATA)>
 <!ELEMENT VNMIPAddress (#PCDATA)>
 <!ELEMENT VNMMaskAddress (#PCDATA)>
-<!ELEMENT IsAuthenticationEnabled (#PCDATA)>
+<!ELEMENT VirtualNetLinxMasterFlag (#PCDATA)>
 <!ELEMENT UserName (#PCDATA)>
 <!ELEMENT Password (#PCDATA)>
 
@@ -78,11 +82,12 @@
 <!ELEMENT File ( Identifier,
                FilePathName,
                Comments?,
+               MasterDirectory?,
                DeviceMap*,
                IRDB*)>
 
 <!ATTLIST File 
-       Type (Source | MasterSrc | Include | Module | AXB | IR | TPD | TP4 | KPD | TKO | AMX_IR_DB | IRN_DB | Other | DUET | TOK | TKN | KPB ) "Other"
+       Type (Source | MasterSrc | Include | Module | AXB | IR | TPD | TP4 | TP5 | KPD | TKO | AMX_IR_DB | IRN_DB | Other | DUET | TOK | TKN | KPB | XDD ) "Other"
        CompileType (Axcess | Netlinx | None) "None"> 
 
 <!ELEMENT FilePathName	(#PCDATA)>
@@ -104,7 +109,7 @@
        <!ELEMENT Notes (#PCDATA)>
 ]>
 
-<Workspace CurrentVersion="3.3"><Identifier>Global Knowledge CCHD</Identifier>
+<Workspace CurrentVersion="4.0"><Identifier>Global Knowledge CCHD</Identifier>
 <CreateVersion>3.3</CreateVersion>
 <PJS_File></PJS_File>
 <PJS_ConvertDate></PJS_ConvertDate>
@@ -116,17 +121,18 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Wokingham</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Wokingham</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>10.16.111.181:1319:1: ::</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>10.16.111.181|1319|1| ||</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None||</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
 <UserName></UserName>
 <Password></Password>
 <Comments></Comments>
@@ -150,19 +156,20 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Copenhagen - DK1-1</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Copenhagen - DK1-1</Identifier>
 <SysID>2</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -281,19 +288,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Oslo - NO1-1</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Oslo - NO1-1</Identifier>
 <SysID>9</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -412,19 +420,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Stockholm - SE1-1</Identifier>
+<System IsActive="true" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Stockholm - SE1-1</Identifier>
 <SysID>8</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -550,19 +559,20 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Leeds - Room 3</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Leeds - Room 3</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -677,19 +687,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Leeds - Room 4</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Leeds - Room 4</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -811,19 +822,20 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>London - Brunswick</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>London - Brunswick</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -938,19 +950,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>London - Kensington</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>London - Kensington</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1065,19 +1078,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Wokingham - Monza</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Wokingham - Monza</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1199,19 +1213,20 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>Dublin</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Dublin</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1333,17 +1348,18 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Developer 1</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Developer 1</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>10.115.2.180:1319:1: ::</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>10.115.2.180|1319|1| ||</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None||</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
 <UserName></UserName>
 <Password></Password>
 <Comments></Comments>
@@ -1504,19 +1520,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Developer 2</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Developer 2</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>10.115.2.13:1319:1: Dev 1:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>10.115.2.13|1319|1| Dev 1|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1631,19 +1648,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Gateway 1</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Gateway 1</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1762,19 +1780,20 @@
 <Comments></Comments>
 </File>
 </System>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Gateway 2</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Gateway 2</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw2.training.globalknowledge.net:1319:1:Gateway 2:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw2.training.globalknowledge.net|1319|1|Gateway 2|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -1900,19 +1919,20 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Mobile Unit</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Mobile Unit</Identifier>
 <SysID>0</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>192.168.0.9:1319:1: :admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>192.168.0.9|1319|1| |YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -2066,19 +2086,20 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Mechelen - Picasso</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Mechelen - Picasso</Identifier>
 <SysID>11</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>
@@ -2200,19 +2221,20 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>Nieuwegein - Steve Jobs</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP" TransportEx="TCPIP"><Identifier>Nieuwegein - Steve Jobs</Identifier>
 <SysID>12</SysID>
-<TransSerial>COM5,38400,8,None,1,None</TransSerial>
-<TransModem>COM1,38400,8,None,1,None</TransModem>
 <TransTCPIP>amxgw1.training.globalknowledge.net:1319:1:GK Mobile Gateway:admin:ya73iW7dB7Ed6g5l</TransTCPIP>
-<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
-<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransTCPIPEx>amxgw1.training.globalknowledge.net|1319|1|GK Mobile Gateway|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransTCPIPEx>
+<TransSerialEx>COM5|38400|8|None|1|None|YWRtaW4|eWE3M2lXN2RCN0VkNmc1bA</TransSerialEx>
+<TransUSBEx>|||||</TransUSBEx>
+<TransVNMEx>10.0.0.1|1</TransVNMEx>
+<VirtualNetLinxMasterFlag>false</VirtualNetLinxMasterFlag>
 <VNMSystemID>1</VNMSystemID>
 <VNMIPAddress>10.0.0.1</VNMIPAddress>
 <VNMMaskAddress>255.255.255.0</VNMMaskAddress>
-<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
-<UserName>YWRtaW4</UserName>
-<Password>eWE3M2lXN2RCN0VkNmc1bA</Password>
+<UserName></UserName>
+<Password></Password>
 <Comments></Comments>
 <File CompileType="None" Type="TKO"><Identifier>APART_CONCEPT1</Identifier>
 <FilePathName>APART_CONCEPT1.tko</FilePathName>

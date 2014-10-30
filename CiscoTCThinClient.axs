@@ -955,7 +955,7 @@ DATA_EVENT [dvCodec]
     }
     STRING:
     {
-	SEND_STRING 0, "'Rx: ', DATA.TEXT"
+	//SEND_STRING 0, "'Rx: ', DATA.TEXT"
 	
 	//if not logged in 
 	if ( ![ vdvDevices[1], DATA_INITIALIZED ] )

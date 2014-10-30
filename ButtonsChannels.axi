@@ -73,7 +73,8 @@ VOLATILE INTEGER UIBtns[] = {
     111,112,113,114,115,116,117,118,119,120, //Offline Notification Buttons
     
     121, //Filter: All
-    122	 //Filtered Menu
+    122, //Filtered Menu
+    123  //Restablish call 
 }
 
 VOLATILE INTEGER SiteMapBtns[] = {

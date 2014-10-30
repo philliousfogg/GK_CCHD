@@ -298,8 +298,6 @@ DEFINE_FUNCTION CODEC_connectToSite( dev codec, integer CodecIndex, CHAR name[25
 
 DEFINE_FUNCTION CODEC_SwitchCameras(integer SysNum, integer Camera)
 {
-    ACTIVE_CAMERA[SysNum] = Camera
-
     //Video Switching
     SEND_COMMAND vdvCodecs[SysNum], "'INPUT-HDMI,',ITOA( Camera )"
 }
@@ -637,6 +635,20 @@ DATA_EVENT [vdvCodecPres]
 }
 
 
+DATA_EVENT [vdvCodecs]
+{
+    COMMAND:
+    {
+	if ( FIND_STRING ( DATA.TEXT, 'INPUT-HDMI,', 1 ) )
+	{
+	    // Keep the Input number
+	    REMOVE_STRING ( DATA.TEXT, ',', 1 )
+	    
+	    ACTIVE_CAMERA[DATA.DEVICE.SYSTEM] = ATOI ( DATA.TEXT )
+	}
+    }
+}
+
 DATA_EVENT [vdvCodec]
 {
     ONLINE:
@@ -809,6 +821,16 @@ CHANNEL_EVENT [vdvCodec, 0]
 		
 		//Reset Previous call state to refresh the call control
 		PREVIOUS_CALL_STATE = blankArray		
+	    }
+	    
+	    CASE DIAL_OFF_HOOK:
+	    {
+		// if this is a lesson
+		if ( RMS_LEVELS.Current )
+		{
+		    // Switch Mic Mute off at beginning of 
+		    OFF[vdvCodec, ACONF_PRIVACY_ON]
+		}
 	    }
 	}
     }

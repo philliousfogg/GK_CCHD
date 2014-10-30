@@ -453,9 +453,6 @@ DEFINE_FUNCTION SYSTEM_setupRoom( INTEGER Type )
 			// Set Codec presentation to on 
 			ON[vdvCodec, 309]
 			
-			// Switch Mic Mute off
-			OFF[vdvCodec, ACONF_PRIVACY_ON]
-			
 			SYSTEM_setProjectorPower(DEVICES[i].vDevice, PWR_ON)
 			
 			// If Projector on set flag
@@ -996,9 +993,6 @@ DEFINE_FUNCTION SYSTEM_ShowMain()
 	//Set site list filter to site list
 	SITE_LIST_FILTER = 0
 	
-	// Set active camera
-	CODEC_SwitchCameras(ACTIVE_SYSTEM, 1)
-	
 	///Update UI List
 	Systems_UpdateUIList(1)
 	
@@ -1490,6 +1484,38 @@ DEFINE_FUNCTION System_changePinResponse( _Command parser )
     }
 }
 
+DEFINE_FUNCTION System_restablishCallResponse( _Command parser )
+{
+    STACK_VAR char ref[16]
+    STACK_VAR integer response
+    STACK_VAR integer index
+    
+    //Get id 
+    ref = GetAttrValue( 'ref',parser ) 
+    
+    //If Shutdown Response
+    IF ( FIND_STRING ( ref, 'resetCall', 1 ) )
+    {
+	//remove 'chgpin-'
+	REMOVE_STRING ( ref, '-', 1 )
+	
+	//Get Response
+	response = ATOI ( GetAttrValue ( 'res', parser ) )
+	
+	Switch ( response )
+	{ 
+	    CASE 1: 
+	    {
+		PULSE[vdvCodec, DIAL_FLASH_HOOK]
+		//SEND_STRING 0, 'ok'
+	    }
+	    CASE 2: 
+	    {
+		//SEND_STRING 0, 'Cancel'
+	    }
+	}
+    }
+}
 
 
 DEFINE_START
@@ -1629,7 +1655,7 @@ BUTTON_EVENT [dvTP, UIBtns]
 		    ACTIVE_SYSTEM = sysnum
 		    
 		    // If there is not an camera active set a camera active
-		    if ( ACTIVE_CAMERA[ACTIVE_SYSTEM] )
+		    if ( !ACTIVE_CAMERA[ACTIVE_SYSTEM] )
 		    {
 			// Set active camera if not set
 			CODEC_SwitchCameras(ACTIVE_SYSTEM, 1)
@@ -1903,6 +1929,16 @@ BUTTON_EVENT [dvTP, UIBtns]
 	    CASE 122:
 	    {
 		SEND_COMMAND dvTP, "'@PPN-Filter;Admin'"
+	    }
+	    
+	    // Restablish Call
+	    CASE 123:
+	    {
+		SYSTEM_sendCommand ( vdvSystem, "'DialogOkCancel-ref=resetCall',
+					    '&title=Re-establish Calls',
+					    '&message=You are about to re-establish the video calls.  This can be used resolve problems.',$0A,$0D,$0A,$0D,
+					    'Do you wish to continue?',
+					    '&res1=Ok&res2=Cancel&norepeat=1'" )
 	    }
 	}
     }
